@@ -21,5 +21,8 @@ RUN set -eux; \
 COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install
+RUN mkdir -p /var/www/html/uploads \
+  && chown -R www-data:www-data /var/www/html/uploads \
+  && chmod 2775 /var/www/html/uploads
 RUN chown -R www-data:www-data /var/www/html
 USER www-data
