@@ -1,6 +1,7 @@
-﻿FROM php:8.2-apache
+FROM php:8.2-apache
 ARG APACHE_DOCUMENT_ROOT=/var/www/html
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN a2enmod rewrite
 RUN set -eux; \
   apt-get update; \
   apt-get install -y --no-install-recommends default-mysql-client ca-certificates curl unzip git; \
