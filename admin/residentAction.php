@@ -7,24 +7,24 @@
 session_start();
 header('Content-Type: application/json');
 
-// ── Auth guard ──────────────────────────────────────────────────────────────
+// â”€â”€ Auth guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
 
-// ── DB connection ───────────────────────────────────────────────────────────
-$conn = mysqli_connect('localhost', 'root', '', 'sumeste_db');
+// â”€â”€ DB connection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
     exit;
 }
 
-// ── Permission check ─────────────────────────────────────────────────────────
+// â”€â”€ Permission check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission_ajax($conn, 'manage_residents');
 
-// ── Read & validate POST ────────────────────────────────────────────────────
+// â”€â”€ Read & validate POST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
 $action = trim($_POST['action'] ?? '');
 
@@ -38,11 +38,11 @@ if (!in_array($action, ['archive', 'unarchive'], true)) {
     exit;
 }
 
-// ── Map action → new status ─────────────────────────────────────────────────
+// â”€â”€ Map action â†’ new status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $newStatus     = $action === 'archive' ? 'archived' : 'approved';
 $currentStatus = $action === 'archive' ? 'approved'  : 'archived';
 
-// ── Prepared UPDATE ─────────────────────────────────────────────────────────
+// â”€â”€ Prepared UPDATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $sql  = "UPDATE tbl_userinfo SET userStatus = ? WHERE userID = ? AND userStatus = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
@@ -74,7 +74,7 @@ if ($affected === 0) {
     exit;
 }
 
-// ── Log action to session ───────────────────────────────────────────────────
+// â”€â”€ Log action to session â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (!isset($_SESSION['resident_actions'])) {
     $_SESSION['resident_actions'] = [];
 }

@@ -6,9 +6,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host     = "localhost";
+$host     = "o7jpqmin0zgconui4xtnfju6";
 $dbuser   = "root";
-$password = "";
+$password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj";
 $database = "sumeste_db";
 
 $conn = mysqli_connect($host, $dbuser, $password, $database);
@@ -25,7 +25,7 @@ if (empty($accId) || !$listingId) {
     exit;
 }
 
-// ── Fetch listing to verify ownership and get photo paths ──
+// â”€â”€ Fetch listing to verify ownership and get photo paths â”€â”€
 $stmt = $conn->prepare("SELECT id, photos FROM tbl_busaptListing WHERE id = ? AND userId = ? LIMIT 1");
 if (!$stmt) {
     header('Location: manageList.php?error=1');
@@ -42,7 +42,7 @@ if (!$row) {
     exit;
 }
 
-// ── Delete uploaded photos from disk ──
+// â”€â”€ Delete uploaded photos from disk â”€â”€
 $photos = json_decode($row['photos'] ?? '[]', true);
 if (is_array($photos)) {
     $resolvedUploadDir = realpath(dirname(__FILE__) . '/../uploads/listings');
@@ -56,7 +56,7 @@ if (is_array($photos)) {
     }
 }
 
-// ── Delete the database record ──
+// â”€â”€ Delete the database record â”€â”€
 $del = $conn->prepare("DELETE FROM tbl_busaptListing WHERE id = ? AND userId = ?");
 if (!$del) {
     header('Location: manageList.php?error=1');

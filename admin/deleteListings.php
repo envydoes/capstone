@@ -2,12 +2,12 @@
 session_start();
 if (!isset($_SESSION['user_id'])) { http_response_code(403); echo json_encode(['success'=>false,'message'=>'Unauthorized']); exit; }
 
-$host = "localhost"; $dbuser = "root"; $password = ""; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB connection failed']); exit; }
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
-// account granted manage_listings from deleting listings — even though
+// account granted manage_listings from deleting listings â€” even though
 // communityListings.php already shows them the delete buttons based on
 // that same permission. Now this endpoint checks the same permission.
 require_once __DIR__ . '/../includes/check_permissions.php';

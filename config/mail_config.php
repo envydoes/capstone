@@ -11,19 +11,19 @@ const MAIL_FROM_NAME  = 'SumEste Portal';
 
 // Auto-detect base URL (works for localhost, LAN IP, and live domain)
 function resolveBaseUrl(): string {
-    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'o7jpqmin0zgconui4xtnfju6';
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 
     // Live domain (not localhost and not a LAN IP)
-    $isLocalhost = ($host === 'localhost' || str_starts_with($host, '127.'));
+    $isLocalhost = ($host === 'o7jpqmin0zgconui4xtnfju6' || str_starts_with($host, '127.'));
     $isLanIp     = preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/', $host);
 
     if (!$isLocalhost && !$isLanIp) {
-        // Live server — use the actual domain
+        // Live server â€” use the actual domain
         return $scheme . '://' . $host;
     }
 
-    // Localhost or LAN — use the current host (IP or localhost) + project folder
+    // Localhost or LAN â€” use the current host (IP or localhost) + project folder
     return $scheme . '://' . $host . '/capstone';
 }
 

@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['account_role'] ?? '') !== 'admin
     exit;
 }
 
-$host = "localhost"; $dbuser = "root"; $password = ""; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
@@ -18,7 +18,7 @@ if (!$conn) {
 $q = trim($_GET['q'] ?? '');
 
 // Only staff accounts (those with a row in tbl_admin_permissions) are
-// shown here — this section is exclusively for managing granted access.
+// shown here â€” this section is exclusively for managing granted access.
 $sql = "
     SELECT ua.accID AS userID, ua.email,
            TRIM(CONCAT(COALESCE(ui.firstname,''), ' ', COALESCE(ui.lastname,''))) AS fullname,

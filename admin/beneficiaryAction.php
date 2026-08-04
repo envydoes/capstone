@@ -2,7 +2,7 @@
 /**
  * beneficiaryAction.php
  * Approve or reject a beneficiary application.
- * prio_score is already stored in DB — no recalculation needed.
+ * prio_score is already stored in DB â€” no recalculation needed.
  */
 session_start();
 header('Content-Type: application/json');
@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$conn = mysqli_connect("localhost", "root", "", "sumeste_db");
+$conn = mysqli_connect("o7jpqmin0zgconui4xtnfju6", "root", "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj", "sumeste_db");
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'DB connection failed']);
     exit;

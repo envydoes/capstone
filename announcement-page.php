@@ -1,5 +1,5 @@
 <?php
-  $host = "localhost"; $dbuser = "root"; $password = ""; $database = "sumeste_db";
+  $host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
   $conn = mysqli_connect($host, $dbuser, $password, $database);
   if (!$conn) { die("Connection failed: " . mysqli_connect_error()); }
   session_start();
@@ -15,7 +15,7 @@
   $roleLower = strtolower(trim($role));
   
 
-  // ── Show My Panel only for resident / resident+owner (NOT non-resident) ──
+  // â”€â”€ Show My Panel only for resident / resident+owner (NOT non-resident) â”€â”€
   $showMyPanel = $logged_in && (
       $roleLower === 'resident' ||
       $roleLower === 'resident,business/apartment owner'
@@ -86,7 +86,7 @@ $roleBadgeClass = match($role) {
     };
   }
 
-  $pageTitle = $ann ? htmlspecialchars($ann['announcementTitle']) . ' — ' . e($siteSettings['site_title']) : 'Announcement — ' . e($siteSettings['site_title']);
+  $pageTitle = $ann ? htmlspecialchars($ann['announcementTitle']) . ' â€” ' . e($siteSettings['site_title']) : 'Announcement â€” ' . e($siteSettings['site_title']);
 
   $images = [];
   if ($ann && !empty($ann['announcementImg'])) {
@@ -129,7 +129,7 @@ $roleBadgeClass = match($role) {
     .section-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--site-primary); font-weight: 600; }
     .ann-body p + p { margin-top: 1rem; }
 
-    /* ══ CAROUSEL ══ */
+    /* â•â• CAROUSEL â•â• */
     .carousel-root { position: relative; width: 100%; overflow: hidden; background: #111; }
     .carousel-track { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); }
     .carousel-slide { flex-shrink: 0; width: 100%; }
@@ -190,7 +190,7 @@ $roleBadgeClass = match($role) {
 </head>
 <body class="bg-gray-50">
 
-<!-- ══════════════════ HEADER ══════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEADER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <header class="w-full h-[64px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="landing.php" class="flex items-center gap-3">
@@ -267,7 +267,7 @@ $roleBadgeClass = match($role) {
   </nav>
 </header>
 
-<!-- ══════════════════ MOBILE SIDEBAR ══════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MOBILE SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -328,13 +328,13 @@ $roleBadgeClass = match($role) {
   </div>
 </div>
 
-<!-- ══════════════════ ANNOUNCEMENT DETAIL ══════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ANNOUNCEMENT DETAIL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <section class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
   <?php if (!$ann): ?>
     <div class="text-center py-24">
       <i class="fa-solid fa-circle-exclamation text-5xl text-gray-300 mb-4"></i>
       <p class="text-gray-500 text-lg font-medium">Announcement not found.</p>
-      <a href="<?= htmlspecialchars($backUrl) ?>" class="mt-4 inline-block text-green-700 font-semibold hover:underline">← Back to Announcements</a>
+      <a href="<?= htmlspecialchars($backUrl) ?>" class="mt-4 inline-block text-green-700 font-semibold hover:underline">â† Back to Announcements</a>
     </div>
   <?php else:
     $tag      = $ann['announcementTag'] ?? '';
@@ -444,7 +444,7 @@ $roleBadgeClass = match($role) {
   <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
 </div>
 
-<!-- ══════════════════ FOOTER ══════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <footer class="bg-green-950 text-white pt-14 pb-6 px-4 sm:px-6">
   <div class="max-w-6xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
@@ -486,12 +486,12 @@ $roleBadgeClass = match($role) {
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ðŸŒ¿ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
-/* ── Navbar profile dropdown ── */
+/* â”€â”€ Navbar profile dropdown â”€â”€ */
 function toggleProfileMenu() {
   const d = document.getElementById('profile-dropdown');
   const c = document.getElementById('profile-chevron');
@@ -507,7 +507,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-/* ── Mobile sidebar ── */
+/* â”€â”€ Mobile sidebar â”€â”€ */
 const overlay  = document.getElementById('mobile-sidebar-overlay');
 const sidebar  = document.getElementById('mobile-sidebar');
 const openBtn  = document.getElementById('mobile-menu-btn');
@@ -525,7 +525,7 @@ openBtn?.addEventListener('click', openSidebar);
 closeBtn?.addEventListener('click', closeSidebar);
 overlay?.addEventListener('click', closeSidebar);
 
-/* ── Carousel ── */
+/* â”€â”€ Carousel â”€â”€ */
 <?php $imgCount = count($images); ?>
 const TOTAL = <?= $imgCount ?>;
 let current = 0;
@@ -563,7 +563,7 @@ if (carr) {
 }
 <?php endif; ?>
 
-/* ── Lightbox ── */
+/* â”€â”€ Lightbox â”€â”€ */
 const lbImgs = <?= json_encode(array_values(array_map(fn($f) => 'uploads/announcement/'.$f, $images))) ?>;
 let lbIdx = 0;
 function openLightbox(idx) { lbIdx = idx??current; document.getElementById('lightboxImg').src = lbImgs[lbIdx]||''; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; }

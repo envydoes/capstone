@@ -7,12 +7,12 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host = "localhost"; $user = "root"; $password = ""; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $user = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $user, $password, $database);
 if (!$conn) { echo json_encode(['success' => false, 'message' => 'DB connection failed']); exit; }
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
-// account granted manage_borrowing from adding/editing/deleting equipment —
+// account granted manage_borrowing from adding/editing/deleting equipment â€”
 // even though the Borrowing System page itself already shows them the
 // "Manage Equipment" tab and "Add New Equipment" button based on that same
 // permission. Now this endpoint checks the same permission consistently.
@@ -21,7 +21,7 @@ require_permission_ajax($conn, 'manage_borrowing');
 
 $action = $_POST['action'] ?? '';
 
-// ── Upload helper ──────────────────────────────────────────────────────────
+// â”€â”€ Upload helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function uploadImages(): string {
     $fileKey = 'images';
     if (!isset($_FILES[$fileKey]) || empty($_FILES[$fileKey]['name'][0])) {

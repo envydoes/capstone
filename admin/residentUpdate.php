@@ -7,24 +7,24 @@
 session_start();
 header('Content-Type: application/json');
 
-// ── Auth guard ──────────────────────────────────────────────────────────────
+// â”€â”€ Auth guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
 
-// ── DB connection ───────────────────────────────────────────────────────────
-$conn = mysqli_connect('localhost', 'root', '', 'sumeste_db');
+// â”€â”€ DB connection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
     exit;
 }
 
-// ── Permission check ─────────────────────────────────────────────────────────
+// â”€â”€ Permission check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission_ajax($conn, 'manage_residents');
 
-// ── Read JSON body ──────────────────────────────────────────────────────────
+// â”€â”€ Read JSON body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $raw  = file_get_contents('php://input');
 $data = json_decode($raw, true);
 
@@ -33,12 +33,12 @@ if (!$data || empty($data['userID'])) {
     exit;
 }
 
-// ── Sanitize helper ─────────────────────────────────────────────────────────
+// â”€â”€ Sanitize helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function clean($v) {
     return trim(strip_tags($v ?? ''));
 }
 
-// ── Whitelist & cast every expected field ───────────────────────────────────
+// â”€â”€ Whitelist & cast every expected field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $userID            = (int) $data['userID'];
 $firstname         = clean($data['firstname']         ?? '');
 $lastname          = clean($data['lastname']          ?? '');
@@ -74,7 +74,7 @@ if (isset($data['monthly_income']) && $data['monthly_income'] !== '' && is_numer
     $monthly_income = (string)(float)$data['monthly_income'];
 }
 
-// ── Basic required-field validation ─────────────────────────────────────────
+// â”€â”€ Basic required-field validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $required = compact(
     'firstname','lastname','family_role','gender','birthday','birthplace',
     'civil_status','citizenship','street','barangay','city','province','zip',
@@ -96,7 +96,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// ── Prepared UPDATE ─────────────────────────────────────────────────────────
+// â”€â”€ Prepared UPDATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $sql = "UPDATE tbl_userinfo SET
     firstname         = ?,
     lastname          = ?,

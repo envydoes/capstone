@@ -1,48 +1,48 @@
 <?php
 /**
  *
- * ─── SCORING RUBRIC ─────────────────────────────────────────────────────────
+ * â”€â”€â”€ SCORING RUBRIC â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  *
  *  HOUSING & UTILITIES                                             Max = 45 pts
  *    Housing Status
- *      Informal Settler  → +10
- *      Renting           → +7
- *      Shared/Relatives  → +3
- *      Owned / Gov't     → +0
+ *      Informal Settler  â†’ +10
+ *      Renting           â†’ +7
+ *      Shared/Relatives  â†’ +3
+ *      Owned / Gov't     â†’ +0
  *    Primary Material
- *      Light/Salvaged (Bamboo, Cogon, Makeshift/Scrap) → +15
- *      Mixed Materials                                 → +7
- *      Concrete / Wood                                 → +0
- *    Electricity  : No Electricity OR Shared           → +5
- *    Water Source : Shared Well OR Bought/Mineral      → +5
- *    Toilet Type  : None/Pit OR Shared/Public          → +5
+ *      Light/Salvaged (Bamboo, Cogon, Makeshift/Scrap) â†’ +15
+ *      Mixed Materials                                 â†’ +7
+ *      Concrete / Wood                                 â†’ +0
+ *    Electricity  : No Electricity OR Shared           â†’ +5
+ *    Water Source : Shared Well OR Bought/Mineral      â†’ +5
+ *    Toilet Type  : None/Pit OR Shared/Public          â†’ +5
  *
  *  FAMILY & SPECIAL CLASSIFICATION                                Max = 35 pts
- *    Pregnant or Child < 5 = Yes  → +10
- *    PWD checkbox                 → +10
- *    Solo Parent                  → +10
- *    Indigenous Person (IP)       → +5
+ *    Pregnant or Child < 5 = Yes  â†’ +10
+ *    PWD checkbox                 â†’ +10
+ *    Solo Parent                  â†’ +10
+ *    Indigenous Person (IP)       â†’ +5
  *
  *  HEALTH & PENSION                                               Max = 35 pts
- *    Any health condition (hypertension/diabetes/asthma/other) → +10
- *    Requires maintenance medicine = Yes                        → +5
- *    Pension = None OR Social Pension (DSWD)                   → +10
- *    Senior Citizen (age >= 60)                                 → +10
+ *    Any health condition (hypertension/diabetes/asthma/other) â†’ +10
+ *    Requires maintenance medicine = Yes                        â†’ +5
+ *    Pension = None OR Social Pension (DSWD)                   â†’ +10
+ *    Senior Citizen (age >= 60)                                 â†’ +10
  *
  *  EDUCATION / SCHOLARSHIP                                        Max = 10 pts
- *    GWA/GPA 1.00–1.75 (Philippine honour range)               → +10
+ *    GWA/GPA 1.00â€“1.75 (Philippine honour range)               â†’ +10
  *
  *  GRAND MAX = 100 pts  (hard-capped at 100)
  *
- * ─── PROGRAM PRIORITY BANDS ─────────────────────────────────────────────────
- *  4Ps                  70–100   (housing + utilities + pregnant)
- *  Senior Citizen       60–100   (no pension + age >= 60 [via birthdate] + health)
- *  Scholarship Programs 75–100   (GWA 1.00–1.75 + low monthly income)
- *  PWD                  80–100   (PWD checked + valid PWD ID + health)
- *  Kabataan/SK          compliance-based (ages 15–30, handled by admin layer)
+ * â”€â”€â”€ PROGRAM PRIORITY BANDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ *  4Ps                  70â€“100   (housing + utilities + pregnant)
+ *  Senior Citizen       60â€“100   (no pension + age >= 60 [via birthdate] + health)
+ *  Scholarship Programs 75â€“100   (GWA 1.00â€“1.75 + low monthly income)
+ *  PWD                  80â€“100   (PWD checked + valid PWD ID + health)
+ *  Kabataan/SK          compliance-based (ages 15â€“30, handled by admin layer)
  *  For Voters           compliance-based (ages 18+,  handled by admin layer)
  *
- * ─── SQL MIGRATION (run once) ───────────────────────────────────────────────
+ * â”€â”€â”€ SQL MIGRATION (run once) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  *
  *  CREATE TABLE IF NOT EXISTS `tbl_beneficiary` (
  *    `id`                    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -82,38 +82,38 @@
  *    FOREIGN KEY (`userId`) REFERENCES `tbl_userinfo` (`userID`)
  *  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
  *
- * ─── MONTHLY INCOME DROPDOWN VALUES (add to beneficiary form) ────────────────
+ * â”€â”€â”€ MONTHLY INCOME DROPDOWN VALUES (add to beneficiary form) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  *  <select name="monthly_income">
  *    <option value="">-- Select --</option>
- *    <option value="below_5000">Below ₱5,000</option>
- *    <option value="5000_9999">₱5,000 – ₱9,999</option>
- *    <option value="10000_14999">₱10,000 – ₱14,999</option>
- *    <option value="15000_19999">₱15,000 – ₱19,999</option>
- *    <option value="20000_above">₱20,000 and above</option>
+ *    <option value="below_5000">Below â‚±5,000</option>
+ *    <option value="5000_9999">â‚±5,000 â€“ â‚±9,999</option>
+ *    <option value="10000_14999">â‚±10,000 â€“ â‚±14,999</option>
+ *    <option value="15000_19999">â‚±15,000 â€“ â‚±19,999</option>
+ *    <option value="20000_above">â‚±20,000 and above</option>
  *  </select>
  *
- * ────────────────────────────────────────────────────────────────────────────
+ * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
  */
 
-// ── Guard: session must already be started by the parent page ────────────────
+// â”€â”€ Guard: session must already be started by the parent page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ── Guard: user must be logged in ───────────────────────────────────────────
+// â”€â”€ Guard: user must be logged in â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (empty($_SESSION['user_id']) || empty($_SESSION['acc_id'])) {
     $_SESSION['beneficiary_save_status'] = 'error';
     $_SESSION['beneficiary_save_msg']    = 'Not authenticated.';
     return;
 }
 
-// ── Guard: form data must exist in session ──────────────────────────────────
+// â”€â”€ Guard: form data must exist in session â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (empty($_SESSION['beneficiary_form']) || !is_array($_SESSION['beneficiary_form'])) {
-    return; // Nothing to save — silently skip
+    return; // Nothing to save â€” silently skip
 }
 
-// ── Database connection ──────────────────────────────────────────────────────
-$host     = 'localhost';
+// â”€â”€ Database connection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+$host     = 'o7jpqmin0zgconui4xtnfju6';
 $dbUser   = 'root';
 $dbPass   = '';
 $database = 'sumeste_db';
@@ -126,7 +126,7 @@ if (!$conn) {
 }
 mysqli_set_charset($conn, 'utf8mb4');
 
-// ── Pull & sanitise session data ─────────────────────────────────────────────
+// â”€â”€ Pull & sanitise session data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $f = $_SESSION['beneficiary_form'];
 $accId = trim($_SESSION['acc_id'] ?? '');
 $userId = 0;
@@ -211,7 +211,7 @@ if ($birthday) {
     $age = $today->diff($birthDate)->y;
 }
 
-/** Sanitise a string value — trims whitespace and caps length. */
+/** Sanitise a string value â€” trims whitespace and caps length. */
 $str = static function (string $key, int $maxLen = 255) use ($f): string {
     $val = isset($f[$key]) ? trim((string)$f[$key]) : '';
     return substr($val, 0, $maxLen);
@@ -222,7 +222,7 @@ $bool = static function (string $key) use ($f): int {
     return !empty($f[$key]) ? 1 : 0;
 };
 
-/** Map 'yes' / 'no' string → 1 / 0. */
+/** Map 'yes' / 'no' string â†’ 1 / 0. */
 $yesNo = static function (string $key) use ($f): int {
     return (isset($f[$key]) && strtolower(trim($f[$key])) === 'yes') ? 1 : 0;
 };
@@ -237,7 +237,7 @@ if (!empty($f['submitted_at'])) {
 }
 $submittedAt = $submittedAt ?? date('Y-m-d H:i:s');
 
-// ── Build data array ─────────────────────────────────────────────────────────
+// â”€â”€ Build data array â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $data = [
     // Housing
     'housing_status'       => $str('housing_status',       50),
@@ -281,12 +281,12 @@ if (!$data['is_pwd'])            $data['pwd_id_number']        = '';
 if (!$data['requires_medicine']) $data['medicine_name']        = '';
 if (!$data['health_other'])      $data['health_other_specify'] = '';
 
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  PRIORITY SCORE CALCULATION
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 $score = 0;
 
-// ── Housing Status ────────────────────────────────────────────────────────
+// â”€â”€ Housing Status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $score += match(strtolower($data['housing_status'])) {
     'informal_settler'   => 10,
     'renting'            => 7,
@@ -295,7 +295,7 @@ $score += match(strtolower($data['housing_status'])) {
     default              => 0,   // owned
 };
 
-// ── Primary Material ──────────────────────────────────────────────────────
+// â”€â”€ Primary Material â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $score += match(strtolower($data['house_material'])) {
     'makeshift'       => 10,
     'light_materials' => 8,
@@ -304,7 +304,7 @@ $score += match(strtolower($data['house_material'])) {
     default           => 0, // concrete
 };
 
-// ── Utilities (10 pts combined) ───────────────────────────────────────────
+// â”€â”€ Utilities (10 pts combined) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $score += match(strtolower($data['electricity'])) {
     'no_electricity' => 3,
     'shared'         => 2,
@@ -323,12 +323,12 @@ $score += match(strtolower($data['toilet_type'])) {
     default         => 0, // private
 };
 
-// ── Household Composition ─────────────────────────────────────────────────
+// â”€â”€ Household Composition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // No specific point explicitly in new rules for pregnant here but keeping cap limits or skipping it if omitted.
 // The new points do not explicitly include "pregnant" in score directly, only in 4ps eligibility.
 // But let's leave it out of score if not in rubric, or keep it? The prompt says "Prio-score computation 1... 2... 3... 4...". It doesn't mention pregnancy or children in the scoring rubric. So I will remove it from scoring.
 
-// ── Special Classification & Pension (Max 20 pts combined) ─────────────────
+// â”€â”€ Special Classification & Pension (Max 20 pts combined) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $socialScore = 0;
 if ($data['is_pwd'])         $socialScore += 10;
 if ($data['is_solo_parent']) $socialScore += 10;
@@ -342,7 +342,7 @@ $socialScore += match(strtolower((string)$data['pension_status'])) {
 
 $score += min($socialScore, 20);
 
-// ── Health Conditions (any one condition ticked) (Max 20 pts combined) ─────
+// â”€â”€ Health Conditions (any one condition ticked) (Max 20 pts combined) â”€â”€â”€â”€â”€
 $healthScore = 0;
 $anyHealth = $data['health_hypertension']
            || $data['health_diabetes']
@@ -353,14 +353,14 @@ if ($anyHealth) {
     $healthScore += 10;
 }
 
-// ── Maintenance Medicine ──────────────────────────────────────────────────
+// â”€â”€ Maintenance Medicine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if ($data['requires_medicine']) {
     $healthScore += 10;
 }
 
 $score += min($healthScore, 20);
 
-// ── Economic Status (Monthly Income) ──────────────────────────────────────
+// â”€â”€ Economic Status (Monthly Income) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $incomeValue = trim((string)$monthlyIncome);
 if ($incomeValue === '' || strtolower($incomeValue) === 'none' || (is_numeric($incomeValue) && (float)$incomeValue == 0)) {
     $score += 30; // None
@@ -379,7 +379,7 @@ if ($incomeValue === '' || strtolower($incomeValue) === 'none' || (is_numeric($i
     }
 }
 
-// ── Education / Scholarship: (Remove from score according to rubric or keep?) ─────────────
+// â”€â”€ Education / Scholarship: (Remove from score according to rubric or keep?) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // The new rubric doesn't list scholarship in priority points. It only lists it in Eligibility criteria.
 
 
@@ -388,9 +388,9 @@ $data['prio_score'] = min((int)$score, 100);
 
 // Status always resets to 'pending' so admin must re-review after re-submit
 $data['status'] = 'pending';
-// ═══════════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// ── Check if a record already exists for this userId ─────────────────────────
+// â”€â”€ Check if a record already exists for this userId â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $existingId = null;
 $chkStmt    = $conn->prepare('SELECT id FROM tbl_beneficiary WHERE userId = ? LIMIT 1');
 if (!$chkStmt) {
@@ -405,9 +405,9 @@ $chkStmt->bind_result($existingId);
 $chkStmt->fetch();
 $chkStmt->close();
 
-// ── INSERT or UPDATE ─────────────────────────────────────────────────────────
+// â”€â”€ INSERT or UPDATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if ($existingId) {
-    // ── UPDATE ───────────────────────────────────────────────────────────────
+    // â”€â”€ UPDATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // 26 SET values  (+1 WHERE = 27 total bind params)
     // Types (26 SET):
     //   s  housing_status
@@ -509,7 +509,7 @@ if ($existingId) {
     );
 
 } else {
-    // ── INSERT ────────────────────────────────────────────────────────────────
+    // â”€â”€ INSERT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // 26 columns (userId + 25 fields)
     // Types:
     //   i  userId
@@ -612,7 +612,7 @@ if ($existingId) {
     );
 }
 
-// ── Execute & report ─────────────────────────────────────────────────────────
+// â”€â”€ Execute & report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if ($stmt->execute()) {
     $_SESSION['beneficiary_save_status'] = 'ok';
     $_SESSION['beneficiary_save_msg']    = $existingId
@@ -621,7 +621,7 @@ if ($stmt->execute()) {
     // Expose score to calling page (e.g. to show in a success banner)
     $_SESSION['beneficiary_prio_score']  = $data['prio_score'];
 
-    // Clear form data — prevents double-save on page refresh
+    // Clear form data â€” prevents double-save on page refresh
     unset($_SESSION['beneficiary_form']);
 
 } else {

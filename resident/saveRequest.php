@@ -4,12 +4,12 @@
  * Saves document requests from documentsForm.php to tbl_requestDocs
  */
 
-// ── Guard: session must already be started by the parent page ────────────────
+// â”€â”€ Guard: session must already be started by the parent page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ── Guard: user must be logged in ───────────────────────────────────────────
+// â”€â”€ Guard: user must be logged in â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (empty($_SESSION['user_id']) || empty($_SESSION['acc_id'])) {
     $_SESSION['document_save_status'] = 'error';
     $_SESSION['document_save_msg']    = 'Not authenticated.';
@@ -17,7 +17,7 @@ if (empty($_SESSION['user_id']) || empty($_SESSION['acc_id'])) {
     exit;
 }
 
-// ── Guard: form data must exist in session ──────────────────────────────────
+// â”€â”€ Guard: form data must exist in session â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (empty($_SESSION['document_form']) || !is_array($_SESSION['document_form'])) {
     $_SESSION['document_save_status'] = 'error';
     $_SESSION['document_save_msg']    = 'No form data to save.';
@@ -25,8 +25,8 @@ if (empty($_SESSION['document_form']) || !is_array($_SESSION['document_form'])) 
     exit;
 }
 
-// ── Database connection ──────────────────────────────────────────────────────
-$host     = 'localhost';
+// â”€â”€ Database connection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+$host     = 'o7jpqmin0zgconui4xtnfju6';
 $dbUser   = 'root';
 $dbPass   = '';
 $database = 'sumeste_db';
@@ -58,7 +58,7 @@ function cleanUpFiles(array $files): void {
     }
 }
 
-// ── Pull & sanitise session data ─────────────────────────────────────────────
+// â”€â”€ Pull & sanitise session data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $f      = $_SESSION['document_form'];
 $accId  = trim($_SESSION['acc_id'] ?? '');
 $userId = 0;
@@ -125,7 +125,7 @@ if ($checkStmt->num_rows === 0) {
 }
 $checkStmt->close();
 
-// ── Sanitise helper closures ──────────────────────────────────────────────────
+// â”€â”€ Sanitise helper closures â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $str = static function (string $key, int $maxLen = 255) use ($f): string {
     $val = isset($f[$key]) ? trim((string)$f[$key]) : '';
     return substr($val, 0, $maxLen);
@@ -145,8 +145,8 @@ if (!empty($f['submitted_at'])) {
 }
 $submittedAt = $submittedAt ?? date('Y-m-d H:i:s');
 
-// ── Encode uploaded files as JSON ─────────────────────────────────────────────
-// Store only filenames (not full paths) — path is always /uploads/document_requests/
+// â”€â”€ Encode uploaded files as JSON â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Store only filenames (not full paths) â€” path is always /uploads/document_requests/
 $uploadedFilesJson = null;
 if (!empty($f['uploaded_files']) && is_array($f['uploaded_files'])) {
     $cleanFiles = array_values(array_filter(array_map('basename', $f['uploaded_files'])));
@@ -155,7 +155,7 @@ if (!empty($f['uploaded_files']) && is_array($f['uploaded_files'])) {
     }
 }
 
-// ── Build data array ──────────────────────────────────────────────────────────
+// â”€â”€ Build data array â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $data = [
     'document_type'   => $str('document_type', 50),
     'num_copies'      => $int('num_copies'),
@@ -166,7 +166,7 @@ $data = [
     'submitted_at'    => $submittedAt,
 ];
 
-// ── INSERT new document request ───────────────────────────────────────────────
+// â”€â”€ INSERT new document request â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $sqlInsert = '
     INSERT INTO tbl_requestDocs (
         userId,
@@ -202,16 +202,16 @@ $stmt->bind_param(
     $data['submitted_at']
 );
 
-// ── Execute & report ──────────────────────────────────────────────────────────
+// â”€â”€ Execute & report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if ($stmt->execute()) {
     $_SESSION['document_save_status'] = 'ok';
     $_SESSION['document_save_msg']    = 'Document request submitted successfully.';
 
-    // Clear form data — prevents double-save on page refresh
+    // Clear form data â€” prevents double-save on page refresh
     unset($_SESSION['document_form']);
 
 } else {
-    // Save failed — remove uploaded files so they don't become orphans
+    // Save failed â€” remove uploaded files so they don't become orphans
     cleanUpFiles($f['uploaded_files'] ?? []);
     $_SESSION['document_save_status'] = 'error';
     $_SESSION['document_save_msg']    = 'Could not save your request. Please try again.';

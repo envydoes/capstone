@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host = "localhost"; $dbuser = "root"; $password = ""; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB error']); exit; }
 
@@ -22,7 +22,7 @@ $action = $_POST['action'] ?? '';
 $uploadDir = __DIR__ . '/../uploads/announcement/';
 if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
 
-/* ══ Helper: save uploaded files ══ */
+/* â•â• Helper: save uploaded files â•â• */
 function saveUploads(array $files, string $uploadDir): array {
     $saved = [];
     foreach ($files['name'] as $i => $name) {
@@ -38,7 +38,7 @@ function saveUploads(array $files, string $uploadDir): array {
     return $saved;
 }
 
-/* ══ Helper: delete image files ══ */
+/* â•â• Helper: delete image files â•â• */
 function deleteImages(array $filenames, string $uploadDir): void {
     foreach ($filenames as $f) {
         $path = $uploadDir . basename($f);
@@ -48,7 +48,7 @@ function deleteImages(array $filenames, string $uploadDir): void {
 
 switch ($action) {
 
-    /* ── CREATE ── */
+    /* â”€â”€ CREATE â”€â”€ */
     case 'create':
         $title   = trim($_POST['title']   ?? '');
         $desc    = trim($_POST['desc']    ?? '');
@@ -81,7 +81,7 @@ switch ($action) {
         $stmt->close();
         break;
 
-    /* ── UPDATE / EDIT ── */
+    /* â”€â”€ UPDATE / EDIT â”€â”€ */
     case 'edit':
         $id      = (int)($_POST['id'] ?? 0);
         $title   = trim($_POST['title']   ?? '');
@@ -123,7 +123,7 @@ switch ($action) {
         $stmt->close();
         break;
 
-    /* ── DELETE ── */
+    /* â”€â”€ DELETE â”€â”€ */
     case 'delete':
         $id = (int)($_POST['id'] ?? 0);
         if (!$id) { echo json_encode(['success'=>false,'message'=>'Invalid ID']); exit; }

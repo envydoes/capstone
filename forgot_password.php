@@ -73,7 +73,7 @@ function sendResetEmail(string $recipientEmail, string $resetLink, ?string $from
       $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
       $scheme = $isHttps ? 'https' : 'http';
-      $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+      $host = $_SERVER['HTTP_HOST'] ?? 'o7jpqmin0zgconui4xtnfju6';
 
       $scriptDir = str_replace('\\', '/', dirname($_SERVER['PHP_SELF'] ?? '/'));
       $scriptDir = rtrim($scriptDir, '/');
