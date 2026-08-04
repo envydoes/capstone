@@ -29,7 +29,7 @@ $middlename       = $_SESSION['middlename'] ?? '';
 $suffix           = $_SESSION['suffix'] ?? '';
 $familyRole       = $_SESSION['family_role'] ?? '';
 $gender           = $_SESSION['gender'] ?? '';
-$birthday         = $_SESSION['birthday'] ?? '';
+$birthday         = !empty($_SESSION['birthday']) ? $_SESSION['birthday'] : null;
 $birthplace       = $_SESSION['birthplace'] ?? '';
 $civilStatus      = $_SESSION['civil_status'] ?? '';
 $citizenship      = $_SESSION['citizenship'] ?? '';
@@ -75,7 +75,7 @@ if (!date_default_timezone_get()) {
 $dateRegistered = date('Y-m-d H:i:s');
 
 // ---------------------------------------------------------------------
-// Account creation Ã¢â‚¬â€ wrapped in a single transaction so:
+// Account creation — wrapped in a single transaction so:
 //   1. Two signups happening at the same moment can't compute the same
 //      accID (the counter row is locked with FOR UPDATE for the
 //      duration of the transaction).
@@ -83,7 +83,7 @@ $dateRegistered = date('Y-m-d H:i:s');
 //      failed run, etc.), the next ID self-heals to one past the
 //      highest accID that actually exists, instead of colliding with it.
 //   3. If the profile insert fails after the account insert succeeded,
-//      everything rolls back together Ã¢â‚¬â€ no orphaned account row.
+//      everything rolls back together — no orphaned account row.
 // ---------------------------------------------------------------------
 
 $maxAttempts = 3;
@@ -157,7 +157,7 @@ while ($attempt < $maxAttempts) {
 
         mysqli_commit($conn);
 
-        // Success Ã¢â‚¬â€ clear all signup session data to prevent reuse.
+        // Success — clear all signup session data to prevent reuse.
         session_unset();
         session_destroy();
         header('Location: ../login.php?success=1');
@@ -168,7 +168,7 @@ while ($attempt < $maxAttempts) {
         $lastError = $e->getMessage();
 
         // Duplicate accID specifically means another request grabbed the
-        // same number between our SELECT and INSERT Ã¢â‚¬â€ extremely unlikely
+        // same number between our SELECT and INSERT — extremely unlikely
         // now that the counter row is locked, but retry once or twice
         // just in case (e.g. manual DB edits mid-run) before giving up.
         if (str_contains($lastError, 'Duplicate entry') && $attempt < $maxAttempts) {
