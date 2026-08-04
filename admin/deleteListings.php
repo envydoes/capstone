@@ -7,7 +7,7 @@ $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB connection failed']); exit; }
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
-// account granted manage_listings from deleting listings â€” even though
+// account granted manage_listings from deleting listings — even though
 // communityListings.php already shows them the delete buttons based on
 // that same permission. Now this endpoint checks the same permission.
 require_once __DIR__ . '/../includes/check_permissions.php';

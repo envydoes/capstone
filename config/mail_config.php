@@ -19,11 +19,11 @@ function resolveBaseUrl(): string {
     $isLanIp     = preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/', $host);
 
     if (!$isLocalhost && !$isLanIp) {
-        // Live server â€” use the actual domain
+        // Live server — use the actual domain
         return $scheme . '://' . $host;
     }
 
-    // Localhost or LAN â€” use the current host (IP or localhost) + project folder
+    // Localhost or LAN — use the current host (IP or localhost) + project folder
     return $scheme . '://' . $host . '/capstone';
 }
 
