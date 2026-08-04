@@ -1,0 +1,89 @@
+/* Global responsive baseline for all portal pages */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg,
+iframe {
+  max-width: 100%;
+}
+
+iframe {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 7vw, 2rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 6vw, 1.75rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  .grid,
+  [class*="grid-cols-"] {
+    gap: 0.875rem;
+  }
+
+  .scroll-area {
+    height: auto !important;
+    max-height: 28rem;
+  }
+
+  .announcement-card {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .announcement-card .w-24,
+  .announcement-card .h-24 {
+    width: 100%;
+    height: 12rem;
+  }
+
+  .service-card,
+  .impact-card,
+  .platform-item {
+    padding: 1rem !important;
+  }
+
+  header,
+  .topbar {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
