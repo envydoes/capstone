@@ -25,7 +25,7 @@ if (!$requestID || !in_array($action, ['approve','reject','return'])) {
 $statusMap = ['approve' => 'Borrowed', 'reject' => 'Rejected', 'return' => 'Returned'];
 $newStatus = $statusMap[$action];
 
-$stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentRequest SET status = ?, updatedAt = NOW() WHERE id = ?");
+$stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentrequest SET status = ?, updatedAt = NOW() WHERE id = ?");
 mysqli_stmt_bind_param($stmt, 'si', $newStatus, $requestID);
 $ok = mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
@@ -34,8 +34,8 @@ mysqli_stmt_close($stmt);
 if ($ok && in_array($action, ['approve', 'return'])) {
     $dir = $action === 'approve' ? '-' : '+';
     $qtyStmt = mysqli_prepare($conn, "
-        UPDATE tbl_equipmentList e
-        JOIN tbl_equipmentRequest br ON br.equipmentId = e.equipmentId
+        UPDATE tbl_equipmentlist e
+        JOIN tbl_equipmentrequest br ON br.equipmentId = e.equipmentId
         SET e.equipmentStock = e.equipmentStock {$dir} br.quantityRequested
         WHERE br.id = ?
     ");

@@ -35,14 +35,14 @@ $sql = "
         u.gender, u.birthday, u.emergency_contact, u.emergency_phone,
         u.health_conditions, u.employment_status, u.monthly_income,
         u.years_resident, u.resident_birth, u.frontID, u.backID
-    FROM tbl_requestDocs r
+    FROM tbl_requestdocs r
     LEFT JOIN tbl_userinfo u ON r.userId = u.userID
     ORDER BY r.submitted_at DESC
 ";
 $result = mysqli_query($conn, $sql);
 $all_docs = [];
 if ($result) { while ($row = mysqli_fetch_assoc($result)) { $all_docs[] = $row; } mysqli_free_result($result); }
-$count_result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_requestDocs WHERE LOWER(status)='pending'");
+$count_result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_requestdocs WHERE LOWER(status)='pending'");
 $count_row = mysqli_fetch_assoc($count_result);
 $total_pending = $count_row['total'] ?? 0;
 
@@ -53,7 +53,7 @@ $reqCountRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT
         SUM(CASE WHEN COALESCE(submitted_at, created_at) >= DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN 1 ELSE 0 END) AS this_month,
         SUM(CASE WHEN DATE(COALESCE(submitted_at, created_at)) = CURDATE() THEN 1 ELSE 0 END) AS today
-    FROM tbl_requestDocs
+    FROM tbl_requestdocs
 "));
 $reqThisMonth = (int) ($reqCountRow['this_month'] ?? 0);
 $reqToday     = (int) ($reqCountRow['today'] ?? 0);
@@ -65,7 +65,7 @@ $reqToday     = (int) ($reqCountRow['today'] ?? 0);
 // nudge this up slightly.
 $avgTurnRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT AVG(TIMESTAMPDIFF(HOUR, COALESCE(submitted_at, created_at), updated_at)) AS avg_hours
-    FROM tbl_requestDocs
+    FROM tbl_requestdocs
     WHERE LOWER(status) = 'approved'
 "));
 $avgTurnaroundHours = ($avgTurnRow && $avgTurnRow['avg_hours'] !== null)
@@ -75,7 +75,7 @@ $avgTurnaroundHours = ($avgTurnRow && $avgTurnRow['avg_hours'] !== null)
 // Repeat Requesters: residents who've filed 2+ requests (any status)
 $repeatRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT COUNT(*) AS total FROM (
-        SELECT userId FROM tbl_requestDocs GROUP BY userId HAVING COUNT(*) >= 2
+        SELECT userId FROM tbl_requestdocs GROUP BY userId HAVING COUNT(*) >= 2
     ) t
 "));
 $repeatRequesters = (int) ($repeatRow['total'] ?? 0);
@@ -83,7 +83,7 @@ $repeatRequesters = (int) ($repeatRow['total'] ?? 0);
 // Peak Request Day: day of week with the most submissions, all-time
 $peakDayRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT DAYNAME(COALESCE(submitted_at, created_at)) AS day_name, COUNT(*) AS total
-    FROM tbl_requestDocs
+    FROM tbl_requestdocs
     GROUP BY day_name
     ORDER BY total DESC
     LIMIT 1

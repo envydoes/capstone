@@ -66,7 +66,7 @@ if (!$listingId) {
 }
 
 // â”€â”€ Verify ownership â”€â”€
-$ownerStmt = $conn->prepare("SELECT id, photos FROM tbl_busaptListing WHERE id = ? AND userId = ? LIMIT 1");
+$ownerStmt = $conn->prepare("SELECT id, photos FROM tbl_busaptlisting WHERE id = ? AND userId = ? LIMIT 1");
 if (!$ownerStmt) {
     echo json_encode(['success' => false, 'message' => 'DB error: ' . $conn->error]);
     exit;
@@ -155,7 +155,7 @@ if ($isApt) {
     $aptRules       = json_encode(array_values((array)($data['aptRules']     ?? [])));
 
     $sql = "
-        UPDATE tbl_busaptListing SET
+        UPDATE tbl_busaptlisting SET
             aptTitle       = ?,
             aptType        = ?,
             aptStatus      = ?,
@@ -227,7 +227,7 @@ if ($isApt) {
     $bussDays     = json_encode(array_values((array)($data['bussDays']     ?? [])));
 
     $sql = "
-        UPDATE tbl_busaptListing SET
+        UPDATE tbl_busaptlisting SET
             bussName     = ?,
             bussCat      = ?,
             bussStatus   = ?,

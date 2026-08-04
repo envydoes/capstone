@@ -117,7 +117,7 @@ function prettyDocumentType($type) {
 
 if ($userId > 0) {
     // 1. Document requests
-    $docStmt = $conn->prepare('SELECT id, document_type, num_copies, purpose, notes, status, submitted_at FROM tbl_requestDocs WHERE userId = ? ORDER BY submitted_at DESC');
+    $docStmt = $conn->prepare('SELECT id, document_type, num_copies, purpose, notes, status, submitted_at FROM tbl_requestdocs WHERE userId = ? ORDER BY submitted_at DESC');
     if ($docStmt) {
         $docStmt->bind_param('i', $userId);
         $docStmt->execute();
@@ -132,8 +132,8 @@ if ($userId > 0) {
     $equipStmt = $conn->prepare('
         SELECT er.id, er.equipmentId, er.quantityRequested, er.status, er.requestDate as submitted_at, er.returnDate, er.notes,
                e.equipmentName as equipment_name
-        FROM tbl_equipmentRequest er
-        JOIN tbl_equipmentList e ON er.equipmentId = e.equipmentId
+        FROM tbl_equipmentrequest er
+        JOIN tbl_equipmentlist e ON er.equipmentId = e.equipmentId
         WHERE er.userId = ? ORDER BY er.requestDate DESC
     ');
     if ($equipStmt) {

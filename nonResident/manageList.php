@@ -82,7 +82,7 @@ $roleBadgeClass = match($role) {
 
 $initials = strtoupper(substr($userName, 0, 2));
 
-// â”€â”€ Fetch listings for this user from tbl_busaptListing â”€â”€
+// â”€â”€ Fetch listings for this user from tbl_busaptlisting â”€â”€
 $apartmentListings = [];
 $businessListings  = [];
 
@@ -93,7 +93,7 @@ $listStmt = $conn->prepare("
            bussCat, bussName, bussStatus, bussPrice, bussYears, bussOpen, bussClose,
            bussDays, bussFeatures, bussDesc, bussAddress, bussMapsLink,
            contact, email, houseNum, street, barangay, city, photos, createdAt
-    FROM tbl_busaptListing
+    FROM tbl_busaptlisting
     WHERE userId = ?
     ORDER BY createdAt DESC
 ");

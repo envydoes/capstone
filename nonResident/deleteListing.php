@@ -26,7 +26,7 @@ if (empty($accId) || !$listingId) {
 }
 
 // â”€â”€ Fetch listing to verify ownership and get photo paths â”€â”€
-$stmt = $conn->prepare("SELECT id, photos FROM tbl_busaptListing WHERE id = ? AND userId = ? LIMIT 1");
+$stmt = $conn->prepare("SELECT id, photos FROM tbl_busaptlisting WHERE id = ? AND userId = ? LIMIT 1");
 if (!$stmt) {
     header('Location: manageList.php?error=1');
     exit;
@@ -57,7 +57,7 @@ if (is_array($photos)) {
 }
 
 // â”€â”€ Delete the database record â”€â”€
-$del = $conn->prepare("DELETE FROM tbl_busaptListing WHERE id = ? AND userId = ?");
+$del = $conn->prepare("DELETE FROM tbl_busaptlisting WHERE id = ? AND userId = ?");
 if (!$del) {
     header('Location: manageList.php?error=1');
     exit;

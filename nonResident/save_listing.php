@@ -188,7 +188,7 @@ $photosJson = json_encode($photoPaths);
 
 // â”€â”€ INSERT â”€â”€
 $sql = "
-    INSERT INTO tbl_busaptListing (
+    INSERT INTO tbl_busaptlisting (
         userId, listingType, slotsAvailable,
         aptType, aptTitle, aptStatus, aptPrice, aptFloor,
         aptRooms, aptOccupants, aptBath,

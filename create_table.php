@@ -13,10 +13,10 @@ if (!$conn) {
 }
 
 // Drop old table so script is repeatable during development
-mysqli_query($conn, "DROP TABLE IF EXISTS tbl_busaptListing");
+mysqli_query($conn, "DROP TABLE IF EXISTS tbl_busaptlisting");
 
 $sql = "
-CREATE TABLE tbl_busaptListing (
+CREATE TABLE tbl_busaptlisting (
     id             INT          AUTO_INCREMENT PRIMARY KEY,
     userId         VARCHAR(255) NOT NULL,
 
@@ -71,7 +71,7 @@ CREATE TABLE tbl_busaptListing (
 ";
 
 if (mysqli_query($conn, $sql)) {
-    echo "Table <strong>tbl_busaptListing</strong> created successfully.";
+    echo "Table <strong>tbl_busaptlisting</strong> created successfully.";
 } else {
     echo "Error creating table: " . mysqli_error($conn);
 }

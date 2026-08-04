@@ -43,7 +43,7 @@ if ($role !== 'admin' && empty($myPerms)) {
 require_permission($conn, 'manage_borrowing');
 
 // â”€â”€ Fetch Equipment â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$equipmentSQL = "SELECT equipmentId AS equipmentID, equipmentName AS equipment_name, equipmentStock AS quantity_in_storage, equipmentImage AS image_path, description AS description, createdAt AS created_at, updatedAt AS updated_at FROM tbl_equipmentList ORDER BY createdAt DESC";
+$equipmentSQL = "SELECT equipmentId AS equipmentID, equipmentName AS equipment_name, equipmentStock AS quantity_in_storage, equipmentImage AS image_path, description AS description, createdAt AS created_at, updatedAt AS updated_at FROM tbl_equipmentlist ORDER BY createdAt DESC";
 $equipmentResult = mysqli_query($conn, $equipmentSQL);
 $equipmentList = [];
 if ($equipmentResult) { while ($row = mysqli_fetch_assoc($equipmentResult)) $equipmentList[] = $row; mysqli_free_result($equipmentResult); }
@@ -60,8 +60,8 @@ $borrowSQL = "
            br.notes,
            e.equipmentName AS equipment_name, e.equipmentStock AS quantity_in_storage, e.equipmentImage AS image_path,
            CONCAT(u.firstname, ' ', IF(u.middlename != '' AND u.middlename IS NOT NULL, CONCAT(LEFT(u.middlename,1), '. '), ''), u.lastname) AS borrower_name
-    FROM tbl_equipmentRequest br
-    JOIN tbl_equipmentList e ON br.equipmentId = e.equipmentId
+    FROM tbl_equipmentrequest br
+    JOIN tbl_equipmentlist e ON br.equipmentId = e.equipmentId
     JOIN tbl_userinfo u ON br.userId = u.userID
     ORDER BY br.requestDate ASC
 ";
@@ -76,7 +76,7 @@ $today = date('Y-m-d');
 
 // Borrow Requests This Month
 $borrowThisMonth = (int) mysqli_fetch_assoc(mysqli_query($conn, "
-    SELECT COUNT(*) AS total FROM tbl_equipmentRequest
+    SELECT COUNT(*) AS total FROM tbl_equipmentrequest
     WHERE requestDate >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
 "))['total'];
 
@@ -88,7 +88,7 @@ $borrowThisMonth = (int) mysqli_fetch_assoc(mysqli_query($conn, "
 // actual hold time.
 $avgDurRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT AVG(TIMESTAMPDIFF(HOUR, requestDate, returnDate)) AS avg_hours
-    FROM tbl_equipmentRequest
+    FROM tbl_equipmentrequest
     WHERE LOWER(status) = 'returned'
 "));
 $avgBorrowHours = ($avgDurRow && $avgDurRow['avg_hours'] !== null)
@@ -101,13 +101,13 @@ $avgBorrowHours = ($avgDurRow && $avgDurRow['avg_hours'] !== null)
 // which gets reused for the actual return timestamp. Reads as N/A until
 // that column exists. See add_due_date.sql.
 $onTimeRate = null;
-$hasDueDateCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_equipmentRequest LIKE 'dueDate'");
+$hasDueDateCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_equipmentrequest LIKE 'dueDate'");
 if ($hasDueDateCol && mysqli_num_rows($hasDueDateCol) > 0) {
     $rateRow = mysqli_fetch_assoc(mysqli_query($conn, "
         SELECT
             SUM(CASE WHEN returnDate <= dueDate THEN 1 ELSE 0 END) AS on_time,
             COUNT(*) AS total
-        FROM tbl_equipmentRequest
+        FROM tbl_equipmentrequest
         WHERE LOWER(status) = 'returned' AND dueDate IS NOT NULL
     "));
     if ($rateRow && (int) $rateRow['total'] > 0) {
@@ -118,7 +118,7 @@ if ($hasDueDateCol && mysqli_num_rows($hasDueDateCol) > 0) {
 // Repeat Borrowers: residents who've borrowed 3+ times (any status)
 $repeatBorrowRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT COUNT(*) AS total FROM (
-        SELECT userId FROM tbl_equipmentRequest GROUP BY userId HAVING COUNT(*) >= 3
+        SELECT userId FROM tbl_equipmentrequest GROUP BY userId HAVING COUNT(*) >= 3
     ) t
 "));
 $repeatBorrowers = (int) ($repeatBorrowRow['total'] ?? 0);

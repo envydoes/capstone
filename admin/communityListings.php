@@ -24,7 +24,7 @@ if ($role !== 'admin' && empty($myPerms)) {
 }
 require_permission($conn, 'manage_listings');
 
-// â”€â”€ Fetch all listings from tbl_busaptListing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ Fetch all listings from tbl_busaptlisting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $listingsSQL = "
     SELECT
         l.id, l.userId, l.listingType, l.slotsAvailable,
@@ -37,7 +37,7 @@ $listingsSQL = "
         l.contact, l.email, l.houseNum, l.street, l.barangay, l.city,
         l.photos, l.createdAt,
         CONCAT(u.firstname, ' ', IF(u.middlename != '' AND u.middlename IS NOT NULL, CONCAT(LEFT(u.middlename,1), '. '), ''), u.lastname) AS owner_name
-    FROM tbl_busaptListing l
+    FROM tbl_busaptlisting l
     LEFT JOIN tbl_userinfo u ON l.userId = u.accID
     ORDER BY l.createdAt DESC
 ";
@@ -85,7 +85,7 @@ $listTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
         SUM(CASE WHEN createdAt >= DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN 1 ELSE 0 END) AS this_month,
         SUM(CASE WHEN createdAt >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01')
                   AND createdAt <  DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN 1 ELSE 0 END) AS last_month
-    FROM tbl_busaptListing
+    FROM tbl_busaptlisting
 "));
 $listThisMonth = (int) ($listTrendRow['this_month'] ?? 0);
 $listLastMonth = (int) ($listTrendRow['last_month'] ?? 0);
@@ -97,16 +97,16 @@ if ($listLastMonth > 0) {
 $listTrendDir = $listThisMonth > $listLastMonth ? 'up' : ($listThisMonth < $listLastMonth ? 'down' : 'flat');
 
 // Average Listing Age: how long since a listing was last touched.
-// tbl_busaptListing only has `createdAt` â€” there's no `updatedAt` column,
+// tbl_busaptlisting only has `createdAt` â€” there's no `updatedAt` column,
 // so today this can only measure time since the listing was first posted,
 // not since it was last edited. It auto-detects an `updatedAt` column if
 // you add one (see add_listing_updated_at.sql) and switches over.
-$hasListingUpdatedAtCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_busaptListing LIKE 'updatedAt'");
+$hasListingUpdatedAtCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_busaptlisting LIKE 'updatedAt'");
 $listingAgeUsesUpdatedAt = $hasListingUpdatedAtCol && mysqli_num_rows($hasListingUpdatedAtCol) > 0;
 $ageColumn = $listingAgeUsesUpdatedAt ? 'updatedAt' : 'createdAt';
 $avgAgeRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT AVG(DATEDIFF(NOW(), $ageColumn)) AS avg_days
-    FROM tbl_busaptListing
+    FROM tbl_busaptlisting
 "));
 $avgListingAgeDays = ($avgAgeRow && $avgAgeRow['avg_days'] !== null)
     ? round((float) $avgAgeRow['avg_days'], 1)
@@ -128,7 +128,7 @@ $occRow = mysqli_fetch_assoc(mysqli_query($conn, "
             WHEN listingType = 'business' AND bussStatus = 'for-rent' THEN 1
             ELSE 0
         END) AS available
-    FROM tbl_busaptListing
+    FROM tbl_busaptlisting
 "));
 $occOccupied  = (int) ($occRow['occupied'] ?? 0);
 $occAvailable = (int) ($occRow['available'] ?? 0);
@@ -137,7 +137,7 @@ $occupancyRate = $occKnownTotal > 0 ? round(($occOccupied / $occKnownTotal) * 10
 
 // Owner Count: distinct owners across all listings (vs. listing count)
 $ownerCount = (int) mysqli_fetch_assoc(mysqli_query($conn, "
-    SELECT COUNT(DISTINCT userId) AS total FROM tbl_busaptListing
+    SELECT COUNT(DISTINCT userId) AS total FROM tbl_busaptlisting
 "))['total'];
 
 mysqli_close($conn);

@@ -14,7 +14,7 @@ $l = null;
 $listingId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($listingId > 0) {
-    $stmt = $conn->prepare("SELECT * FROM tbl_busaptListing WHERE id = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT * FROM tbl_busaptlisting WHERE id = ? LIMIT 1");
     if ($stmt) {
         $stmt->bind_param('i', $listingId);
         $stmt->execute();

@@ -34,7 +34,7 @@ require_once __DIR__ . '/includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
 $listings = [];
-$sql = "SELECT * FROM tbl_busaptListing ORDER BY createdAt DESC";
+$sql = "SELECT * FROM tbl_busaptlisting ORDER BY createdAt DESC";
 $result = $conn->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {

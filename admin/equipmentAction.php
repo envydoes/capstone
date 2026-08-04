@@ -59,7 +59,7 @@ switch ($action) {
         $desc = trim($_POST['description'] ?? '');
         if (!$name) { echo json_encode(['success'=>false,'message'=>'Name required']); exit; }
         $img = uploadImages();
-        $stmt = mysqli_prepare($conn, "INSERT INTO tbl_equipmentList (equipmentName, equipmentStock, equipmentImage, description, createdAt) VALUES (?, ?, ?, ?, NOW())");
+        $stmt = mysqli_prepare($conn, "INSERT INTO tbl_equipmentlist (equipmentName, equipmentStock, equipmentImage, description, createdAt) VALUES (?, ?, ?, ?, NOW())");
         mysqli_stmt_bind_param($stmt, 'siss', $name, $qty, $img, $desc);
         $ok = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
@@ -75,10 +75,10 @@ switch ($action) {
         if (!$id || !$name) { echo json_encode(['success'=>false,'message'=>'Missing fields']); exit; }
         $newImg = uploadImages();
         if (!empty($newImg)) {
-            $stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentList SET equipmentName=?, equipmentStock=?, equipmentImage=?, description=?, updatedAt=NOW() WHERE equipmentId=?");
+            $stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentlist SET equipmentName=?, equipmentStock=?, equipmentImage=?, description=?, updatedAt=NOW() WHERE equipmentId=?");
             mysqli_stmt_bind_param($stmt, 'sissi', $name, $qty, $newImg, $desc, $id);
         } else {
-            $stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentList SET equipmentName=?, equipmentStock=?, description=?, updatedAt=NOW() WHERE equipmentId=?");
+            $stmt = mysqli_prepare($conn, "UPDATE tbl_equipmentlist SET equipmentName=?, equipmentStock=?, description=?, updatedAt=NOW() WHERE equipmentId=?");
             mysqli_stmt_bind_param($stmt, 'sisi', $name, $qty, $desc, $id);
         }
         $ok = mysqli_stmt_execute($stmt);
@@ -90,7 +90,7 @@ switch ($action) {
     case 'delete': {
         $id = (int)($_POST['equipmentID'] ?? 0);
         if (!$id) { echo json_encode(['success'=>false,'message'=>'Missing ID']); exit; }
-        $stmt = mysqli_prepare($conn, "DELETE FROM tbl_equipmentList WHERE equipmentId=?");
+        $stmt = mysqli_prepare($conn, "DELETE FROM tbl_equipmentlist WHERE equipmentId=?");
         mysqli_stmt_bind_param($stmt, 'i', $id);
         $ok = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);

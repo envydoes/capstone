@@ -49,7 +49,7 @@ $errors  = [];
 
 foreach ($ids as $id) {
     // Get photos before deleting
-    $stmt = $conn->prepare("SELECT photos FROM tbl_busaptListing WHERE id = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT photos FROM tbl_busaptlisting WHERE id = ? LIMIT 1");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
@@ -57,7 +57,7 @@ foreach ($ids as $id) {
 
     if ($row) {
         // Delete record
-        $del = $conn->prepare("DELETE FROM tbl_busaptListing WHERE id = ?");
+        $del = $conn->prepare("DELETE FROM tbl_busaptlisting WHERE id = ?");
         $del->bind_param('i', $id);
         if ($del->execute()) {
             $deleted++;

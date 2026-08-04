@@ -1,8 +1,8 @@
 <?php
 /**
  * documentrequestAction.php
- * Handles approve / reject for document requests in tbl_requestDocs.
- * Receives: requestId (= tbl_requestDocs.id), action (approve|reject)
+ * Handles approve / reject for document requests in tbl_requestdocs.
+ * Receives: requestId (= tbl_requestdocs.id), action (approve|reject)
  */
 
 session_start();
@@ -46,7 +46,7 @@ require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission_ajax($conn, 'manage_documents');
 
 // â”€â”€ Verify the record exists and is still pending â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$check = $conn->prepare("SELECT id FROM tbl_requestDocs WHERE id = ? LIMIT 1");
+$check = $conn->prepare("SELECT id FROM tbl_requestdocs WHERE id = ? LIMIT 1");
 if (!$check) {
     echo json_encode(['success' => false, 'message' => 'Prepare failed (check): ' . $conn->error]);
     mysqli_close($conn);
@@ -65,7 +65,7 @@ $check->close();
 
 // â”€â”€ Update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $stmt = $conn->prepare("
-    UPDATE tbl_requestDocs
+    UPDATE tbl_requestdocs
     SET    status = ?
     WHERE  id     = ?
     AND    LOWER(status) = 'pending'
