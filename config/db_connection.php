@@ -5,10 +5,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->safeLoad();
 
-$host = $_ENV['DB_HOST'];
-$dbUser = $_ENV['DB_USER'];
-$dbPassword = $_ENV['DB_PASSWORD'];
-$database = $_ENV['DB_NAME'];
+$host = getenv('DB_HOST');
+$dbUser = getenv('DB_USER');
+$dbPassword = getenv('DB_PASSWORD');
+$database = getenv('DB_NAME');
 
 $conn = mysqli_connect($host, $dbUser, $dbPassword, $database);
 if (!$conn) {
