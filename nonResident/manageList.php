@@ -4,6 +4,9 @@ $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 session_start();
 
+require_once __DIR__ . '/../includes/site_config.php';
+$siteSettings = site_config_load($conn);
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
@@ -135,23 +138,24 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Manage Listings â€” SumEste Portal</title>
-  <link rel="icon" href="../assets/logo2.png" type="image/png">
+  <title>Manage Listings — <?= e($siteSettings['site_title']) ?></title>
+  <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <?= site_config_css_vars($siteSettings) ?>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; background: #f8fafc; margin: 0; }
 
     .nav-link { position: relative; transition: color 0.2s; }
-    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s; }
     .nav-link:hover::after { width: 100%; }
-    .nav-link:hover { color: #15803d; }
+    .nav-link:hover { color: var(--site-primary-dark); }
 
     /* active listings tabs */
     .tab-btn { flex: 1; padding: 11px 16px; font-size: 0.875rem; font-weight: 600; border: none; background: transparent; cursor: pointer; color: #6b7280; border-bottom: 2.5px solid transparent; transition: color 0.18s, border-color 0.18s; font-family: 'DM Sans', sans-serif; }
-    .tab-btn.active { color: #15803d; border-bottom-color: #16a34a; }
+    .tab-btn.active { color: var(--site-primary-dark); border-bottom-color: var(--site-primary); }
     .tab-btn:hover:not(.active) { color: #374151; }
 
     /* table */
@@ -160,9 +164,9 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     .lt td { padding: 13px 16px; font-size: 0.875rem; color: #374151; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
     .lt tr:last-child td { border-bottom: none; }
     .lt tbody tr { transition: background 0.14s; }
-    .lt tbody tr:hover { background: #f0fdf4; }
-    .av { color: #16a34a; font-weight: 600; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
-    .av:hover { color: #15803d; }
+    .lt tbody tr:hover { background: var(--site-primary-pale); }
+    .av { color: var(--site-primary); font-weight: 600; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
+    .av:hover { color: var(--site-primary-dark); }
     .ai { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .ai-e { background: #f3f4f6; color: #374151; } .ai-e:hover { background: #dbeafe; color: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
     .ai-d { background: #f3f4f6; color: #374151; } .ai-d:hover { background: #fee2e2; color: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
@@ -174,7 +178,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     /* form card */
     .form-card { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.05); }
-    .form-header { background: linear-gradient(135deg, #166534 0%, #15803d 100%); padding: 20px 28px; text-align: center; }
+    .form-header { background: linear-gradient(135deg, var(--site-primary-darker) 0%, var(--site-primary-dark) 100%); padding: 20px 28px; text-align: center; }
     .form-body { padding: 28px; }
     .form-card.form-disabled { position: relative; }
     .form-card.form-disabled::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(107, 114, 128, 0.35); pointer-events: auto; cursor: not-allowed; z-index: 10; }
@@ -187,14 +191,14 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     /* type cards */
     .type-card { flex: 1; border: 2.5px solid #e5e7eb; border-radius: 16px; padding: 22px 14px; text-align: center; cursor: pointer; background: #fafafa; transition: all 0.2s; user-select: none; }
-    .type-card:hover { border-color: #86efac; background: #f0fdf4; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(22,163,74,0.1); }
-    .type-card.selected { border-color: #15803d; background: #f0fdf4; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(22,163,74,0.15); }
+    .type-card:hover { border-color: var(--site-primary-light); background: var(--site-primary-pale); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(var(--site-primary-rgb),0.1); }
+    .type-card.selected { border-color: var(--site-primary-dark); background: var(--site-primary-pale); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(var(--site-primary-rgb),0.15); }
     .tc-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
     .tc-title { font-size: 0.95rem; font-weight: 800; color: #1f2937; }
-    .type-card.selected .tc-title { color: #15803d; }
+    .type-card.selected .tc-title { color: var(--site-primary-dark); }
     .tc-desc { font-size: 0.72rem; color: #9ca3af; margin-top: 4px; line-height: 1.4; }
     .tc-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #d1d5db; background: #fff; margin: 10px auto 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: transparent; transition: all 0.18s; }
-    .type-card.selected .tc-check { border-color: #15803d; background: #15803d; color: #fff; }
+    .type-card.selected .tc-check { border-color: var(--site-primary-dark); background: var(--site-primary-dark); color: #fff; }
 
     /* dynamic panels */
     .dyn-panel { display: none; }
@@ -211,7 +215,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     .fl .req { color: #ef4444; margin-right: 2px; }
     .fl .hint { font-weight: 400; color: #9ca3af; font-size: 0.74rem; }
     .fi, .fs, .fta { width: 100%; padding: 10px 13px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 0.875rem; font-family: 'DM Sans', sans-serif; color: #374151; background: #fff; outline: none; transition: border-color 0.18s, box-shadow 0.18s; }
-    .fi:focus, .fs:focus, .fta:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .fi:focus, .fs:focus, .fta:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .fi::placeholder, .fta::placeholder { color: #9ca3af; }
     .fi:disabled, .fs:disabled { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
     .fs { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 38px; }
@@ -219,48 +223,48 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     /* price input */
     .price-wrap { display: flex; border: 1.5px solid #d1d5db; border-radius: 10px; overflow: hidden; transition: border-color 0.18s, box-shadow 0.18s; }
-    .price-wrap:focus-within { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .price-wrap:focus-within { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .price-pfx { padding: 10px 12px; background: #f9fafb; border-right: 1.5px solid #e5e7eb; font-size: 0.85rem; font-weight: 800; color: #6b7280; flex-shrink: 0; }
     .price-in  { border: none; outline: none; flex: 1; padding: 10px 12px; font-size: 0.875rem; font-family: 'DM Sans', sans-serif; color: #374151; }
 
     /* pill selectors */
     .pg { display: flex; flex-wrap: wrap; gap: 7px; }
     .po { padding: 7px 14px; border-radius: 50px; border: 1.5px solid #e5e7eb; background: #f9fafb; font-size: 0.78rem; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.14s; user-select: none; display: inline-flex; align-items: center; gap: 5px; }
-    .po:hover { border-color: #86efac; background: #f0fdf4; color: #374151; }
-    .po.sel  { border-color: #15803d; background: #15803d; color: #fff; }
+    .po:hover { border-color: var(--site-primary-light); background: var(--site-primary-pale); color: #374151; }
+    .po.sel  { border-color: var(--site-primary-dark); background: var(--site-primary-dark); color: #fff; }
     .po input { display: none; }
 
     /* slots */
     .krow { display: flex; gap: 6px; flex-wrap: wrap; }
     .kmeta { font-size: 0.78rem; color: #6b7280; margin-top: 7px; }
-    .kmeta strong { color: #15803d; }
+    .kmeta strong { color: var(--site-primary-dark); }
 
     /* photos */
     .uzone { border: 2px dashed #d1d5db; border-radius: 14px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.18s; background: #fafafa; }
-    .uzone:hover, .uzone.dov { border-color: #16a34a; background: #f0fdf4; }
+    .uzone:hover, .uzone.dov { border-color: var(--site-primary); background: var(--site-primary-pale); }
     .pgrid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 10px; }
     .pcell { position: relative; aspect-ratio:1; border-radius: 10px; overflow: hidden; border: 1.5px solid #e5e7eb; background: #f3f4f6; }
     .pcell img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .pcell .prm { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; border: none; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s; }
     .pcell .prm:hover { background: #ef4444; }
     .padd { aspect-ratio: 1; border-radius: 10px; border: 2px dashed #d1d5db; background: #f9fafb; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; transition: all 0.14s; font-size: 0.68rem; color: #9ca3af; }
-    .padd:hover { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+    .padd:hover { border-color: var(--site-primary); background: var(--site-primary-pale); color: var(--site-primary-dark); }
     .padd i { font-size: 1rem; }
 
     /* map */
     .mwrap { border-radius: 14px; overflow: hidden; border: 1.5px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-    .mtip { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 9px 13px; font-size: 0.78rem; color: #166534; margin-top: 8px; display: flex; align-items: center; gap: 7px; }
+    .mtip { background: var(--site-primary-pale); border: 1px solid color-mix(in srgb, var(--site-primary) 30%, white); border-radius: 8px; padding: 9px 13px; font-size: 0.78rem; color: var(--site-primary-darker); margin-top: 8px; display: flex; align-items: center; gap: 7px; }
 
     .cc { font-size: 0.7rem; color: #9ca3af; text-align: right; margin-top: 3px; }
     .cc.warn { color: #f59e0b; } .cc.over { color: #ef4444; }
 
-    .submit-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; background: linear-gradient(135deg, #166534 0%, #15803d 100%); color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(22,163,74,0.3); }
-    .submit-btn:hover { background: linear-gradient(135deg, #14532d 0%, #166534 100%); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(22,163,74,0.4); }
+    .submit-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; background: linear-gradient(135deg, var(--site-primary-darker) 0%, var(--site-primary-dark) 100%); color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(var(--site-primary-rgb),0.3); }
+    .submit-btn:hover { background: linear-gradient(135deg, color-mix(in srgb, var(--site-primary) 85%, black) 0%, var(--site-primary-darker) 100%); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(var(--site-primary-rgb),0.4); }
 
     /* Toast */
     .toast-container { position: fixed; top: 80px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
     .toast-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1.5px solid transparent; box-shadow: 0 8px 24px rgba(0,0,0,0.12); pointer-events: auto; animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both; max-width: 340px; }
-    .toast-item.toast-success { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+    .toast-item.toast-success { background: var(--site-primary-pale); border-color: color-mix(in srgb, var(--site-primary) 30%, white); color: var(--site-primary-dark); }
     .toast-item.toast-error   { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
     .toast-item.toast-warning { background: #fefce8; border-color: #fde68a; color: #a16207; }
     .toast-item .toast-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 0.75rem; opacity: 0.55; color: inherit; padding: 2px 4px; transition: opacity 0.15s; flex-shrink: 0; }
@@ -286,40 +290,40 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     @media (max-width: 540px) { .g2,.g3 { grid-template-columns: 1fr; } .pgrid4 { grid-template-columns: repeat(2,1fr); } }
 
     /* Modal styles */
-    .modal-overlay { position: fixed; inset: 0; z-index: 800; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
+    .modal-overlay { position: fixed; inset: 0; z-index: 800; background: rgba(var(--site-primary-rgb),0.45); backdrop-filter: blur(4px); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
-    .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 680px; box-shadow: 0 24px 60px rgba(5,46,22,0.22); transform: translateY(16px); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); margin: auto; display: flex; flex-direction: column; }
+    .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 680px; box-shadow: 0 24px 60px rgba(var(--site-primary-rgb),0.22); transform: translateY(16px); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); margin: auto; display: flex; flex-direction: column; }
     .modal-overlay.open .modal { transform: translateY(0); }
     .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; gap: 8px; flex-wrap: wrap; }
     .modal-close { width: 30px; height: 30px; border-radius: 8px; border: none; background: #f3f4f6; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 0.78rem; transition: background 0.15s, color 0.15s; flex-shrink: 0; }
     .modal-close:hover { background: #fee2e2; color: #dc2626; }
     .modal-body { padding: 18px 20px; overflow-y: auto; max-height: calc(100vh - 180px); }
     .modal-body::-webkit-scrollbar { width: 4px; }
-    .modal-body::-webkit-scrollbar-thumb { background: #d1fae5; border-radius: 4px; }
+    .modal-body::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--site-primary-light) 50%, white); border-radius: 4px; }
     .modal-footer { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f3f4f6; flex-shrink: 0; }
     .mf-btn { padding: 14px; border: none; font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .mf-cancel { background: #f9fafb; color: #374151; border-radius: 0 0 0 18px; }
     .mf-cancel:hover { background: #e5e7eb; }
-    .mf-update { background: #15803d; color: #fff; border-radius: 0 0 18px 0; }
-    .mf-update:hover:not(:disabled) { background: #166534; }
+    .mf-update { background: var(--site-primary-dark); color: #fff; border-radius: 0 0 18px 0; }
+    .mf-update:hover:not(:disabled) { background: var(--site-primary-darker); }
     .mf-update:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
 
     /* Section cards inside modal */
     .section-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
     .section-card:last-child { margin-bottom: 0; }
     .sc-title { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
-    .sc-icon { width: 26px; height: 26px; background: #dcfce7; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sc-icon { width: 26px; height: 26px; background: var(--site-primary-pale); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
     /* Field styles inside modal */
     .field-label { display: block; font-size: 0.72rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
     .field-input { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.84rem; color: #374151; background: #fff; font-family: inherit; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
-    .field-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .field-input:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .field-input.changed { border-color: #f59e0b; background: #fffbeb; }
     .field-textarea { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.84rem; color: #374151; background: #fff; font-family: inherit; outline: none; transition: border-color 0.15s, box-shadow 0.15s; resize: vertical; min-height: 80px; }
-    .field-textarea:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .field-textarea:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .field-textarea.changed { border-color: #f59e0b; background: #fffbeb; }
     .field-select { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.84rem; color: #374151; background: #fff; font-family: inherit; outline: none; transition: border-color 0.15s, box-shadow 0.15s; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 14px; padding-right: 34px; cursor: pointer; }
-    .field-select:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .field-select:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .field-select.changed { border-color: #f59e0b; background-color: #fffbeb; }
 
     /* Changes badge */
@@ -332,7 +336,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     .view-value.empty { color: #d1d5db; font-style: italic; }
 
     /* Tags in view modal */
-    .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; margin: 2px; }
+    .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; background: var(--site-primary-pale); color: var(--site-primary-dark); border: 1px solid color-mix(in srgb, var(--site-primary) 30%, white); margin: 2px; }
 
     /* Photo grid in view modal */
     .view-photos { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
@@ -343,14 +347,14 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     /* Photo placeholder */
     .photo-placeholder-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px; }
     .photo-placeholder { aspect-ratio: 4/3; border: 1.5px dashed #d1d5db; border-radius: 10px; background: #f9fafb; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; font-size: 0.72rem; gap: 6px; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; overflow: hidden; }
-    .photo-placeholder:hover { border-color: #16a34a; background: #f0fdf4; }
+    .photo-placeholder:hover { border-color: var(--site-primary); background: var(--site-primary-pale); }
     .photo-placeholder img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; border-radius: 9px; display: block; }
     .photo-placeholder .ph-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 
     /* Confirm Dialog */
-    .dialog-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .dialog-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(var(--site-primary-rgb),0.45); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .dialog-overlay.open { opacity: 1; pointer-events: auto; }
-    .dialog-box { background: #fff; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 24px 64px rgba(5,46,22,0.3), 0 4px 16px rgba(0,0,0,0.08); transform: scale(0.94) translateY(12px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; opacity: 0; overflow: hidden; }
+    .dialog-box { background: #fff; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 24px 64px rgba(var(--site-primary-rgb),0.3), 0 4px 16px rgba(0,0,0,0.08); transform: scale(0.94) translateY(12px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; opacity: 0; overflow: hidden; }
     .dialog-overlay.open .dialog-box { transform: scale(1) translateY(0); opacity: 1; }
     .dialog-icon-wrap { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.6rem; }
     .dialog-icon-danger  { background: #fee2e2; color: #dc2626; }
@@ -377,44 +381,79 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
     .info-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
     .badge-apt  { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; }
     .badge-biz  { background: #fefce8; color: #a16207; border: 1px solid #fde047; }
-    .badge-avail { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+    .badge-avail { background: var(--site-primary-pale); color: var(--site-primary-dark); border: 1px solid color-mix(in srgb, var(--site-primary) 40%, white); }
 
     /* Edit photo grid in modal */
     .edit-pgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
     @media (min-width: 480px) { .edit-pgrid { grid-template-columns: repeat(4,1fr); } }
+
+    :root {
+      --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
+      --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
+      --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
+      --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
+    }
+
+    /* Tailwind-green → theme color overrides */
+    .bg-green-700 { background-color: var(--site-primary) !important; }
+    .bg-green-950 { background-color: var(--site-primary-darker) !important; }
+    .text-green-200 { color: color-mix(in srgb, var(--site-primary-light) 60%, white) !important; }
+    .text-green-300 { color: color-mix(in srgb, var(--site-primary-light) 70%, white) !important; }
+    .text-green-400 { color: var(--site-primary-light) !important; }
+    .text-green-500 { color: var(--site-primary) !important; }
+    .text-green-600 { color: var(--site-primary) !important; }
+    .text-green-700 { color: var(--site-primary) !important; }
+    .text-green-900 { color: var(--site-primary-darker) !important; }
+    .from-green-50 { --tw-gradient-from: var(--site-primary-pale) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .to-emerald-50 { --tw-gradient-to: var(--site-primary-pale) var(--tw-gradient-to-position) !important; }
+    .hover\:bg-green-50:hover { background-color: var(--site-primary-pale) !important; }
+    .hover\:border-green-300:hover { border-color: color-mix(in srgb, var(--site-primary-light) 60%, white) !important; }
+    .hover\:text-green-700:hover { color: var(--site-primary) !important; }
+    .hover\:text-green-800:hover { color: var(--site-primary-darker) !important; }
+    .focus\:ring-green-400:focus { --tw-ring-color: var(--site-primary-light) !important; }
+
+    /* Footer text: always light/white regardless of theme hue */
+    footer .text-green-300 { color: rgba(255,255,255,0.75) !important; }
+    footer .text-green-400 { color: rgba(255,255,255,0.65) !important; }
+    footer .text-green-500 { color: rgba(255,255,255,0.45) !important; }
+    footer .hover\:text-white:hover { color: #ffffff !important; }
+    footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
+
+    /* ── Responsive mobile navbar ── */
+    .mobile-menu-btn { display: none; }
+    @media (max-width: 767px) {
+      header nav.desktop-nav { display: none; }
+      .mobile-menu-btn { display: flex; }
+    }
   </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<header class="w-full h-[68px] border-b border-gray-100 flex items-center px-8 bg-white shadow-sm sticky top-0 z-50">
-  <div class="flex items-center gap-3">
+<header class="w-full h-[68px] border-b border-gray-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
+  <div class="flex items-center gap-3 flex-shrink-0">
     <a href="nonresidentLanding.php" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-green-700 flex items-center justify-center shadow overflow-hidden">
-        <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain"/>
+      <div class="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center shadow overflow-hidden">
+        <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain"/>
       </div>
-      <div>
-        <h3 class="font-bold text-green-900 text-base leading-tight">SumEste Portal</h3>
-        <p class="text-[10px] text-green-600 tracking-widest uppercase">Sumacab Este</p>
+      <div class="sm:block">
+        <h3 class="font-bold text-green-900 text-base leading-tight"><?= e($siteSettings['site_title']) ?></h3>
+        <p class="text-[10px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
     </a>
   </div>
-  <nav class="ml-auto flex gap-8 text-gray-600 text-sm font-medium items-center">
-    <a href="nonresidentLanding.php.php#announcements" class="nav-link">Announcements</a>
-    <a href="../busaptListing.php?type=busines" class="nav-link">Business</a>
+
+  <nav class="desktop-nav ml-auto flex gap-8 text-gray-600 text-sm font-medium items-center">
+    <a href="nonresidentLanding.php#announcements" class="nav-link">Announcements</a>
+    <a href="../busaptListing.php?type=business" class="nav-link">Business</a>
     <a href="../busaptListing.php?type=apartment" class="nav-link">Apartments</a>
     <?php $roleLower = strtolower($role); ?>
-    <?php if (str_contains($roleLower, 'non-resident,business/apartment owner') || str_contains($roleLower, 'business/apartment owner') || str_contains($roleLower, 'business')): ?>
-      <a href="manageList.php" class="nav-link">
-        <i class="w-4 text-green-600"></i> Post Listing
-      </a>
-    <?php endif; ?>
     <?php if ($logged_in): ?>
       <div class="relative" id="profile-menu-wrapper">
         <button id="profile-btn" onclick="toggleProfileMenu()"
           class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition focus:outline-none focus:ring-2 focus:ring-green-400">
           <span class="w-8 h-8 rounded-full bg-green-700 text-white flex items-center justify-center text-xs font-bold select-none"><?= htmlspecialchars($initials) ?></span>
-          <span class="hidden sm:block text-gray-700 text-sm max-w-[140px] truncate"><?= htmlspecialchars($userName) ?></span>
+          <span class="hidden lg:block text-gray-700 text-sm max-w-[140px] truncate"><?= htmlspecialchars($userName) ?></span>
           <svg id="profile-chevron" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
@@ -428,8 +467,19 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
             </div>
           </div>
           <div class="py-1">
-            <a href="nonresidentProfile.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition"><i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile</a>
-            <a href="../settings.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition"><i class="fa-solid fa-gear w-4 text-gray-400"></i> Settings</a>
+            <?php if (str_contains($roleLower, 'resident')): ?>
+                <?php       
+                  // Check non-resident first because it contains the word "resident"
+                  if (str_contains($roleLower, 'non-resident')) {
+                      $profileUrl = 'nonresidentProfile.php';
+                  } elseif (str_contains($roleLower, 'resident')) {
+                      $profileUrl = '../resident/myProfile';
+                  }
+                ?>
+                <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
+                  <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
+                </a>
+              <?php endif; ?>
           </div>
           <div class="border-t border-gray-100 py-1">
             <a href="../logout.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout</a>
@@ -438,7 +488,60 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
       </div>
     <?php endif; ?>
   </nav>
+
+  <!-- Mobile hamburger -->
+  <button id="mobile-menu-btn"
+    class="mobile-menu-btn items-center justify-center p-2 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition ml-auto"
+    aria-label="Toggle menu">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
 </header>
+
+<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+<div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
+  <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <?php if ($logged_in): ?>
+        <span class="w-8 h-8 rounded-full bg-green-700 text-white flex items-center justify-center text-xs font-bold"><?= htmlspecialchars($initials) ?></span>
+        <div>
+          <p class="text-sm font-semibold text-gray-800 truncate max-w-[140px]"><?= htmlspecialchars($userName) ?></p>
+          <span class="text-[10px] font-semibold <?= $roleBadgeClass ?> px-1.5 py-0.5 rounded-full"><?= htmlspecialchars($roleLabel) ?></span>
+        </div>
+      <?php else: ?>
+        <h3 class="font-bold text-green-900">Menu</h3>
+      <?php endif; ?>
+    </div>
+    <button id="mobile-menu-close" class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-50 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
+    <a href="nonresidentLanding.php#announcements" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition">
+      <i class="fa-solid fa-bullhorn w-4 text-green-500"></i> Announcements
+    </a>
+    <a href="../busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition">
+      <i class="fa-solid fa-store w-4 text-green-500"></i> Business
+    </a>
+    <a href="../busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition">
+      <i class="fa-solid fa-building w-4 text-green-500"></i> Apartments
+    </a>
+    <?php if ($logged_in): ?>
+    <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
+      <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition">
+        <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
+      </a>
+      <a href="../logout.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-medium hover:bg-red-50 transition">
+        <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout
+      </a>
+    </div>
+    <?php endif; ?>
+  </div>
+</div>
 
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer">
@@ -540,7 +643,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     <div class="form-card f3<?php if (!$canAccessServices) echo ' form-disabled'; ?>">
       <div class="form-header">
-        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;">SumEste Portal â€” Listing Form</p>
+        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> — Listing Form</p>
         <p class="text-green-200 text-xs mt-1">Fill in your listing details below</p>
       </div>
 
@@ -749,7 +852,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               <div><label class="fl"><span class="req">*</span>Street / Block / Lot:</label><input type="text" name="street" class="fi" placeholder="e.g. Rizal Street"></div>
             </div>
             <div class="g2 fg">
-              <div><label class="fl">Barangay:</label><input type="text" name="barangay" class="fi" value="Sumacab Este" disabled></div>
+              <div><label class="fl">Barangay:</label><input type="text" name="barangay" class="fi" value="<?= e($siteSettings['barangay_name']) ?>" disabled></div>
               <div><label class="fl">Municipality / City:</label><input type="text" name="city" class="fi" value="Cabanatuan City" disabled></div>
             </div>
             <div class="fg">
@@ -797,7 +900,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   <div class="modal" id="viewModal" style="max-width:640px;">
     <div class="modal-header">
       <div class="flex items-center gap-3 min-w-0 flex-1">
-        <div style="width:36px;height:36px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <div style="width:36px;height:36px;background:var(--site-primary-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i class="fa-solid fa-eye text-green-700 text-sm"></i>
         </div>
         <div class="min-w-0 flex-1">
@@ -882,19 +985,19 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
       <div>
         <div class="flex items-center gap-3 mb-4">
           <div class="w-12 h-12 rounded-full bg-green-700 flex items-center justify-center overflow-hidden">
-            <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+            <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
           </div>
           <div>
-            <h3 class="text-lg font-bold" style="font-family:'DM Sans',sans-serif;">SumEste Portal</h3>
-            <p class="text-green-400 text-xs tracking-widest uppercase">Sumacab Este</p>
+            <h3 class="text-lg font-bold" style="font-family:'DM Sans',sans-serif;"><?= e($siteSettings['site_title']) ?></h3>
+            <p class="text-green-400 text-xs tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
           </div>
         </div>
         <div class="space-y-2 text-sm text-green-300">
-          <p><i class="fa-solid fa-location-dot mr-2 text-green-500"></i>Sumacab Este, Cabanatuan City</p>
-          <p><i class="fa-solid fa-envelope mr-2 text-green-500"></i>barangaysumacabeste@gmail.com</p>
-          <p><i class="fa-solid fa-phone mr-2 text-green-500"></i>0994-294-6442</p>
+          <p><i class="fa-solid fa-location-dot mr-2 text-green-500"></i><?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
+          <p><i class="fa-solid fa-envelope mr-2 text-green-500"></i><?= e($siteSettings['email']) ?></p>
+          <p><i class="fa-solid fa-phone mr-2 text-green-500"></i><?= e($siteSettings['contact_number']) ?></p>
         </div>
-        <a href="https://www.facebook.com/profile.php?id=61572407528959" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm transition">
+        <a href="<?= e($siteSettings['facebook_link'] ?: '#') ?>" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm transition">
           <i class="fab fa-facebook"></i> Facebook Page
         </a>
       </div>
@@ -909,14 +1012,14 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
       <div>
         <h4 class="font-semibold text-green-300 text-xs uppercase tracking-widest mb-4">Quick Links</h4>
         <div class="space-y-2">
-          <a href="../busaptListing.php" class="block text-sm text-green-400 hover:text-white transition">Diretory</a>
+          <a href="../busaptListing.php" class="block text-sm text-green-400 hover:text-white transition">Directory</a>
           <a href="../busaptListing.php?type=apartment" class="block text-sm text-green-400 hover:text-white transition">Apartments</a>
           <a href="../busaptListing.php?type=business" class="block text-sm text-green-400 hover:text-white transition">Business Directory</a>
         </div>
       </div>
     </div>
     <div class="text-center mt-6 text-green-500 text-sm">
-      Â© 2026 SumEste Portal. All Rights Reserved. Sumacab Este.
+      © <?= date('Y') ?> <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.
     </div>
   </div>
 </footer>
@@ -1286,7 +1389,7 @@ function openViewModal(row) {
     ${maps ? `
     <div style="margin-top:12px;">
       <a href="${escHtml(maps)}" target="_blank" rel="noopener"
-        style="display:inline-flex;align-items:center;gap:6px;color:#15803d;font-size:0.82rem;font-weight:700;text-decoration:underline;text-underline-offset:3px;">
+        style="display:inline-flex;align-items:center;gap:6px;color:var(--site-primary-dark);font-size:0.82rem;font-weight:700;text-decoration:underline;text-underline-offset:3px;">
         <i class="fa-solid fa-map-pin text-xs"></i> View on Google Maps
       </a>
     </div>` : ''}
@@ -1829,7 +1932,30 @@ document.addEventListener('click', e => {
   }
 });
 
-/* â”€â”€ Slots input: numbers only â”€â”€ */
+/* ── Mobile sidebar ── */
+const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
+const mobileSidebar = document.getElementById('mobile-sidebar');
+const mobileOpenBtn = document.getElementById('mobile-menu-btn');
+const mobileCloseBtn = document.getElementById('mobile-menu-close');
+
+function openMobileSidebar() {
+  mobileOverlay.classList.remove('hidden', 'opacity-0');
+  mobileOverlay.classList.add('opacity-80');
+  mobileSidebar.classList.remove('translate-x-full');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileSidebar() {
+  mobileOverlay.classList.add('opacity-0');
+  mobileSidebar.classList.add('translate-x-full');
+  document.body.style.overflow = '';
+  setTimeout(() => mobileOverlay.classList.add('hidden'), 250);
+}
+
+mobileOpenBtn?.addEventListener('click', openMobileSidebar);
+mobileCloseBtn?.addEventListener('click', closeMobileSidebar);
+mobileOverlay?.addEventListener('click', closeMobileSidebar);
+
+/* ── Slots input: numbers only ── */
 const aptSlotsEl = document.getElementById('apt_slots');
 if (aptSlotsEl) {
   aptSlotsEl.addEventListener('input', function() {
