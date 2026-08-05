@@ -19,10 +19,10 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // Connection is opened here (rather than down in the try block, where it
 // used to live) so the permission check below has a $conn to query against.
 // This endpoint exports resident data, so it belongs to the Resident
-// Management module — was previously hardcoded to account_role === 'admin'
+// Management module â€” was previously hardcoded to account_role === 'admin'
 // only, which blocked any staff account granted manage_residents from
 // exporting, even though they can otherwise fully manage residents.
-$conn = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
+$conn = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', '''', 'sumeste_db');
 $conn->set_charset('utf8mb4');
 
 $role = $_SESSION['account_role'] ?? '';
@@ -166,7 +166,7 @@ try {
 
         // NOTE: SEX / CIVIL STATUS / CITIZENSHIP use Pascal Case here
         // ("Male", "Single", "Filipino") to match the template's actual
-        // dropdown list values exactly — NOT all-caps.
+        // dropdown list values exactly â€” NOT all-caps.
         $rowValues = [
             'NON-MIGRANT',
             (string) ($user['lastname'] ?? ''),
@@ -294,7 +294,7 @@ function addInstructionsSheet(Spreadsheet $spreadsheet): \PhpOffice\PhpSpreadshe
         $r++;
     }
 
-    // Styling — bold header row with fill, bold field-name column, wrapped remarks
+    // Styling â€” bold header row with fill, bold field-name column, wrapped remarks
     $sheet->getStyle('A1:C1')->applyFromArray([
         'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
         'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => '15803D']],

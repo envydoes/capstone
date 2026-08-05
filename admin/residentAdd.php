@@ -22,7 +22,7 @@ register_shutdown_function(function() {
 
 if (!isset($_SESSION['user_id'])) { echo json_encode(['success'=>false,'message'=>'Unauthorized']); exit; }
 
-$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
+$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', '''', 'sumeste_db');
 if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB connection failed: '.mysqli_connect_error()]); exit; }
 
 require_once __DIR__ . '/../includes/check_permissions.php';
@@ -82,7 +82,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success'=>false,'message'=>'Invalid email address.']); exit;
 }
 
-$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
+$conn = mysqli_connect('o7jpqmin0zgconui4xtnfju6', 'root', '''', 'sumeste_db');
 if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB connection failed: '.mysqli_connect_error()]); exit; }
 
 $chk = mysqli_prepare($conn, "SELECT userID FROM tbl_userinfo WHERE email = ? LIMIT 1");
@@ -95,7 +95,7 @@ if (mysqli_stmt_num_rows($chk) > 0) {
 }
 mysqli_stmt_close($chk);
 
-// accID written as NULL directly in SQL — never bind null through bind_param
+// accID written as NULL directly in SQL â€” never bind null through bind_param
 $sql = "INSERT INTO tbl_userinfo (
     accID, account_role_csv,
     firstname, lastname, middlename, suffix,

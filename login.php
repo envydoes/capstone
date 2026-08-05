@@ -10,13 +10,13 @@ require_once __DIR__ . '/includes/check_permissions.php';   // <-- add this
 
 $siteSettings = site_config_load($conn);
 
-// ── Helper: role-based redirect ──────────────────────────────────────────
+// â”€â”€ Helper: role-based redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function redirectByRole(string $role, bool $isStaff = false): void {
     $normalizedRole = strtolower(trim($role));
     $roleParts = array_map('trim', explode(',', $normalizedRole));
  
     // A granted Secretary/Treasurer keeps their real resident/non-resident
-    // account_role in tbl_useracc — $isStaff (from tbl_admin_permissions)
+    // account_role in tbl_useracc â€” $isStaff (from tbl_admin_permissions)
     // is what actually routes them into the admin panel.
     if (in_array('admin', $roleParts, true) || in_array('custom_admin', $roleParts, true) || $isStaff) {
         header('Location: admin/adminLanding.php');
@@ -25,7 +25,7 @@ function redirectByRole(string $role, bool $isStaff = false): void {
     } elseif (in_array('non-resident', $roleParts, true) || in_array('nonresident', $roleParts, true) || in_array('business/apartment owner', $roleParts, true) || in_array('business', $roleParts, true)) {
       header('Location: nonResident/nonresidentLanding.php');
     } else {
-        error_log('Unknown account_role "' . $role . '" — sent to landing.php');
+        error_log('Unknown account_role "' . $role . '" â€” sent to landing.php');
         header('Location: landing.php');
     }
     exit;
@@ -39,7 +39,7 @@ if (isset($_SESSION['user_id'])) {
 
 $error = null;
 
-// ── Rate Limiter Settings ─────────────────────────────
+// â”€â”€ Rate Limiter Settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $rateLimiterKey = 'login_rate_limit';
 
 // Advanced cooldown logic
@@ -60,7 +60,7 @@ function getClientIp() {
   return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 }
 
-// ── Rate Limiter Check ────────────────────────────────
+// â”€â”€ Rate Limiter Check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // --- Rate limiter check (runs on every page load for JS info) ---
 $ip = getClientIp();
 $email = strtolower(trim($_POST['username'] ?? $_GET['username'] ?? ''));
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
   }
   else {
     // --- 4. Database connection ---
-    $db = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj', 'sumeste_db');
+    $db = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', '''', 'sumeste_db');
 
     if ($db->connect_error) {
       error_log('DB connect error: ' . $db->connect_error);
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
                   // "staff" account whose admin grant is no longer active.
                   // These accounts (made via Settings > Permissions > Add
                   // Admin Account) have no resident/non-resident/admin
-                  // identity of their own in tbl_useracc — once their
+                  // identity of their own in tbl_useracc â€” once their
                   // grant is revoked they have nowhere else to log into,
                   // so credentials are correct but login still fails,
                   // same as any other rejected attempt.
@@ -167,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
                   $_SESSION['account_role'] = $user['account_role'];
  
                   // Load any staff (Secretary/Treasurer) grant for this
-                  // account. This does NOT change their real account_role —
+                  // account. This does NOT change their real account_role â€”
                   // it's a separate flag admin pages check alongside it.
                   // Load any staff (Secretary/Treasurer) grant for this
                   // account. This does NOT change their real account_role
-                  // or credentials in tbl_useracc — the resident keeps
+                  // or credentials in tbl_useracc â€” the resident keeps
                   // logging in with the exact same email/password. This
                   // grant is a separate flag: if active, it routes them
                   // into the SAME admin panel the founder admin uses,
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/responsive-global.css">
-  <title>Login — <?= e($siteSettings['site_title']) ?></title>
+  <title>Login â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -292,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
     .fade-up-1 { animation-delay: 0.05s; }
     .fade-up-2 { animation-delay: 0.15s; }
 
-    /* Tailwind-green → theme color overrides */
+    /* Tailwind-green â†’ theme color overrides */
     .bg-green-700 { background-color: var(--site-primary) !important; }
     .bg-green-600 { background-color: var(--site-primary) !important; }
     .text-green-700 { color: var(--site-primary) !important; }
@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
 
 <body class="min-h-screen flex flex-col md:flex-row">
 
-  <!-- ══════════ LEFT PANEL ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• LEFT PANEL â•â•â•â•â•â•â•â•â•â• -->
   <div class="hero-bg hidden md:flex flex-col justify-between w-1/2 p-12 relative">
     <div class="dot-grid"></div>
     <div class="circle-deco w-72 h-72 -top-20 -right-20"></div>
@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
         Welcome<br>Back to<br><span class="text-green-300"><?= e($siteSettings['site_title']) ?></span>
       </h2>
       <p class="text-green-200 text-sm leading-relaxed max-w-xs">
-        Access barangay services, request documents, and stay updated with community announcements — all in one place.
+        Access barangay services, request documents, and stay updated with community announcements â€” all in one place.
       </p>
 
       <!-- Feature pills -->
@@ -383,10 +383,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
     </div>
 
     <!-- Footer note -->
-    <p class="relative z-10 text-green-600 text-xs">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved.</p>
+    <p class="relative z-10 text-green-600 text-xs">Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved.</p>
   </div>
 
-  <!-- ══════════ RIGHT PANEL ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• RIGHT PANEL â•â•â•â•â•â•â•â•â•â• -->
   <div class="flex-1 flex flex-col bg-green-50 min-h-screen">
 
     <!-- Mobile top bar -->

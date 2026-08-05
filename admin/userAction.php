@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $host = "o7jpqmin0zgconui4xtnfju6";
 $user = "root";
-$password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj";
+$password = "''";
 $database = "sumeste_db";
 $conn = mysqli_connect($host, $user, $password, $database);
 if (!$conn) {
@@ -29,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $userID = trim($_POST['userID'] ?? '');
 $action = trim($_POST['action'] ?? '');
 
-// approve â†’ approved
-// reject  â†’ rejected
-// disable â†’ disabled
-// revert  â†’ pending
+// approve Ã¢â€ â€™ approved
+// reject  Ã¢â€ â€™ rejected
+// disable Ã¢â€ â€™ disabled
+// revert  Ã¢â€ â€™ pending
 if (empty($userID) || !in_array($action, ['approve', 'reject', 'disable', 'revert'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid input']);
     exit;

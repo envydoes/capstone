@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { echo json_encode(['success' => false, 'message' => 'DB connection failed']); exit; }
 

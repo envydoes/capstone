@@ -12,7 +12,7 @@ require_once __DIR__ . '/../includes/check_permissions.php';
 // 1. Connect to database FIRST
 $host = "o7jpqmin0zgconui4xtnfju6"; 
 $dbuser = "root"; 
-$password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; 
+$password = "''"; 
 $database = "sumeste_db";
 
 $conn = mysqli_connect($host, $dbuser, $password, $database);
@@ -46,16 +46,16 @@ function e($s) { return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8'); }
 
 /**
  * Determine which programs a person is eligible for.
- * prio_score comes from DB — no recalculation.
+ * prio_score comes from DB â€” no recalculation.
  * Eligibility is determined purely from stored fields + age.
  *
  * Program   | Score threshold | Key conditions
  * ----------|-----------------|--------------------------------------------
- * 4Ps       | 70–100          | house_material, electricity/water, pregnant_or_children
- * Senior    | 60–100 / age≥60 | age >= 60
- * Scholarship| 75–100         | gwa_gpa 1.00–1.75, low monthly_income
- * PWD       | 80–100          | is_pwd=1 + pwd_id_number, health conditions
- * Kabataan  | compliance      | age 15–30
+ * 4Ps       | 70â€“100          | house_material, electricity/water, pregnant_or_children
+ * Senior    | 60â€“100 / ageâ‰¥60 | age >= 60
+ * Scholarship| 75â€“100         | gwa_gpa 1.00â€“1.75, low monthly_income
+ * PWD       | 80â€“100          | is_pwd=1 + pwd_id_number, health conditions
+ * Kabataan  | compliance      | age 15â€“30
  * Voters    | compliance      | age >= 18
  */
 function getEligiblePrograms(array $row): array {
@@ -69,7 +69,7 @@ function getEligiblePrograms(array $row): array {
     $score = (int)($row['prio_score'] ?? 0);
     $eligible = [];
 
-    // ── 4Ps: specific housing, utility, pregnant, income conditions
+    // â”€â”€ 4Ps: specific housing, utility, pregnant, income conditions
     $bad_house   = in_array(strtolower($row['housing_status'] ?? ''), ['informal_settler', 'shared', 'government_housing']);
     $bad_mat     = in_array(strtolower($row['house_material'] ?? ''), ['light_materials', 'makeshift', 'wood']);
     $bad_elec    = in_array(strtolower($row['electricity'] ?? ''), ['shared', 'no_electricity']);
@@ -82,12 +82,12 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = '4ps';
     }
 
-    // ── Senior Citizen: age >= 60
+    // â”€â”€ Senior Citizen: age >= 60
     if ($age >= 60) {
         $eligible[] = 'senior';
     }
 
-    // ── Scholarship: not empty school, have year level, gpa 1.00 - 1.75
+    // â”€â”€ Scholarship: not empty school, have year level, gpa 1.00 - 1.75
     $school = trim($row['school_name'] ?? '');
     $yrLvl = trim($row['year_level'] ?? '');
     $gwaStr = trim($row['gwa_gpa'] ?? '');
@@ -97,17 +97,17 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = 'scholarship';
     }
 
-    // ── PWD: is_pwd = 1 AND has valid ID number
+    // â”€â”€ PWD: is_pwd = 1 AND has valid ID number
     if (!empty($row['is_pwd']) && $row['is_pwd'] == 1 && !empty($row['pwd_id_number'])) {
         $eligible[] = 'pwd';
     }
 
-    // ── Kabataan/SK: age 15–30
+    // â”€â”€ Kabataan/SK: age 15â€“30
     if ($age >= 15 && $age <= 30) {
         $eligible[] = 'kabataan';
     }
 
-    // ── Registered Voters: age >= 18
+    // â”€â”€ Registered Voters: age >= 18
     if ($age >= 18) {
         $eligible[] = 'voters';
     }
@@ -160,7 +160,7 @@ $sidebarSections = [
   ],
 ];
 
-/* ── Fetch pending applications ── */
+/* â”€â”€ Fetch pending applications â”€â”€ */
 $sql_req = "
     SELECT b.*, ui.firstname, ui.lastname, ui.middlename, ui.suffix,
            ui.birthday, ui.phone, ui.email, ui.street, ui.barangay, ui.city, ui.province
@@ -179,7 +179,7 @@ if ($res_req) {
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
-/* ── Fetch approved beneficiaries (already ranked by prio_score DESC) ── */
+/* â”€â”€ Fetch approved beneficiaries (already ranked by prio_score DESC) â”€â”€ */
 $sql_ben = "
     SELECT b.*, ui.firstname, ui.lastname, ui.middlename, ui.suffix,
            ui.birthday, ui.phone, ui.email, ui.street, ui.barangay, ui.city, ui.province
@@ -199,7 +199,7 @@ if ($res_ben) {
 $total_pending = count($pending_with_scores);
 $total_ben     = count($beneficiaries_processed);
 
-// ── Stat cards: Beneficiary Overview ────────────────────────────────────
+// â”€â”€ Stat cards: Beneficiary Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Assistance Requests This Month, vs Last Month (application volume, any status)
 $reqTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
@@ -218,7 +218,7 @@ if ($reqLastMonth > 0) {
 }
 $reqTrendDir = $reqThisMonth > $reqLastMonth ? 'up' : ($reqThisMonth < $reqLastMonth ? 'down' : 'flat');
 
-// New Beneficiaries This Month (approved this month — uses updated_at as an
+// New Beneficiaries This Month (approved this month â€” uses updated_at as an
 // "approved on" proxy, since updated_at auto-stamps on any row edit, not
 // only approval, treat as an estimate)
 $newBenThisMonth = (int) mysqli_fetch_assoc(mysqli_query($conn, "
@@ -250,7 +250,7 @@ $coverageRate = $totalResidents > 0 ? round(($approvedBeneficiaryResidents / $to
 
 // Average Processing Time: request submitted -> approved
 // tbl_beneficiary.updated_at auto-stamps on any row change (ON UPDATE
-// CURRENT_TIMESTAMP), so this is available with no schema change — same
+// CURRENT_TIMESTAMP), so this is available with no schema change â€” same
 // caveat as above: an edit after approval would nudge this up slightly.
 $avgProcRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT AVG(TIMESTAMPDIFF(HOUR, COALESCE(submitted_at, created_at), updated_at)) AS avg_hours
@@ -268,7 +268,7 @@ mysqli_close($conn);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beneficiary Management — <?= e($siteSettings['site_title']) ?></title>
+  <title>Beneficiary Management â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -278,7 +278,7 @@ mysqli_close($conn);
     * { box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
-    /* ── Sidebar (same as residentManagement.php) ── */
+    /* â”€â”€ Sidebar (same as residentManagement.php) â”€â”€ */
     .sidebar {
        width:260px;
        flex-shrink:0; 
@@ -495,7 +495,7 @@ mysqli_close($conn);
 
 <div class="main-wrapper">
 
-  <!-- ══ SIDEBAR ══ -->
+  <!-- â•â• SIDEBAR â•â• -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">
@@ -546,7 +546,7 @@ mysqli_close($conn);
     </div>
   </aside>
 
-  <!-- ══ MAIN ══ -->
+  <!-- â•â• MAIN â•â• -->
   <main class="main-content" id="mainContent">
 
     <header class="topbar">
@@ -591,7 +591,7 @@ mysqli_close($conn);
           <p class="stat-label">Average Processing Time</p>
           <?php if ($avgProcessingHours !== null): ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-amber-500"></i><span class="stat-num"><?= $avgProcessingHours < 48 ? number_format($avgProcessingHours, 1) . 'h' : number_format($avgProcessingHours / 24, 1) . 'd' ?></span></div>
-            <span class="stat-sub">Submitted → Approved</span>
+            <span class="stat-sub">Submitted â†’ Approved</span>
           <?php else: ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-gray-300"></i><span class="stat-num text-gray-300">N/A</span></div>
             <span class="stat-sub">No approved requests yet</span>
@@ -683,7 +683,7 @@ mysqli_close($conn);
               <?php if (empty($pending_with_scores)): ?>
               <tr><td colspan="5"><div class="empty-state"><i class="fa-regular fa-folder-open"></i><p class="font-semibold text-sm">No pending applications.</p></div></td></tr>
               <?php else: foreach ($pending_with_scores as $app):
-                $date_str = !empty($app['submitted_at']) ? date('F j, Y', strtotime($app['submitted_at'])) : '—';
+                $date_str = !empty($app['submitted_at']) ? date('F j, Y', strtotime($app['submitted_at'])) : 'â€”';
                 $eligible = $app['_eligible'];
                 $prog_labels = ['4ps'=>"4P's",'senior'=>'Senior Citizen','scholarship'=>'Scholarship','pwd'=>'PWD','kabataan'=>'Kabataan (SK)','voters'=>'Registered Voters'];
                 $prog_cls    = ['4ps'=>'chip-4ps','senior'=>'chip-senior','scholarship'=>'chip-scholar','pwd'=>'chip-pwd','kabataan'=>'chip-sk','voters'=>'chip-voters'];
@@ -781,7 +781,7 @@ mysqli_close($conn);
   </main>
 </div>
 
-<!-- ══ VIEW MODAL ══ -->
+<!-- â•â• VIEW MODAL â•â• -->
 <div class="modal-overlay" id="viewModalOverlay" onclick="closeViewModalOnOverlay(event)">
   <div class="modal" id="viewModal">
     <div class="modal-header">
@@ -811,7 +811,7 @@ mysqli_close($conn);
   </div>
 </div>
 
-<!-- ══ CONFIRM DIALOG ══ -->
+<!-- â•â• CONFIRM DIALOG â•â• -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body-d">
@@ -828,11 +828,11 @@ mysqli_close($conn);
 </div>
 
 <script>
-/* ════ DATA FROM PHP ════ */
+/* â•â•â•â• DATA FROM PHP â•â•â•â• */
 const PENDING_APPS     = <?= json_encode(array_map(function($a){ return $a; }, $pending_with_scores), JSON_HEX_TAG) ?>;
 const BENEFICIARY_LIST = <?= json_encode($beneficiaries_processed, JSON_HEX_TAG) ?>;
 
-/* ════ SIDEBAR ════ */
+/* â•â•â•â• SIDEBAR â•â•â•â• */
 const sidebar     = document.getElementById('sidebar');
 const mainContent = document.getElementById('mainContent');
 const expandBtn   = document.getElementById('expandBtn');
@@ -894,7 +894,7 @@ function hidePageLoader() {
   if (mainDataContainer) mainDataContainer.style.display = '';
 }
 
-/* ════ ALERT ════ */
+/* â•â•â•â• ALERT â•â•â•â• */
 let alertTimer;
 function showToast(type, title, desc) {
   const icons = {success:'fa-circle-check',error:'fa-circle-xmark',warning:'fa-triangle-exclamation'};
@@ -909,7 +909,7 @@ function showToast(type, title, desc) {
 }
 function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-/* ════ TAB SWITCHING ════ */
+/* â•â•â•â• TAB SWITCHING â•â•â•â• */
 let activeTab = 'requests';
 function switchTab(tab) {
   activeTab = tab;
@@ -933,7 +933,7 @@ function toggleAll(cb) {
   document.querySelectorAll(sel + ' .row-check').forEach(c => c.checked = cb.checked);
 }
 
-/* ════ FILTER ════ */
+/* â•â•â•â• FILTER â•â•â•â• */
 function toggleFilterPanel() {
   const panel = document.getElementById('filterPanel');
   const btn   = document.getElementById('filterBtn');
@@ -979,7 +979,7 @@ function filterTable() {
   }, 400);
 }
 
-/* ════ PAGINATION ════ */
+/* â•â•â•â• PAGINATION â•â•â•â• */
 const ROWS_PER_PAGE = 10; let currentPage = 1;
 function getVisibleRows() {
   const sel = activeTab==='requests' ? '#requestsTable' : '#beneficiaryTable';
@@ -1010,7 +1010,7 @@ function renderPagination() {
 }
 renderPagination();
 
-/* ════ VIEW MODAL ════ */
+/* â•â•â•â• VIEW MODAL â•â•â•â• */
 const PROG_LABELS = {'4ps':"4P's", senior:'Senior Citizen', scholarship:'Scholarship', pwd:'PWD', kabataan:'Kabataan (SK)', voters:'Registered Voters'};
 const PROG_COLORS = {'4ps':'chip-4ps', senior:'chip-senior', scholarship:'chip-scholar', pwd:'chip-pwd', kabataan:'chip-sk', voters:'chip-voters'};
 
@@ -1051,19 +1051,19 @@ function openViewModal(row, type, triggerBtn = null) {
   // Eligibility condition rows (what each program requires and whether they meet it)
   const progDetails = [
     { key:'4ps',         label:"4P's",           met: is4Ps,   why: "Specific housing, materials, utilities, children under 5, and income < 14k." },
-    { key:'senior',      label:'Senior Citizen', met: isSen,   why: "Age ≥60" },
-    { key:'scholarship', label:'Scholarship',    met: isSchol, why: "Enrolled in school with valid year level and GWA 1.00–1.75" },
+    { key:'senior',      label:'Senior Citizen', met: isSen,   why: "Age â‰¥60" },
+    { key:'scholarship', label:'Scholarship',    met: isSchol, why: "Enrolled in school with valid year level and GWA 1.00â€“1.75" },
     { key:'pwd',         label:'PWD',            met: isPwd,   why: "Registered PWD with valid ID" },
-    { key:'kabataan',    label:'Kabataan (SK)',  met: isKab,   why: "Age 15–30" },
-    { key:'voters',      label:'For Voters',     met: isVot,   why: "Age ≥18" },
+    { key:'kabataan',    label:'Kabataan (SK)',  met: isKab,   why: "Age 15â€“30" },
+    { key:'voters',      label:'For Voters',     met: isVot,   why: "Age â‰¥18" },
   ];
   let progRows = progDetails.map(p => `
     <div class="detail-row">
       <span class="detail-label">${p.label}</span>
       <span class="detail-val" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         ${p.met
-          ? `<span style="background:#dcfce7;color:#15803d;padding:2px 10px;border-radius:99px;font-size:0.72rem;font-weight:700;border:1px solid #bbf7d0;">✓ Eligible</span>`
-          : `<span style="background:#f3f4f6;color:#9ca3af;padding:2px 10px;border-radius:99px;font-size:0.72rem;font-weight:700;">✗ Not Eligible</span>`}
+          ? `<span style="background:#dcfce7;color:#15803d;padding:2px 10px;border-radius:99px;font-size:0.72rem;font-weight:700;border:1px solid #bbf7d0;">âœ“ Eligible</span>`
+          : `<span style="background:#f3f4f6;color:#9ca3af;padding:2px 10px;border-radius:99px;font-size:0.72rem;font-weight:700;">âœ— Not Eligible</span>`}
         <span style="font-size:0.72rem;color:#9ca3af;">${p.why}</span>
       </span>
     </div>`).join('');
@@ -1074,7 +1074,7 @@ function openViewModal(row, type, triggerBtn = null) {
   // Priority card: requests show Score, beneficiary list shows Rank
   const priorityCard = isPending
     ? `<div class="priority-card">
-        <div style="width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🏅</div>
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">ðŸ…</div>
         <div style="flex:1;">
           <span style="font-size:0.72rem;opacity:0.8;">Priority Score</span><br>
           <span style="font-size:2.5rem;font-weight:800;font-family:'Playfair Display',serif;line-height:1.1;">${score}</span>
@@ -1084,10 +1084,10 @@ function openViewModal(row, type, triggerBtn = null) {
         </div>
       </div>`
     : `<div class="priority-card">
-        <div style="width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🏅</div>
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">ðŸ…</div>
         <div style="flex:1;">
           <span style="font-size:0.72rem;opacity:0.8;">Priority Rank</span><br>
-          <span style="font-size:2.5rem;font-weight:800;font-family:'Playfair Display',serif;line-height:1.1;">${app.prio_rank||row.querySelector('td:nth-child(2)')?.textContent?.trim()||'—'}</span>
+          <span style="font-size:2.5rem;font-weight:800;font-family:'Playfair Display',serif;line-height:1.1;">${app.prio_rank||row.querySelector('td:nth-child(2)')?.textContent?.trim()||'â€”'}</span>
           <span style="font-size:0.72rem;opacity:0.65;display:block;margin-top:2px;">Calculated based on your filter</span>
           <p style="font-size:0.72rem;opacity:0.8;margin-top:4px;">${eligText}</p>
         </div>
@@ -1100,19 +1100,19 @@ function openViewModal(row, type, triggerBtn = null) {
     <div class="section-card">
       <div class="section-title-m"><i class="fa-solid fa-user text-green-600"></i> Personal Information</div>
       <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-val">${esc(app._name)}</span></div>
-      <div class="detail-row"><span class="detail-label">Contact Number</span><span class="detail-val">${esc(app.phone||'—')}</span></div>
+      <div class="detail-row"><span class="detail-label">Contact Number</span><span class="detail-val">${esc(app.phone||'â€”')}</span></div>
       <div class="detail-row"><span class="detail-label">Age</span><span class="detail-val">${age}${isSC?' <span style="font-size:0.7rem;background:#ede9fe;color:#6d28d9;padding:2px 7px;border-radius:99px;border:1px solid #c4b5fd;font-weight:700;">Senior Citizen</span>':''}</span></div>
-      <div class="detail-row"><span class="detail-label">Complete Address</span><span class="detail-val">${esc([app.street,app.barangay,app.city,app.province].filter(Boolean).join(', '))||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Complete Address</span><span class="detail-val">${esc([app.street,app.barangay,app.city,app.province].filter(Boolean).join(', '))||'â€”'}</span></div>
     </div>
 
     <div class="section-card">
       <div class="section-title-m"><i class="fa-solid fa-house text-green-600"></i> Socioeconomic Details</div>
-      <div class="detail-row"><span class="detail-label">Monthly Income</span><span class="detail-val">${esc(app.monthly_income||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Housing Status</span><span class="detail-val">${esc(app.housing_status||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">House Material</span><span class="detail-val">${esc(app.house_material||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Electricity</span><span class="detail-val">${esc(app.electricity||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Water Source</span><span class="detail-val">${esc(app.water_source||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Toilet Type</span><span class="detail-val">${esc(app.toilet_type||'—')}</span></div>
+      <div class="detail-row"><span class="detail-label">Monthly Income</span><span class="detail-val">${esc(app.monthly_income||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Housing Status</span><span class="detail-val">${esc(app.housing_status||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">House Material</span><span class="detail-val">${esc(app.house_material||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Electricity</span><span class="detail-val">${esc(app.electricity||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Water Source</span><span class="detail-val">${esc(app.water_source||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Toilet Type</span><span class="detail-val">${esc(app.toilet_type||'â€”')}</span></div>
       <div class="detail-row"><span class="detail-label">Pregnant / Children &lt;5</span><span class="detail-val">${app.pregnant_or_children==1?'Yes':'No'}</span></div>
     </div>
 
@@ -1121,7 +1121,7 @@ function openViewModal(row, type, triggerBtn = null) {
       <div class="detail-row"><span class="detail-label">PWD</span><span class="detail-val">${app.is_pwd==1?'Yes':'No'}${app.is_pwd==1&&app.pwd_id_number?' <span style="background:#fff7ed;color:#c2410c;padding:2px 8px;border-radius:99px;font-size:0.72rem;font-weight:700;border:1px solid #fdba74;">'+esc(app.pwd_id_number)+'</span>':''}</span></div>
       <div class="detail-row"><span class="detail-label">Solo Parent</span><span class="detail-val">${app.is_solo_parent==1?'Yes':'No'}</span></div>
       <div class="detail-row"><span class="detail-label">Indigenous Person</span><span class="detail-val">${app.is_indigenous==1?'Yes':'No'}</span></div>
-      <div class="detail-row"><span class="detail-label">Pension Status</span><span class="detail-val">${esc(app.pension_status||'—')}</span></div>
+      <div class="detail-row"><span class="detail-label">Pension Status</span><span class="detail-val">${esc(app.pension_status||'â€”')}</span></div>
     </div>
 
     <div class="section-card">
@@ -1130,15 +1130,15 @@ function openViewModal(row, type, triggerBtn = null) {
       <div class="detail-row"><span class="detail-label">Diabetes</span><span class="detail-val">${app.health_diabetes==1?'Yes':'No'}</span></div>
       <div class="detail-row"><span class="detail-label">Asthma</span><span class="detail-val">${app.health_asthma==1?'Yes':'No'}</span></div>
       <div class="detail-row"><span class="detail-label">Other</span><span class="detail-val">${app.health_other==1?(esc(app.health_other_specify)||'Yes'):'No'}</span></div>
-      <div class="detail-row"><span class="detail-label">Requires Medicine</span><span class="detail-val">${app.requires_medicine==1?('Yes'+(app.medicine_name?' — '+esc(app.medicine_name):'')):'No'}</span></div>
+      <div class="detail-row"><span class="detail-label">Requires Medicine</span><span class="detail-val">${app.requires_medicine==1?('Yes'+(app.medicine_name?' â€” '+esc(app.medicine_name):'')):'No'}</span></div>
     </div>
 
     ${(app.school_name||app.course) ? `<div class="section-card">
       <div class="section-title-m"><i class="fa-solid fa-graduation-cap text-green-600"></i> Student Information</div>
-      <div class="detail-row"><span class="detail-label">School</span><span class="detail-val">${esc(app.school_name||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Course</span><span class="detail-val">${esc(app.course||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">Year Level</span><span class="detail-val">${esc(app.year_level||'—')}</span></div>
-      <div class="detail-row"><span class="detail-label">GWA/GPA</span><span class="detail-val">${esc(app.gwa_gpa||'—')}</span></div>
+      <div class="detail-row"><span class="detail-label">School</span><span class="detail-val">${esc(app.school_name||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Course</span><span class="detail-val">${esc(app.course||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">Year Level</span><span class="detail-val">${esc(app.year_level||'â€”')}</span></div>
+      <div class="detail-row"><span class="detail-label">GWA/GPA</span><span class="detail-val">${esc(app.gwa_gpa||'â€”')}</span></div>
     </div>` : ''}
 
     <div class="section-card">
@@ -1171,7 +1171,7 @@ function openViewModal(row, type, triggerBtn = null) {
 function closeViewModal() { document.getElementById('viewModalOverlay').classList.remove('open'); document.body.style.overflow=''; }
 function closeViewModalOnOverlay(e) { if(e.target===document.getElementById('viewModalOverlay')) closeViewModal(); }
 
-/* ════ CONFIRM DIALOG ════ */
+/* â•â•â•â• CONFIRM DIALOG â•â•â•â• */
 let dialogCallback = null;
 function showDialog(title, desc, nameBadge, isApprove, onConfirm) {
   const iconWrap = document.getElementById('dialogIconWrap');
@@ -1208,7 +1208,7 @@ function setActionButtonLoading(btn, label='Processing...') {
   };
 }
 
-/* ════ APPROVE / REJECT ACTIONS ════ */
+/* â•â•â•â• APPROVE / REJECT ACTIONS â•â•â•â• */
 function confirmAction(id, action, name, row, triggerBtn = null) {
   const isApprove = action === 'approve';
   showDialog(
@@ -1271,7 +1271,7 @@ function bulkAction(action, triggerBtn = null) {
   );
 }
 
-/* ════ EXPORT ════ */
+/* â•â•â•â• EXPORT â•â•â•â• */
 function exportList() {
   const rows = Array.from(document.querySelectorAll('#beneficiaryTable tbody tr[data-id]')).filter(r=>r.style.display!=='none');
   let csv = 'Rank,Name,Email,Programs,Score\n';
@@ -1286,7 +1286,7 @@ function exportList() {
   const a    = document.createElement('a'); a.href=url; a.download='beneficiaries.csv'; a.click();
 }
 
-/* ════ REFRESH ════ */
+/* â•â•â•â• REFRESH â•â•â•â• */
 function triggerRefresh() { showPageLoader('Refreshing applications...'); setTimeout(() => location.reload(), 180); }
 
 document.querySelectorAll('.sidebar button[onclick*="location.href"]').forEach(btn => {
@@ -1301,7 +1301,7 @@ document.querySelectorAll('.sidebar button[onclick*="location.href"]').forEach(b
   });
 });
 
-/* ════ HTML ESCAPE ════ */
+/* â•â•â•â• HTML ESCAPE â•â•â•â• */
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* Init toolbar state */

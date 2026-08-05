@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || (($_SESSION['account_role'] ?? '') !== 'admi
 
 $host = 'o7jpqmin0zgconui4xtnfju6';
 $user = 'root';
-$password = 'UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj';
+$password = '''';
 $database = 'sumeste_db';
 
 $conn = mysqli_connect($host, $user, $password, $database);

@@ -1,5 +1,5 @@
 <?php
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 session_start();
@@ -54,7 +54,7 @@ if (!$canAccessServices) {
     exit;
 }
 
-// ── Document → required supporting docs map ──
+// â”€â”€ Document â†’ required supporting docs map â”€â”€
 $docRequirements = [
     'barangay_clearance'       => 'Valid Government-Issued ID',
     'certificate_indigency'    => 'Valid Government-Issued ID, Proof of Residency',
@@ -67,7 +67,7 @@ $docRequirements = [
     'first_time_jobseeker'     => 'Valid Government-Issued ID, Proof of Unemployment',
 ];
 
-// ── Handle POST ──
+// â”€â”€ Handle POST â”€â”€
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Determine upload directory (relative to project root)
@@ -182,7 +182,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Document Request — <?= e($siteSettings['site_title']) ?></title>
+  <title>Document Request â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -396,7 +396,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   </nav>
 </header>
 
-<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MOBILE SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -493,7 +493,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
     <form method="POST" action="" id="documentForm" enctype="multipart/form-data" novalidate>
 
-      <!-- ── DOC TYPE + COPIES ── -->
+      <!-- â”€â”€ DOC TYPE + COPIES â”€â”€ -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
 
         <div>
@@ -521,16 +521,16 @@ $initials = strtoupper(substr($userName, 0, 2));
               required
             >
             <div class="spinner-btns">
-              <button type="button" class="spin-btn" onclick="spinCopies(1)">▲</button>
-              <button type="button" class="spin-btn" onclick="spinCopies(-1)">▼</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(1)">â–²</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(-1)">â–¼</button>
             </div>
           </div>
-          <p class="error-msg" id="err_num_copies">Please enter a valid number of copies (1–10).</p>
+          <p class="error-msg" id="err_num_copies">Please enter a valid number of copies (1â€“10).</p>
         </div>
 
       </div>
 
-      <!-- ── PURPOSE ── -->
+      <!-- â”€â”€ PURPOSE â”€â”€ -->
       <div class="mb-6">
         <label class="field-label" for="purpose">Purpose / Reason <span class="req">*</span></label>
         <select class="form-select" id="purpose" name="purpose" required>
@@ -549,7 +549,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         <p class="error-msg" id="err_purpose">Please select a purpose.</p>
       </div>
 
-      <!-- ── UPLOAD SUPPORTING DOCUMENTS ── -->
+      <!-- â”€â”€ UPLOAD SUPPORTING DOCUMENTS â”€â”€ -->
       <div class="mb-6">
         <p class="field-label">Upload Supporting Document</p>
 
@@ -565,14 +565,14 @@ $initials = strtoupper(substr($userName, 0, 2));
         <label for="file_input" class="upload-btn">
           <i class="fa-solid fa-upload text-sm"></i> Upload Files
         </label>
-        <p class="text-xs text-gray-400 mt-2">Accepted: JPG, PNG, PDF &nbsp;·&nbsp; Max 5 MB each</p>
+        <p class="text-xs text-gray-400 mt-2">Accepted: JPG, PNG, PDF &nbsp;Â·&nbsp; Max 5 MB each</p>
 
         <!-- File preview list -->
         <div id="file_list" class="file-list" style="display:none;"></div>
         <p class="error-msg" id="err_files"></p>
       </div>
 
-      <!-- ── ADDITIONAL NOTES ── -->
+      <!-- â”€â”€ ADDITIONAL NOTES â”€â”€ -->
       <div class="mb-8">
         <label class="field-label" for="notes">Additional Notes / Special Instructions:</label>
         <textarea
@@ -628,12 +628,12 @@ $initials = strtoupper(substr($userName, 0, 2));
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ðŸŒ¿ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
-  // ── Document type → required supporting docs ──
+  // â”€â”€ Document type â†’ required supporting docs â”€â”€
   const docReqs = <?= json_encode($docRequirements) ?>;
 
   function updateRequirements() {
@@ -649,7 +649,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
   window.addEventListener('DOMContentLoaded', updateRequirements);
 
-  // ── Number spinner ──
+  // â”€â”€ Number spinner â”€â”€
   function spinCopies(dir) {
     const inp = document.getElementById('num_copies');
     let val = parseInt(inp.value) || 1;
@@ -657,7 +657,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     inp.value = val;
   }
 
-  // ── File handling ──
+  // â”€â”€ File handling â”€â”€
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   const ALLOWED_EXTS  = ['jpg', 'jpeg', 'png', 'pdf'];
   let selectedFiles   = [];
@@ -753,7 +753,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── Form Validation + Submit ──
+  // â”€â”€ Form Validation + Submit â”€â”€
   document.getElementById('documentForm').addEventListener('submit', function (e) {
     let valid = true;
 
@@ -778,7 +778,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     const copies = parseInt(document.getElementById('num_copies').value);
     if (!copies || copies < 1 || copies > 10) {
       document.getElementById('num_copies').classList.add('field-error');
-      showErr('err_num_copies', 'Please enter a valid number of copies (1–10).');
+      showErr('err_num_copies', 'Please enter a valid number of copies (1â€“10).');
     } else {
       document.getElementById('num_copies').classList.remove('field-error');
       clearErr('err_num_copies');
@@ -806,7 +806,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Submitting...';
   });
 
-  // ── Profile dropdown ──
+  // â”€â”€ Profile dropdown â”€â”€
   function toggleProfileMenu() {
     const dropdown = document.getElementById('profile-dropdown');
     const btn      = document.getElementById('profile-btn');
@@ -829,7 +829,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     if (e.key === 'Escape') document.getElementById('profile-dropdown')?.classList.add('hidden');
   });
 
-  /* ── Mobile sidebar ── */
+  /* â”€â”€ Mobile sidebar â”€â”€ */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

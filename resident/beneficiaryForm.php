@@ -1,5 +1,5 @@
 <?php
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 session_start();
@@ -96,7 +96,7 @@ if ($existingApplication) {
     }
 }
 
-// Handle form submission — save all fields to session
+// Handle form submission â€” save all fields to session
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if user can submit application
     if (!$canSubmitApplication) {
@@ -253,7 +253,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Beneficiary Form — <?= e($siteSettings['site_title']) ?></title>
+  <title>Beneficiary Form â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -529,7 +529,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
   </nav>
 </header>
 
-<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MOBILE SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -643,7 +643,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
 
     <form method="POST" action="" id="beneficiaryForm" novalidate <?php echo !$canSubmitApplication ? 'style="pointer-events: none; opacity: 0.6;"' : ''; ?>>
 
-      <!-- ── HOUSING ── -->
+      <!-- â”€â”€ HOUSING â”€â”€ -->
       <p class="form-section-title">Housing Information</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
@@ -682,7 +682,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
 
       </div>
 
-      <!-- ── UTILITY ACCESS ── -->
+      <!-- â”€â”€ UTILITY ACCESS â”€â”€ -->
       <p class="form-section-title">Utility Access</p>
 
       <div class="space-y-4 mb-6">
@@ -752,7 +752,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
 
       </div>
 
-      <!-- ── PREGNANT / CHILDREN ── -->
+      <!-- â”€â”€ PREGNANT / CHILDREN â”€â”€ -->
       <p class="form-section-title">Household Composition</p>
 
       <div class="mb-6">
@@ -773,7 +773,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         <p class="error-msg" id="err_pregnant">Please select an option.</p>
       </div>
 
-      <!-- ── SPECIFIC CLASSIFICATION ── -->
+      <!-- â”€â”€ SPECIFIC CLASSIFICATION â”€â”€ -->
       <p class="form-section-title">Specific Classification</p>
 
       <div class="space-y-3 mb-6">
@@ -809,7 +809,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
 
       </div>
 
-      <!-- ── PENSION STATUS ── -->
+      <!-- â”€â”€ PENSION STATUS â”€â”€ -->
       <p class="form-section-title">Pension Status</p>
 
       <div class="mb-6">
@@ -822,7 +822,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         </select>
       </div>
 
-      <!-- ── HEALTH & MAINTENANCE ── -->
+      <!-- â”€â”€ HEALTH & MAINTENANCE â”€â”€ -->
       <p class="form-section-title">Health &amp; Maintenance Status</p>
 
       <div class="space-y-2 mb-3">
@@ -863,7 +863,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         </label>
       </div>
 
-      <!-- ── MAINTENANCE MEDICINE ── -->
+      <!-- â”€â”€ MAINTENANCE MEDICINE â”€â”€ -->
       <p class="form-section-title mt-6">Maintenance Medicine</p>
 
       <div class="mb-6">
@@ -890,7 +890,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         </div>
       </div>
 
-      <!-- ── STUDENT INFORMATION ── -->
+      <!-- â”€â”€ STUDENT INFORMATION â”€â”€ -->
       <p class="form-section-title">Student Information <span class="normal-case text-gray-400 font-normal">(if applicable)</span></p>
 
       <div class="mb-5">
@@ -921,9 +921,9 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
           <label class="field-label" for="year_level">Year Level:</label>
           <select class="form-select" id="year_level" name="year_level">
             <option value="" <?= empty($saved['year_level']) ? 'selected' : '' ?>>-- Select --</option>
-            <option value="grade_1_6" <?= ($saved['year_level'] ?? '') === 'grade_1_6' ? 'selected' : '' ?>>Grade 1–6 (Elementary)</option>
-            <option value="grade_7_10" <?= ($saved['year_level'] ?? '') === 'grade_7_10' ? 'selected' : '' ?>>Grade 7–10 (Junior High)</option>
-            <option value="grade_11_12" <?= ($saved['year_level'] ?? '') === 'grade_11_12' ? 'selected' : '' ?>>Grade 11–12 (Senior High)</option>
+            <option value="grade_1_6" <?= ($saved['year_level'] ?? '') === 'grade_1_6' ? 'selected' : '' ?>>Grade 1â€“6 (Elementary)</option>
+            <option value="grade_7_10" <?= ($saved['year_level'] ?? '') === 'grade_7_10' ? 'selected' : '' ?>>Grade 7â€“10 (Junior High)</option>
+            <option value="grade_11_12" <?= ($saved['year_level'] ?? '') === 'grade_11_12' ? 'selected' : '' ?>>Grade 11â€“12 (Senior High)</option>
             <option value="1st_year" <?= ($saved['year_level'] ?? '') === '1st_year' ? 'selected' : '' ?>>1st Year (College)</option>
             <option value="2nd_year" <?= ($saved['year_level'] ?? '') === '2nd_year' ? 'selected' : '' ?>>2nd Year</option>
             <option value="3rd_year" <?= ($saved['year_level'] ?? '') === '3rd_year' ? 'selected' : '' ?>>3rd Year</option>
@@ -945,7 +945,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         >
       </div>
 
-      <!-- ── SUBMIT ── -->
+      <!-- â”€â”€ SUBMIT â”€â”€ -->
       <div class="flex justify-end pt-4 border-t border-gray-100">
         <button type="submit" class="btn-submit" <?php echo !$canSubmitApplication ? 'disabled' : ''; ?>>
           Submit &nbsp;<i class="fa-solid fa-arrow-right"></i>
@@ -990,12 +990,12 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ðŸŒ¿ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
-  /* ── PWD ID toggle ── */
+  /* â”€â”€ PWD ID toggle â”€â”€ */
   function togglePwdInput(cb) {
     const input = document.getElementById('pwd_id_number');
     input.disabled = !cb.checked;
@@ -1003,7 +1003,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     else { input.style.background = '#fff'; input.focus(); }
   }
 
-  /* ── Other health toggle ── */
+  /* â”€â”€ Other health toggle â”€â”€ */
   function toggleOtherInput(cb) {
     const input = document.getElementById('health_other_specify');
     input.disabled = !cb.checked;
@@ -1011,7 +1011,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     else { input.style.background = '#fff'; input.focus(); }
   }
 
-  /* ── Medicine input toggle ── */
+  /* â”€â”€ Medicine input toggle â”€â”€ */
   function toggleMedicineInput() {
     const yes   = document.getElementById('med_yes').checked;
     const input = document.getElementById('medicine_name');
@@ -1020,7 +1020,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     else { input.style.background = '#fff'; input.focus(); }
   }
 
-  /* ── Init disabled states on load ── */
+  /* â”€â”€ Init disabled states on load â”€â”€ */
   window.addEventListener('DOMContentLoaded', () => {
     // PWD
     const pwdCb  = document.getElementById('is_pwd');
@@ -1064,7 +1064,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
   }
   function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-  /* ── Form Validation ── */
+  /* â”€â”€ Form Validation â”€â”€ */
   document.getElementById('beneficiaryForm').addEventListener('submit', function(e) {
     let valid = true;
 
@@ -1154,7 +1154,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     }
   });
 
-  /* ── Profile dropdown ── */
+  /* â”€â”€ Profile dropdown â”€â”€ */
   function toggleProfileMenu() {
     const dropdown = document.getElementById('profile-dropdown');
     const btn      = document.getElementById('profile-btn');
@@ -1178,7 +1178,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     }
   });
 
-  /* ── Mobile sidebar ── */
+  /* â”€â”€ Mobile sidebar â”€â”€ */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

@@ -1,10 +1,10 @@
 <?php
-// ──────────────────────────────────────────────
-// db_setup.php  — run once to create the table
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// db_setup.php  â€” run once to create the table
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $host     = "o7jpqmin0zgconui4xtnfju6";
 $dbuser   = "root";
-$password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj";
+$password = "''";
 $database = "sumeste_db";
 
 $conn = mysqli_connect($host, $dbuser, $password, $database);
@@ -23,7 +23,7 @@ CREATE TABLE tbl_busaptlisting (
     listingType    ENUM('apartment','business') NOT NULL,
     slotsAvailable INT          DEFAULT 0,
 
-    -- ── Apartment-specific columns ──
+    -- â”€â”€ Apartment-specific columns â”€â”€
     aptType        VARCHAR(50)  DEFAULT NULL,
     aptTitle       VARCHAR(255) DEFAULT NULL,
     aptStatus      ENUM('available','occupied','inquire') DEFAULT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE tbl_busaptlisting (
     aptAddress     TEXT         DEFAULT NULL,
     aptMapsLink    TEXT         DEFAULT NULL,
 
-    -- ── Business-specific columns ──
+    -- â”€â”€ Business-specific columns â”€â”€
     bussCat        VARCHAR(100) DEFAULT NULL,
     bussName       VARCHAR(255) DEFAULT NULL,
     bussStatus     ENUM('open','new','temp-closed','for-rent') DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE tbl_busaptlisting (
     bussAddress    TEXT         DEFAULT NULL,
     bussMapsLink   TEXT         DEFAULT NULL,
 
-    -- ── Shared contact / address columns ──
+    -- â”€â”€ Shared contact / address columns â”€â”€
     contact        VARCHAR(30)  DEFAULT NULL,
     email          VARCHAR(255) DEFAULT NULL,
     houseNum       VARCHAR(50)  DEFAULT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE tbl_busaptlisting (
     barangay       VARCHAR(255) DEFAULT NULL,
     city           VARCHAR(255) DEFAULT NULL,
 
-    -- ── Photos ──
+    -- â”€â”€ Photos â”€â”€
     photos         TEXT         DEFAULT NULL,   -- JSON array of file paths
 
     createdAt      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
