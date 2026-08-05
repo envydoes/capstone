@@ -89,8 +89,8 @@ if (isset($_SESSION['account_role'])) {
     $user['role'] = $_SESSION['account_role'];
 }
 
-$password_error = '''';
-$password_success = '''';
+$password_error = '';
+$password_success = '';
 
 if (!$accId) {
     $password_error = 'Session expired or not logged in. Please log in again.';
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
           --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
         }
 
-        /* Tailwind-green â†’ theme color overrides */
+        /* Tailwind-green Ã¢â€ â€™ theme color overrides */
         .bg-green-100 { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
         .bg-green-700 { background-color: var(--site-primary) !important; }
         .text-green-500 { color: var(--site-primary) !important; }
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
         .hover\:bg-green-50:hover { background-color: var(--site-primary-pale) !important; }
         .hover\:text-green-700:hover { color: var(--site-primary) !important; }
 
-        /* Tailwind-emerald â†’ theme color overrides (role cards / focus rings) */
+        /* Tailwind-emerald Ã¢â€ â€™ theme color overrides (role cards / focus rings) */
         .bg-emerald-50  { background-color: var(--site-primary-pale) !important; }
         .bg-emerald-100 { background-color: color-mix(in srgb, var(--site-primary) 22%, white) !important; }
         .bg-emerald-600 { background-color: var(--site-primary) !important; }
@@ -436,15 +436,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
                             <h4 class="font-bold text-gray-900 mb-3">Password Requirements:</h4>
                             <ul class="space-y-2 text-gray-900">
                                 <li class="flex items-center">
-                                    <span class="mr-3">â€¢</span>
+                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
                                     <span>Minimum 8 characters</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <span class="mr-3">â€¢</span>
+                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
                                     <span>At least one uppercase letter</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <span class="mr-3">â€¢</span>
+                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
                                     <span>At least one number</span>
                                 </li>
                             </ul>
