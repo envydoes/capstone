@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/config/mail_config.php';
+
 $token   = bin2hex(random_bytes(32));
 $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
@@ -8,25 +10,10 @@ $stmt->bind_param('sss', $token, $expires, $email);
 $stmt->execute();
 $stmt->close();
 
-// Send via PHPMailer
-require '../vendor/autoload.php';
-use PHPMailer\PHPMailer\PHPMailer;
+// Send verification email via Brevo
+$verifyLink = APP_BASE_URL . "/signup/verify_email.php?token={$token}";
 
-$mail = new PHPMailer(true);
-$mail->isSMTP();
-$mail->Host       = 'smtp.gmail.com';
-$mail->SMTPAuth   = true;
-$mail->Username   = 'your@gmail.com';
-$mail->Password   = 'your_app_password';
-$mail->SMTPSecure = 'tls';
-$mail->Port       = 587;
-$mail->setFrom('your@gmail.com', 'SumEste Portal');
-$mail->addAddress($email);
-$mail->Subject = 'Verify Your Email — SumEste Portal';
-$mail->isHTML(true);
-
-$verifyLink = "https://yoursite.com/signup/verify_email.php?token={$token}";
-$mail->Body = "
+$htmlBody = "
     <div style='font-family:sans-serif;max-width:500px;margin:auto;'>
         <div style='background:#15803d;padding:24px;border-radius:12px 12px 0 0;text-align:center;'>
             <h2 style='color:#fff;margin:0;'>SumEste Portal</h2>
@@ -44,4 +31,10 @@ $mail->Body = "
         </div>
     </div>
 ";
-$mail->send();
+
+$mailError = null;
+$sent = sendMail($email, 'Verify Your Email — SumEste Portal', $htmlBody, $mailError);
+
+if (!$sent) {
+    error_log('Brevo send failed (finalizeRegistration): ' . $mailError);
+}

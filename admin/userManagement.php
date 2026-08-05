@@ -19,7 +19,7 @@ if ($role !== 'admin') {
     exit;
 }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $user = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $user = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $user, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 
@@ -28,8 +28,8 @@ ob_start();
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 require_once __DIR__ . '/../includes/check_permissions.php';
-require_permission($conn, 'manage_residents'); // swap the key per page — see table above
-// ── Fetch all three groups ────────────────────────────────────────────────
+require_permission($conn, 'manage_residents'); // swap the key per page â€” see table above
+// â”€â”€ Fetch all three groups â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function fetchGroup($conn, $status) {
     $sql = "SELECT userID,accID,account_role_csv,firstname,lastname,middlename,suffix,
                    family_role,gender,birthday,birthplace,civil_status,citizenship,
@@ -58,7 +58,7 @@ $cnt_pending  = count($pending_users);
 $cnt_approved = count($approved_users) + count($disabled_users);
 $cnt_rejected = count($rejected_users);
 
-// ── Stat cards: Accounts Overview ───────────────────────────────────────
+// â”€â”€ Stat cards: Accounts Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // New Registrations This Month, vs Last Month
 $regTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
@@ -113,10 +113,10 @@ $verificationRate = $verifDecided > 0 ? round(($verifApproved / $verifDecided) *
 
 mysqli_close($conn);
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildRow($u, $tab) {
     $fullname = trim($u['firstname'].' '.($u['middlename'] ? $u['middlename'].' ' : '').$u['lastname'].($u['suffix'] ? ' '.$u['suffix'] : ''));
-    $date = '—';
+    $date = 'â€”';
     if (!empty($u['dateRegistered'])) {
         $ts = strtotime($u['dateRegistered']);
         if ($ts && date('Y',$ts) > 1900) $date = date('F j, Y', $ts);
@@ -183,7 +183,7 @@ function buildRow($u, $tab) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>User Management — <?= e($siteSettings['site_title']) ?></title>
+  <title>User Management â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -193,7 +193,7 @@ function buildRow($u, $tab) {
     * { box-sizing: border-box; }
    body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
-    /* ── Sidebar ── */
+    /* â”€â”€ Sidebar â”€â”€ */
     .sidebar { width:260px; flex-shrink:0; background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%); display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:300; overflow:hidden; transition:width .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1); }
     .sidebar.collapsed { width:0; }
     .sidebar:not(.collapsed) { overflow-y:auto; }
@@ -219,14 +219,14 @@ function buildRow($u, $tab) {
     .sidebar-bottom-links { padding:0 16px 8px; }
     .sidebar-bottom-links .side-link { display:block; width:100%; font-size:.84rem; padding:8px 8px; border-radius:8px; transition:color .15s,background .15s; text-decoration:none; white-space:nowrap; border:none; background:none; text-align:left; cursor:pointer; }
 
-    /* ── Main ── */
+    /* â”€â”€ Main â”€â”€ */
     .main-wrapper { display:flex; min-height:100vh; }
     .main-content { flex:1; min-width:0; display:flex; flex-direction:column; width:calc(100% - 260px); margin-left:260px; transition:margin-left .3s cubic-bezier(.4,0,.2,1); overflow-x:hidden; }
     .main-content.sidebar-collapsed { width:100%; margin-left:0; }
     .topbar { background:#fff; border-bottom:1px solid #e5e7eb; padding:14px 28px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; position:sticky; top:0; z-index:100; }
     .topbar-title-block { transition:margin-left .25s ease; }
 
-    /* ── Stat cards ── */
+    /* â”€â”€ Stat cards â”€â”€ */
     .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,0.05); display:flex; flex-direction:column; gap:10px; transition:transform .2s, box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(21,128,61,.1); }
     .stat-label { font-size:.82rem; font-weight:600; color:#6b7280; }
@@ -239,7 +239,7 @@ function buildRow($u, $tab) {
     .stat-trend-down { color:#dc2626; }
     .stat-trend-flat { color:#9ca3af; }
 
-    /* ── Tabs ── */
+    /* â”€â”€ Tabs â”€â”€ */
     .tab-bar { display:flex; gap:2px; border-bottom:2px solid #e5e7eb; padding:0 24px; background:#fff; }
     .tab-btn { padding:12px 18px 11px; font-size:.84rem; font-weight:600; color:#6b7280; background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-2px; cursor:pointer; white-space:nowrap; transition:color .15s,border-color .15s; display:flex; align-items:center; gap:7px; }
     .tab-btn:hover { color:#374151; }
@@ -249,7 +249,7 @@ function buildRow($u, $tab) {
     .tab-badge-approved { background:#dcfce7; color:#15803d; }
     .tab-badge-rejected { background:#fee2e2; color:#dc2626; }
 
-    /* ── Table ── */
+    /* â”€â”€ Table â”€â”€ */
     .tbl-wrap { background:#fff; border-radius:14px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,.05); overflow-x:auto; -webkit-overflow-scrolling:touch; }
     table { width:100%; border-collapse:collapse; min-width:560px; }
     thead th { background:#f9fafb; padding:11px 16px; text-align:left; font-size:.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid #e5e7eb; white-space:nowrap; }
@@ -428,7 +428,7 @@ function buildRow($u, $tab) {
 
 <div class="main-wrapper">
 
-  <!-- ══════════ SIDEBAR ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â• -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">
@@ -474,7 +474,7 @@ function buildRow($u, $tab) {
     </div>
   </aside>
 
-  <!-- ══════════ MAIN ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â• -->
   <main class="main-content" id="mainContent">
     <header class="topbar">
       <div class="topbar-title-block">
@@ -538,7 +538,7 @@ function buildRow($u, $tab) {
           <p class="stat-label">Average Approval Time</p>
           <?php if ($avgApprovalHours !== null): ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-amber-500"></i><span class="stat-num"><?= $avgApprovalHours < 48 ? number_format($avgApprovalHours, 1) . 'h' : number_format($avgApprovalHours / 24, 1) . 'd' ?></span></div>
-            <span class="stat-sub">Pending → Approved/Rejected</span>
+            <span class="stat-sub">Pending â†’ Approved/Rejected</span>
           <?php else: ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-gray-300"></i><span class="stat-num text-gray-300">N/A</span></div>
             <span class="stat-sub">Awaiting status-change tracking</span>
@@ -551,7 +551,7 @@ function buildRow($u, $tab) {
         </div>
       </div>
 
-      <!-- ══════ TAB: PENDING ══════ -->
+      <!-- â•â•â•â•â•â• TAB: PENDING â•â•â•â•â•â• -->
       <div id="tab-pending" class="tab-pane active space-y-5">
         <?php renderTabControls('pending'); ?>
         <?php renderFilterPanel('pending'); ?>
@@ -560,7 +560,7 @@ function buildRow($u, $tab) {
         <div class="flex items-center justify-center gap-2 pt-2 flex-wrap" id="pagination-pending"></div>
       </div>
 
-      <!-- ══════ TAB: APPROVED ══════ -->
+      <!-- â•â•â•â•â•â• TAB: APPROVED â•â•â•â•â•â• -->
       <div id="tab-approved" class="tab-pane space-y-5">
         <?php renderTabControls('approved'); ?>
         <?php renderFilterPanel('approved'); ?>
@@ -569,7 +569,7 @@ function buildRow($u, $tab) {
         <div class="flex items-center justify-center gap-2 pt-2 flex-wrap" id="pagination-approved"></div>
       </div>
 
-      <!-- ══════ TAB: REJECTED ══════ -->
+      <!-- â•â•â•â•â•â• TAB: REJECTED â•â•â•â•â•â• -->
       <div id="tab-rejected" class="tab-pane space-y-5">
         <?php renderTabControls('rejected'); ?>
         <?php renderFilterPanel('rejected'); ?>
@@ -583,7 +583,7 @@ function buildRow($u, $tab) {
 </div>
 
 <?php
-// ── Reusable PHP renderers ────────────────────────────────────────────────
+// â”€â”€ Reusable PHP renderers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderTabControls($tab) { ?>
   <div class="flex items-center justify-between gap-4 flex-wrap top-row">
     <div class="flex items-baseline gap-2">
@@ -669,7 +669,7 @@ function renderTable($tab, $users) { ?>
         <?php else: ?>
         <?php foreach ($users as $u):
           $fullname = trim($u['firstname'].' '.($u['middlename'] ? $u['middlename'].' ' : '').$u['lastname'].($u['suffix'] ? ' '.$u['suffix'] : ''));
-          $date = '—';
+          $date = 'â€”';
           if (!empty($u['dateRegistered'])) { $ts = strtotime($u['dateRegistered']); if ($ts && date('Y',$ts)>1900) $date = date('F j, Y', $ts); }
           $uid   = (int)$u['userID'];
           $enc   = str_replace('"','&quot;',json_encode($u));
@@ -735,7 +735,7 @@ function renderBulkActions($tab) { ?>
 <?php }
 ?>
 
-<!-- ══════════ MODAL ══════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â• MODAL â•â•â•â•â•â•â•â•â•â• -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
   <div class="modal" id="modal">
     <div class="modal-header">
@@ -825,7 +825,7 @@ function renderBulkActions($tab) { ?>
 </div>
 
 <script>
-/* ════════════════════ SIDEBAR ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const sidebar=document.getElementById('sidebar'),mainContent=document.getElementById('mainContent'),expandBtn=document.getElementById('expandBtn'),collapseBtn=document.getElementById('collapseBtn'),backdrop=document.getElementById('sidebarBackdrop');
 const isMobile=()=>window.innerWidth<=1024;
 let collapsed=localStorage.getItem('sidebarCollapsed')==='true';
@@ -844,7 +844,7 @@ document.querySelectorAll('[data-nav]').forEach(btn=>{btn.addEventListener('clic
 
 function triggerRefresh(){showPageLoader('Refreshing users...');setTimeout(()=>location.reload(),180);}
 
-/* ════════════════════ ALERT ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ALERT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let alertTimer=null;
 function showToast(type,title,desc){
   const icons={success:'fa-circle-check',error:'fa-circle-xmark',warning:'fa-triangle-exclamation'};
@@ -877,7 +877,7 @@ function hidePageLoader(){
   if(content) content.style.display='';
 }
 
-/* ════════════════════ DIALOG ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• DIALOG â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let dialogCallback=null;
 function showDialog({type='approve',title,desc,nameBadge,confirmLabel,onConfirm}){
   const overlay=document.getElementById('dialogOverlay'),iconWrap=document.getElementById('dialogIconWrap'),iconEl=document.getElementById('dialogIconEl'),confirmBtn=document.getElementById('dialogConfirmBtn');
@@ -904,7 +904,7 @@ function showDialog({type='approve',title,desc,nameBadge,confirmLabel,onConfirm}
 function closeDialog(){document.getElementById('dialogOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('dialogOverlay').addEventListener('click',function(e){if(e.target===this)closeDialog();});
 
-/* ════════════════════ TABS ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TABS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let activeTab='pending';
 function switchTab(tab,btn){
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
@@ -915,7 +915,7 @@ function switchTab(tab,btn){
   renderPagination(tab);
 }
 
-/* ════════════════════ SORT ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SORT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const sortState={};
 function sortTable(tab,column){
   if(sortState[tab]?.col===column)sortState[tab].dir=sortState[tab].dir==='asc'?'desc':'asc';
@@ -935,7 +935,7 @@ function sortTable(tab,column){
   renderPagination(tab);
 }
 
-/* ════════════════════ SEARCH / FILTER ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SEARCH / FILTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const searchTimers={};
 function filterTab(tab){
   clearTimeout(searchTimers[tab]);
@@ -967,7 +967,7 @@ function filterTab(tab){
 }
 function toggleFilter(tab){document.getElementById('fp-'+tab).classList.toggle('hidden');}
 
-/* ════════════════════ CHECKBOX / BULK ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CHECKBOX / BULK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function toggleAll(tab,cb){
   document.querySelectorAll('.row-check-'+tab).forEach(c=>c.checked=cb.checked);
   updateBulkVisibility(tab);
@@ -977,11 +977,11 @@ function updateBulkVisibility(tab){
   document.getElementById('ba-'+tab).classList.toggle('hidden',count<1);
 }
 
-/* ════════════════════ HELPERS ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HELPERS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function calcAge(dob){const b=new Date(dob),n=new Date();let a=n.getFullYear()-b.getFullYear();if(n<new Date(n.getFullYear(),b.getMonth(),b.getDate()))a--;return a;}
 function getUserNameFromRow(row){if(!row)return'';const u=JSON.parse(row.dataset.user.replace(/&quot;/g,'"'));return[u.firstname,u.middlename?u.middlename+'.':'',u.lastname,u.suffix].filter(Boolean).join(' ');}
 
-/* ════════════════════ MODAL ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MODAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let currentUserID=null,currentUserRow=null,currentFrontID='',currentBackID='',currentUserTab='';
 
 // Action configs per tab/status
@@ -1039,7 +1039,7 @@ function openModal(row){
   document.getElementById('mHealth').value=u.health_conditions||'';
   document.getElementById('mEmployment').value=u.employment_status||'';
   document.getElementById('mJobTitle').value=u.job_title||'';
-  document.getElementById('mIncome').value=u.monthly_income?'₱ '+parseFloat(u.monthly_income).toLocaleString('en-PH',{minimumFractionDigits:2}):'';
+  document.getElementById('mIncome').value=u.monthly_income?'â‚± '+parseFloat(u.monthly_income).toLocaleString('en-PH',{minimumFractionDigits:2}):'';
   document.getElementById('mYearsResident').value=u.years_resident??'';
   document.getElementById('mResidentBirth').value=parseInt(u.resident_birth)?'Yes':'No';
   document.getElementById('mVoterID').value=u.voter_id||'';
@@ -1128,7 +1128,7 @@ function handleModalAction(side){
   handleAction(userID,btnCfg.action,row,userName);
 }
 
-/* ════════════════════ CORE ACTION ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CORE ACTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function executeAction(userID,action,row){
   if(row){
     const buttons = row.querySelectorAll('button');
@@ -1224,7 +1224,7 @@ function handleAction(userID,action,row,userName){
   }});
 }
 
-/* ════════════════════ BULK ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• BULK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function bulkAction(tab,action){
   const selectedRows=Array.from(document.querySelectorAll(`.row-check-${tab}:checked`)).map(cb=>cb.closest('tr'));
   if(!selectedRows.length){showToast('warning','No Users Selected','Please select at least one user.');return;}
@@ -1256,7 +1256,7 @@ function bulkAction(tab,action){
   });
 }
 
-/* ════════════════════ LIGHTBOX ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• LIGHTBOX â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function resolveUserIDSrc(src){
   if(!src) return '';
   src = src.trim();
@@ -1269,7 +1269,7 @@ function resolveUserIDSrc(src){
 function openLightbox(side){const src=side==='front'?currentFrontID:currentBackID;if(!src)return;document.getElementById('lightboxImg').src=resolveUserIDSrc(src);document.getElementById('lightbox').classList.add('open');}
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
 
-/* ════════════════════ PAGINATION ════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• PAGINATION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const ROWS=10,pageState={pending:1,approved:1,rejected:1};
 function getVisibleRows(tab){return Array.from(document.querySelectorAll(`#table-${tab} tbody tr[data-user]`)).filter(r=>r.dataset.filteredout!=='true');}
 function renderPagination(tab){

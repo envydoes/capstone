@@ -1,5 +1,5 @@
 <?php
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 session_start();
@@ -175,7 +175,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Borrow Equipment — <?= e($siteSettings['site_title']) ?></title>
+  <title>Borrow Equipment â€” <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -185,13 +185,13 @@ $initials = strtoupper(substr($userName, 0, 2));
     * { box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
-    /* ── Navbar ── */
+    /* â”€â”€ Navbar â”€â”€ */
     .nav-link { position: relative; transition: color 0.2s; }
     .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s; }
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { color: var(--site-primary-dark); }
 
-    /* ── Banner ── */
+    /* â”€â”€ Banner â”€â”€ */
     .banner-placeholder {
       width: 100%; height: 160px;
       background: linear-gradient(135deg, var(--site-primary-dark) 0%, var(--site-primary) 50%, var(--site-primary-light) 100%);
@@ -205,10 +205,10 @@ $initials = strtoupper(substr($userName, 0, 2));
     .banner-inner { display: flex; align-items: center; gap: 16px; z-index: 1; }
     .banner-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,0.2); }
 
-    /* ── Section card ── */
+    /* â”€â”€ Section card â”€â”€ */
     .section-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 18px; padding: 28px; box-shadow: 0 2px 12px rgba(var(--site-primary-rgb),0.05); }
 
-    /* ── Search ── */
+    /* â”€â”€ Search â”€â”€ */
     .search-wrap { position: relative; }
     .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.85rem; pointer-events: none; }
     .search-input {
@@ -222,7 +222,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     .search-input:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.1); }
     .search-input::placeholder { color: #9ca3af; }
 
-    /* ── Equipment card ── */
+    /* â”€â”€ Equipment card â”€â”€ */
     .eq-card {
       background: #fff; border: 1.5px solid #e5e7eb; border-radius: 16px;
       overflow: hidden; transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
@@ -256,12 +256,12 @@ $initials = strtoupper(substr($userName, 0, 2));
     .eq-img-placeholder::after  { transform: rotate(-35deg); }
     .eq-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 
-    /* ── Availability badge ── */
+    /* â”€â”€ Availability badge â”€â”€ */
     .badge-avail { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; border: 1px solid; }
     .badge-avail.available   { background: color-mix(in srgb, var(--site-primary) 20%, white); color: var(--site-primary-dark); border-color: var(--site-primary-light); }
     .badge-avail.unavailable { background: #f3f4f6; color: #6b7280; border-color: #d1d5db; }
 
-    /* ── Qty stepper ── */
+    /* â”€â”€ Qty stepper â”€â”€ */
     .qty-wrap {
       display: inline-flex; align-items: center;
       border: 1.5px solid #d1d5db; border-radius: 9px;
@@ -284,7 +284,7 @@ $initials = strtoupper(substr($userName, 0, 2));
       padding: 0 6px;
     }
 
-    /* ── Inline Borrow Button ── */
+    /* â”€â”€ Inline Borrow Button â”€â”€ */
     .borrow-btn {
       width: 100%;
       display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -306,7 +306,7 @@ $initials = strtoupper(substr($userName, 0, 2));
       border-radius: 999px;
     }
 
-    /* ── Modal ── */
+    /* â”€â”€ Modal â”€â”€ */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 500;
       background: color-mix(in srgb, var(--site-primary-darker) 55%, transparent); backdrop-filter: blur(4px);
@@ -419,7 +419,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 <body>
 <div class="min-h-screen">
 
-<!-- ── NAVBAR ── -->
+<!-- â”€â”€ NAVBAR â”€â”€ -->
 <header class="w-full h-[68px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="residentLanding.php" class="flex items-center gap-3">
@@ -483,7 +483,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   </nav>
 </header>
 
-<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MOBILE SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -625,7 +625,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
           <div class="flex justify-end mt-auto pt-2 border-t border-gray-50">
             <div class="qty-wrap">
-              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>−</button>
+              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>âˆ’</button>
               <div class="qty-val" id="qty_<?= $eq['id'] ?>">0</div>
               <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, 1)"  id="btn_plus_<?= $eq['id'] ?>"  <?= !$available ? 'disabled' : '' ?>>+</button>
             </div>
@@ -645,7 +645,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     </div>
   </div>
 
-  <!-- ── BORROW BUTTON (inline, below grid) ── -->
+  <!-- â”€â”€ BORROW BUTTON (inline, below grid) â”€â”€ -->
   <div class="f4">
     <button class="borrow-btn" id="borrowBtn" onclick="openBorrowModal()" disabled>
       <i class="fa-solid fa-basket-shopping text-sm"></i>
@@ -655,7 +655,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
 </main>
 
-<!-- ── BORROW REQUEST MODAL ── -->
+<!-- â”€â”€ BORROW REQUEST MODAL â”€â”€ -->
 <div class="modal-overlay" id="borrowModal" onclick="closeModalOnOverlay(event)">
   <div class="modal-box">
 
@@ -712,7 +712,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   <input type="hidden" name="return_date"  id="hiddenDate">
 </form>
 
-<!-- ── FOOTER ── -->
+<!-- â”€â”€ FOOTER â”€â”€ -->
 <footer class="mt-16 bg-green-950 text-white pt-14 pb-6 px-4">
   <div class="max-w-6xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
@@ -745,7 +745,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ðŸŒ¿ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
@@ -805,7 +805,7 @@ $initials = strtoupper(substr($userName, 0, 2));
       if (qty > 0) {
         hasItems = true;
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${qty}×</strong> ${card.dataset.name}`;
+        li.innerHTML = `<strong>${qty}Ã—</strong> ${card.dataset.name}`;
         ul.appendChild(li);
       }
     });
@@ -867,7 +867,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     }
   });
 
-  /* ── Mobile sidebar ── */
+  /* â”€â”€ Mobile sidebar â”€â”€ */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

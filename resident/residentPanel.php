@@ -1,5 +1,5 @@
 <?php 
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj"; $database = "sumeste_db";
+$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
 $conn = mysqli_connect($host, $dbuser, $password, $database);
 if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
 session_start();
@@ -159,15 +159,15 @@ if ($userId > 0) {
     }
 }
 
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ELIGIBILITY ENGINE
-// ─────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function getEligiblePrograms(array $row): array {
     $age = (int)($row['_age'] ?? 0);
     $score = (int)($row['prio_score'] ?? 0);
     $eligible = [];
 
-    // ── 4Ps: specific housing, utility, pregnant, income conditions
+    // â”€â”€ 4Ps: specific housing, utility, pregnant, income conditions
     $bad_house   = in_array(strtolower($row['housing_status'] ?? ''), ['informal_settler', 'shared', 'government_housing']);
     $bad_mat     = in_array(strtolower($row['house_material'] ?? ''), ['light_materials', 'makeshift', 'wood']);
     $bad_elec    = in_array(strtolower($row['electricity'] ?? ''), ['shared', 'no_electricity']);
@@ -180,12 +180,12 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = '4ps';
     }
 
-    // ── Senior Citizen: age >= 60
+    // â”€â”€ Senior Citizen: age >= 60
     if ($age >= 60) {
         $eligible[] = 'senior';
     }
 
-    // ── Scholarship: not empty school, have year level, gpa 1.00 - 1.75
+    // â”€â”€ Scholarship: not empty school, have year level, gpa 1.00 - 1.75
     $school = trim($row['school_name'] ?? '');
     $yrLvl = trim($row['year_level'] ?? '');
     $gwaStr = trim($row['gwa_gpa'] ?? '');
@@ -195,17 +195,17 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = 'scholarship';
     }
 
-    // ── PWD: is_pwd = 1 AND has valid ID number
+    // â”€â”€ PWD: is_pwd = 1 AND has valid ID number
     if (!empty($row['is_pwd']) && $row['is_pwd'] == 1 && !empty($row['pwd_id_number'])) {
         $eligible[] = 'pwd';
     }
 
-    // ── Kabataan/SK: age 15–30
+    // â”€â”€ Kabataan/SK: age 15â€“30
     if ($age >= 15 && $age <= 30) {
         $eligible[] = 'kabataan';
     }
 
-    // ── Registered Voters: age >= 18
+    // â”€â”€ Registered Voters: age >= 18
     if ($age >= 18) {
         $eligible[] = 'voters';
     }
@@ -240,7 +240,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Services — <?php echo htmlspecialchars($siteSettings['site_title']); ?></title>
+  <title>Services â€” <?php echo htmlspecialchars($siteSettings['site_title']); ?></title>
   <link rel="icon" href="<?php echo htmlspecialchars(site_config_logo_url($siteSettings, '../')); ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -256,7 +256,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { color: var(--site-primary-dark); }
 
-    /* Navbar & Footer — dynamic theme color overrides (scoped so the rest of the page keeps its fixed accent colors) */
+    /* Navbar & Footer â€” dynamic theme color overrides (scoped so the rest of the page keeps its fixed accent colors) */
     :root {
       --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
       --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
@@ -385,7 +385,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .alert-close { background: none; border: none; color: white; cursor: pointer; padding: 4px; opacity: 0.8; transition: opacity 0.2s; flex-shrink: 0; }
     .alert-close:hover { opacity: 1; }
 
-    /* ── Application Details Modal ── */
+    /* â”€â”€ Application Details Modal â”€â”€ */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 500;
       background: rgba(5,46,22,0.5); backdrop-filter: blur(4px);
@@ -492,7 +492,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
   </nav>
 </header>
 
-<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MOBILE SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -540,7 +540,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
 
 <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
 
-  <!-- ── SERVICES ── -->
+  <!-- â”€â”€ SERVICES â”€â”€ -->
   <div class="f1">
     <h1 class="text-3xl font-bold text-center mb-8" style="font-family:'Playfair Display',serif;color:var(--site-primary-dark)">Services</h1>
 
@@ -551,7 +551,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       // Default: 3 columns
       $gridClass = "sm:grid-cols-3";
 
-      // If role matches → use 4 columns
+      // If role matches â†’ use 4 columns
       if (str_contains($roleLower, 'resident,business/apartment owner')) {
           $gridClass = "sm:grid-cols-4";
       }
@@ -597,7 +597,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     </div>
   </div>
 
-  <!-- ── MY REQUESTS ── -->
+  <!-- â”€â”€ MY REQUESTS â”€â”€ -->
   <div class="f2">
     <h2 class="text-2xl font-bold text-center mb-6" style="font-family:'Playfair Display',serif;color:var(--site-primary-dark)">My Requests</h2>
 
@@ -786,7 +786,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
               <tr>
                 <td><?php echo htmlspecialchars($request['equipment_name']); ?></td>
                 <td><?php echo htmlspecialchars($request['quantityRequested']); ?></td>
-                <td><?php echo $request['returnDate'] ? htmlspecialchars(date('m/d/Y', strtotime($request['returnDate']))) : '—'; ?></td>
+                <td><?php echo $request['returnDate'] ? htmlspecialchars(date('m/d/Y', strtotime($request['returnDate']))) : 'â€”'; ?></td>
                 <td><?php echo htmlspecialchars(date('m/d/Y', strtotime($request['submitted_at']))); ?></td>
                 <td>
                   <?php
@@ -873,7 +873,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
                   echo htmlspecialchars(trim($description));
                   ?>
                 </td>
-                <td><?php echo htmlspecialchars($request['prio_score'] ?? '—'); ?></td>
+                <td><?php echo htmlspecialchars($request['prio_score'] ?? 'â€”'); ?></td>
                 <td><?php echo htmlspecialchars(date('m/d/Y', strtotime($request['submitted_at']))); ?></td>
                 <td>
                   <?php
@@ -964,24 +964,24 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       <div class="flex flex-wrap justify-between gap-2 pb-4 mb-4 border-b border-gray-100">
         <div class="detail-row mb-0">
           <span class="detail-label">Applicant Name</span>
-          <span class="detail-val font-bold text-gray-900" id="mName">—</span>
+          <span class="detail-val font-bold text-gray-900" id="mName">â€”</span>
         </div>
         <div class="detail-row mb-0 text-right">
           <span class="detail-label">Last Updated</span>
-          <span class="detail-val text-gray-500" id="mUpdated">—</span>
+          <span class="detail-val text-gray-500" id="mUpdated">â€”</span>
         </div>
       </div>
 
       <!-- Application type -->
       <div class="detail-row">
         <span class="detail-label">Application Type</span>
-        <span class="detail-val" id="mType">—</span>
+        <span class="detail-val" id="mType">â€”</span>
       </div>
 
       <!-- Purpose -->
       <div class="detail-row">
         <span class="detail-label">Purpose of Application</span>
-        <span class="detail-val" id="mPurpose">—</span>
+        <span class="detail-val" id="mPurpose">â€”</span>
       </div>
 
       <!-- Submitted requirements -->
@@ -1005,7 +1005,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       <!-- Remark box -->
       <div class="app-remark mt-2" id="mRemark">
         <i class="fa-solid fa-circle-info text-green-600 flex-shrink-0 mt-0.5"></i>
-        <p class="leading-relaxed text-green-800 text-xs italic" id="mRemarkText">—</p>
+        <p class="leading-relaxed text-green-800 text-xs italic" id="mRemarkText">â€”</p>
       </div>
 
     </div>
@@ -1053,7 +1053,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?php echo htmlspecialchars($siteSettings['site_title']); ?>. All Rights Reserved. Made with 🌿 for <?php echo htmlspecialchars($siteSettings['barangay_name']); ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">Â© 2026 <?php echo htmlspecialchars($siteSettings['site_title']); ?>. All Rights Reserved. Made with ðŸŒ¿ for <?php echo htmlspecialchars($siteSettings['barangay_name']); ?>.</div>
   </div>
 </footer>
 
@@ -1117,7 +1117,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     }
   }
 
-  /* ── Tab switching ── */
+  /* â”€â”€ Tab switching â”€â”€ */
   function switchTab(btn, id) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1125,13 +1125,13 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     document.getElementById('tab-' + id).classList.remove('hidden');
   }
 
-  /* ── Modal ── */
+  /* â”€â”€ Modal â”€â”€ */
   function openModal(data) {
     // Name + updated
-    document.getElementById('mName').textContent    = data.name    || '—';
-    document.getElementById('mUpdated').textContent = data.updated || '—';
-    document.getElementById('mType').textContent    = data.type    || '—';
-    document.getElementById('mPurpose').textContent = data.purpose || '—';
+    document.getElementById('mName').textContent    = data.name    || 'â€”';
+    document.getElementById('mUpdated').textContent = data.updated || 'â€”';
+    document.getElementById('mType').textContent    = data.type    || 'â€”';
+    document.getElementById('mPurpose').textContent = data.purpose || 'â€”';
 
     // Requirements list
     const ul = document.getElementById('mRequirements');
@@ -1149,7 +1149,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       active:    { cls: 'badge-active',   icon: 'fa-circle-dot',      label: 'Active'      },
       cancelled: { cls: 'badge-cancelled',icon: 'fa-circle-xmark',    label: 'Cancelled'   },
     };
-    const s = statusMap[data.status] || { cls: 'badge-na', icon: 'fa-circle', label: data.status || '—' };
+    const s = statusMap[data.status] || { cls: 'badge-na', icon: 'fa-circle', label: data.status || 'â€”' };
     document.getElementById('mStatus').innerHTML =
       `<span class="badge ${s.cls}"><i class="fa-solid ${s.icon} text-[10px]"></i> ${s.label}</span>`;
 
@@ -1162,7 +1162,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       const age = parseInt(data.eligibility._age || 0);
       const score = parseInt(data.eligibility.prio_score || 0);
       
-      // ── 4Ps: specific housing, utility, pregnant, income conditions
+      // â”€â”€ 4Ps: specific housing, utility, pregnant, income conditions
       const bad_house = ['informal_settler', 'shared', 'government_housing'].includes((data.eligibility.housing_status || '').toLowerCase());
       const bad_mat = ['light_materials', 'makeshift', 'wood'].includes((data.eligibility.house_material || '').toLowerCase());
       const bad_elec = ['shared', 'no_electricity'].includes((data.eligibility.electricity || '').toLowerCase());
@@ -1175,12 +1175,12 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
           eligiblePrograms.push({ name: "4P's", eligible: true });
       }
       
-      // ── Senior Citizen: age >= 60
+      // â”€â”€ Senior Citizen: age >= 60
       if (age >= 60) {
           eligiblePrograms.push({ name: "Senior Citizen", eligible: true });
       }
       
-      // ── Scholarship: not empty school, have year level, gpa 1.00 - 1.75
+      // â”€â”€ Scholarship: not empty school, have year level, gpa 1.00 - 1.75
       const school = (data.eligibility.school_name || '').trim();
       const yrLvl = (data.eligibility.year_level || '').trim();
       const gwaStr = (data.eligibility.gwa_gpa || '').trim();
@@ -1190,17 +1190,17 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
           eligiblePrograms.push({ name: "Scholarship", eligible: true });
       }
       
-      // ── PWD: is_pwd = 1 AND has valid ID number
+      // â”€â”€ PWD: is_pwd = 1 AND has valid ID number
       if (data.eligibility.is_pwd == 1 && data.eligibility.pwd_id_number) {
           eligiblePrograms.push({ name: "PWD Program", eligible: true });
       }
       
-      // ── Kabataan/SK: age 15–30
+      // â”€â”€ Kabataan/SK: age 15â€“30
       if (age >= 15 && age <= 30) {
           eligiblePrograms.push({ name: "Kabataan/SK", eligible: true });
       }
       
-      // ── Registered Voters: age >= 18
+      // â”€â”€ Registered Voters: age >= 18
       if (age >= 18) {
           eligiblePrograms.push({ name: "Registered Voters", eligible: true });
       }
@@ -1273,7 +1273,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
   });
 
   
-  /* ── Mobile sidebar ── */
+  /* â”€â”€ Mobile sidebar â”€â”€ */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

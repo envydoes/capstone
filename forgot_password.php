@@ -9,50 +9,22 @@ $debugResetLink = null;
 
 function sendResetEmail(string $recipientEmail, string $resetLink, ?string $fromEmail = null, ?string &$mailError = null): bool
 {
-    try {
-        if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
-            // Fallback for local testing - show reset link directly
-            $mailError = 'Local testing fallback (email not sent):' . "\n\n" . $resetLink;
-            return false;
-        }
+    $htmlBody = '
+        <p>Hello,</p>
+        <p>We received a request to reset your SumEste Portal password.</p>
+        <p><a href="' . htmlspecialchars($resetLink, ENT_QUOTES, 'UTF-8') . '">Click here to reset your password</a></p>
+        <p>This link expires in 1 hour.</p>
+        <p>If you did not request this, you can ignore this email.</p>
+    ';
 
-        require_once __DIR__ . '/vendor/autoload.php';
+    $sent = sendMail($recipientEmail, 'Reset your SumEste password', $htmlBody, $mailError);
 
-        $mailClass = 'PHPMailer\\PHPMailer\\PHPMailer';
-        $mail = new $mailClass(true);
-        $mail->isSMTP();
-        $mail->Host       = MAIL_HOST;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = MAIL_USERNAME;
-        $mail->Password   = MAIL_PASSWORD;
-        $mail->SMTPSecure = MAIL_ENCRYPTION;
-        $mail->Port       = MAIL_PORT;
-
-        // Use user's email if logged in, otherwise use default
-        $senderEmail = $fromEmail ?? MAIL_FROM_EMAIL;
-        $mail->setFrom($senderEmail, MAIL_FROM_NAME);
-        $mail->addAddress($recipientEmail);
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Reset your SumEste password';
-        $mail->Body = '
-            <p>Hello,</p>
-            <p>We received a request to reset your SumEste Portal password.</p>
-            <p><a href="' . htmlspecialchars($resetLink, ENT_QUOTES, 'UTF-8') . '">Click here to reset your password</a></p>
-            <p>This link expires in 1 hour.</p>
-            <p>If you did not request this, you can ignore this email.</p>
-        ';
-
-        $mail->AltBody = "Reset your password using this link: {$resetLink} (valid for 1 hour).";
-
-        return $mail->send();
-    } catch (Throwable $e) {
-        $mailError = 'PHPMailer send failed: ' . $e->getMessage();
-        error_log($mailError);
-        return false;
+    if (!$sent) {
+        error_log('Brevo send failed: ' . $mailError);
     }
-}
 
+    return $sent;
+}
     function isPlaceholderMailConfig(): bool
     {
       return (

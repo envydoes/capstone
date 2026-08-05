@@ -1,9 +1,14 @@
 <?php
 session_start();
-$host = "o7jpqmin0zgconui4xtnfju6";
-$dbUser = "root";
-$dbPassword = "UKkJ05DHQDMMMOxFEUI5f1HJGVj8Vb5gfJAEvAESTGCVWDtFEGb42qX67AxGUXvj";
-$database = "sumeste_db";
+
+require_once __DIR__ . '/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->safeLoad();
+
+$host = getenv('DB_HOST');
+$dbUser = getenv('DB_USER');
+$dbPassword = getenv('DB_PASSWORD');
+$database = getenv('DB_NAME');
 
 $conn = mysqli_connect($host, $dbUser, $dbPassword, $database);
 if (!$conn) {
