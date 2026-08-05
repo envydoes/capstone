@@ -1,6 +1,6 @@
 <?php
 // Mail settings for PHPMailer
-const MAIL_HOST       = 'smtp.gmail.com';
+define('MAIL_HOST', getenv('MAIL_HOST') ?: 'smtp-relay.brevo.com');
 const MAIL_PORT       = 587;
 define('MAIL_USERNAME', getenv('MAIL_USERNAME') ?: '');
 define('MAIL_PASSWORD', getenv('MAIL_PASSWORD') ?: '');
