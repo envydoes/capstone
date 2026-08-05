@@ -416,6 +416,11 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
     <a href="busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
       <i class="fa-solid fa-building w-4 text-[var(--site-primary)]"></i> Apartment
     </a>
+    <?php if (str_contains($roleLower, 'non-resident,business/apartment owner') || str_contains($roleLower, 'business') && !str_contains($roleLower, 'resident')): ?>
+      <a href="nonResident/manageList.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
+        <i class="fa-solid fa-plus w-4 text-[var(--site-primary)]"></i> Post Listing
+      </a>
+    <?php endif; ?>
     <?php if ($logged_in): ?>
     <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
       <?php if ($profileUrl !== null): ?>

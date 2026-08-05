@@ -145,7 +145,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       <div class="w-9 h-9 rounded-full flex items-center justify-center shadow overflow-hidden flex-shrink-0" style="background: var(--site-primary)">
         <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
       </div>
-      <div class="hidden sm:block">
+      <div class="sm:block">
         <h3 class="font-bold text-sm leading-tight" style="font-family:'DM Sans',sans-serif;color:var(--site-primary-darker)"><?= e($siteSettings['site_title']) ?></h3>
         <p class="text-[9px] tracking-widest uppercase" style="color:var(--site-primary)"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
@@ -192,9 +192,18 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
               </div>
             </div>
             <div class="py-1">
-              <a href="../profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition"><i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile</a>
-              <?php if (($role ?? '') === 'admin'): ?>
-              <a href="../settings.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition"><i class="fa-solid fa-gear w-4 text-gray-400"></i> Settings</a>
+              <?php if (str_contains($roleLower, 'resident')): ?>
+                <?php       
+                  // Check non-resident first because it contains the word "resident"
+                  if (str_contains($roleLower, 'non-resident')) {
+                      $profileUrl = '../nonResident/nonResidentProfile';
+                  } elseif (str_contains($roleLower, 'resident')) {
+                      $profileUrl = '../resident/myProfile';
+                  }
+                ?>
+                <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
+                  <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
+                </a>
               <?php endif; ?>
               <?php if ($roleLower === 'admin'): ?>
               <a href="../admin/adminDashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition"><i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> Admin Panel</a>
@@ -245,14 +254,16 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       </a>
     <?php endif; ?>
     <a href="../landing.php#announcements" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-bullhorn w-4 text-green-500"></i> Announcements</a>
-    <a href="../busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-store w-4 text-blue-500"></i> Business</a>
+    <a href="../busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-store w-4 text-green-500"></i> Business</a>
     <a href="../busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-building w-4 text-green-500"></i> Apartment</a>
+    <?php if (str_contains($roleLower, 'non-resident,business/apartment owner') || str_contains($roleLower, 'business') && !str_contains($roleLower, 'resident')): ?>
+      <a href="nonResident/manageList.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
+        <i class="fa-solid fa-plus w-4 text-[var(--site-primary)]"></i> Post Listing
+      </a>
+    <?php endif; ?>
     <?php if ($logged_in): ?>
     <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
-      <a href="../profile" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile</a>
-      <?php if (($role ?? '') === 'admin'): ?>
-      <a href="../settings.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-gear w-4 text-gray-400"></i> Settings</a>
-      <?php endif; ?>
+      <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile</a>
       <a href="../logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-medium hover:bg-red-50 transition"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout</a>
     </div>
     <?php else: ?>

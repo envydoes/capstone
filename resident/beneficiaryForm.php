@@ -504,9 +504,6 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
               <a href="myProfile.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
                 <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
               </a>
-              <a href="../settings.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
-                <i class="fa-solid fa-gear w-4 text-gray-400"></i> Settings
-              </a>
             </div>
             <div class="border-t border-gray-100 py-1">
               <a href="../logout.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition">
@@ -569,9 +566,6 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
       <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
         <a href="myProfile.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
           <i class="fa-solid fa-user w-4 text-[var(--site-primary)]"></i> My Profile
-        </a>
-        <a href="../settings.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
-          <i class="fa-solid fa-gear w-4 text-[var(--site-primary)]"></i> Settings
         </a>
         <a href="../logout.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-medium hover:bg-red-50 transition">
           <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout
