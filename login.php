@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
   }
   else {
     // --- 4. Database connection ---
-    $db = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', '', 'sumeste_db');
+    $db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASSWORD'), getenv('DB_NAME'));
 
     if ($db->connect_error) {
       error_log('DB connect error: ' . $db->connect_error);
