@@ -28,10 +28,9 @@ function sendResetEmail(string $recipientEmail, string $resetLink, ?string $from
     function isPlaceholderMailConfig(): bool
     {
       return (
-        MAIL_USERNAME === 'your_email@gmail.com' ||
-        MAIL_USERNAME === 'your_real_email@gmail.com' ||
-        MAIL_PASSWORD === 'your_app_password_here' ||
-        MAIL_PASSWORD === 'xxxx xxxx xxxx xxxx'
+        !defined('BREVO_API_KEY') ||
+        BREVO_API_KEY === '' ||
+        BREVO_API_KEY === 'PASTE_YOUR_BREVO_API_KEY_HERE'
       );
     }
 
