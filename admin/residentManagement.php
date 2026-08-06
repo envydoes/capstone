@@ -1150,13 +1150,6 @@ mysqli_close($conn);
         </div>
       </div>
     </div>
-
-    <div class="modal-body">
-      <input type="hidden" id="permUserID">
-      <p class="text-xs text-gray-400 mb-3">Toggle modules on or off â€” takes effect immediately, no email is sent. Turn every module off to fully revoke access.</p>
-
-    
-    </div>
   </div>
 </div>
 
