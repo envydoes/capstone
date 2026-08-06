@@ -350,7 +350,7 @@ function prettyDocumentType($type) {
           <p class="stat-label">Average Turnaround Time</p>
           <?php if ($avgTurnaroundHours !== null): ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-amber-500"></i><span class="stat-num"><?= $avgTurnaroundHours < 48 ? number_format($avgTurnaroundHours, 1) . 'h' : number_format($avgTurnaroundHours / 24, 1) . 'd' ?></span></div>
-            <span class="stat-sub">Requested �?' Released</span>
+            <span class="stat-sub">Requested — Released</span>
           <?php else: ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-gray-300"></i><span class="stat-num text-gray-300">N/A</span></div>
             <span class="stat-sub">No released requests yet</span>
@@ -454,7 +454,7 @@ function prettyDocumentType($type) {
             <?php else: ?>
             <?php foreach ($all_docs as $d):
               $fullname = trim($d['firstname'].' '.($d['middlename']?$d['middlename'].' ':'').$d['lastname'].($d['suffix']?' '.$d['suffix']:''));
-              $date = '�?"';
+              $date = '—';
               if (!empty($d['submitted_at'])) { $ts=strtotime($d['submitted_at']); if($ts&&$ts>0)$date=date('F j, Y',$ts); }
               $raw = $d['document_type']??'';
               $pretty = htmlspecialchars(prettyDocumentType($raw));
@@ -497,7 +497,7 @@ function prettyDocumentType($type) {
   </main>
 </div>
 
-<!-- �.��.� DETAIL MODAL �.��.� -->
+<!-- ────── DETAIL MODAL ────── -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -598,7 +598,7 @@ function prettyDocumentType($type) {
   </div>
 </div>
 
-<!-- �.��.� LIGHTBOX (shared for IDs + supporting doc images) �.��.� -->
+<!-- ────── LIGHTBOX (shared for IDs + supporting doc images) ────── -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lightbox-inner" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
@@ -607,7 +607,7 @@ function prettyDocumentType($type) {
   </div>
 </div>
 
-<!-- �.��.� CONFIRM DIALOG �.��.� -->
+<!-- ────── CONFIRM DIALOG ────── -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body">
@@ -627,9 +627,9 @@ function prettyDocumentType($type) {
 </div>
 
 <script>
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    SIDEBAR
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 const sidebar      = document.getElementById('sidebar');
 const mainContent  = document.getElementById('mainContent');
 const expandBtn    = document.getElementById('expandBtn');
@@ -673,7 +673,7 @@ expandBtn.addEventListener('click', () => {
 window.addEventListener('resize', applyCollapse);
 applyCollapse();
 
-/* �"?�"? page loader fake-delay �"?�"? */
+/* ────── page loader fake-delay ────── */
 const realtimeLoader    = document.getElementById('realtimeLoader');
 const mainDataContainer = document.getElementById('mainDataContainer');
 function finishLoading() {
@@ -690,9 +690,9 @@ document.querySelectorAll('[data-nav]').forEach(b =>
 );
 function triggerRefresh() { showPageLoader('Refreshing requests...'); setTimeout(() => location.reload(), 180); }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    ALERT TOAST
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 let alertTimer = null;
 function showToast(type, title, desc) {
   const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
@@ -707,9 +707,9 @@ function showToast(type, title, desc) {
 }
 function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    PAGE LOADER
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function showPageLoader(message = 'Loading...') {
   mainDataContainer.style.display = 'none';
   window.__docLoaderShownAt = Date.now();
@@ -724,9 +724,9 @@ function hidePageLoader() {
   mainDataContainer.style.display = '';
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    BUTTON LOADING STATE
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function setActionButtonLoading(btn, label = 'Processing...') {
   if (!btn) return null;
   const original = btn.innerHTML;
@@ -735,9 +735,9 @@ function setActionButtonLoading(btn, label = 'Processing...') {
   return () => { btn.disabled = false; btn.innerHTML = original; };
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    DIALOG
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 let dialogCallback = null;
 function showDialog({ type = 'approve', title, desc, nameBadge, confirmLabel, onConfirm }) {
   const iconWrap   = document.getElementById('dialogIconWrap');
@@ -777,9 +777,9 @@ document.getElementById('dialogOverlay').addEventListener('click', e => {
   if (e.target === document.getElementById('dialogOverlay')) closeDialog();
 });
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    BULK SELECTION
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function toggleAll(cb) {
   document.querySelectorAll('.row-check:not([disabled])').forEach(c => c.checked = cb.checked);
   updateBulkVisibility();
@@ -795,9 +795,9 @@ function updateBulkVisibility() {
   else      { lbl.style.display = 'none'; }
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    STATUS ORDER + SORT
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 const STATUS_ORDER = { pending: 0, approved: 1, rejected: 2 };
 
 function sortByStatusFirst(rows) {
@@ -828,9 +828,9 @@ function sortTable(col) {
   renderPagination();
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    STATUS PILLS
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function setStatusPill(btn, status) {
   document.querySelectorAll('.status-pill').forEach(p => p.classList.remove('active-pill'));
   btn.classList.add('active-pill');
@@ -846,9 +846,9 @@ function syncPillsFromSelect() {
   );
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    FILTER
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 let searchTimeout;
 function filterTable() {
   clearTimeout(searchTimeout);
@@ -888,9 +888,9 @@ function filterTable() {
 }
 function toggleFilter() { document.getElementById('filterPanel').classList.toggle('hidden'); }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    HELPERS
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function calcAge(dob) {
   const b = new Date(dob), n = new Date();
   let a = n.getFullYear() - b.getFullYear();
@@ -922,9 +922,9 @@ function isPdfExt(name) {
   return /\.pdf$/i.test(name);
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    LIGHTBOX
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function openLightbox(src, caption) {
   if (!src) return;
   document.getElementById('lightboxImg').src          = src;
@@ -962,9 +962,9 @@ function openDocLightbox(url, name) {
   openLightbox(url, name);
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   MODAL �?" OPEN
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   MODAL — OPEN
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 let currentRequestId = null, currentRow = null, currentStatus = '';
 
 function openModal(row, triggerBtn = null) {
@@ -976,14 +976,14 @@ function openModal(row, triggerBtn = null) {
   currentBack      = d.backID   || '';
   currentStatus    = (d.status  || 'pending').toLowerCase();
 
-  // �"?�"? Request info �"?�"?
+  // ────── Request info ──────
   document.getElementById('mDocType').value    = prettyDocType(d.document_type || '');
   document.getElementById('mNumCopies').value  = d.num_copies || '';
   document.getElementById('mPurpose').value    = d.purpose    || '';
   document.getElementById('mNotes').value      = d.notes      || '';
   document.getElementById('modalSubtitle').textContent = d.email || prettyDocType(d.document_type || '');
 
-  // �"?�"? Supporting Documents �"?�"?
+  // ────── Supporting Documents ──────
   const docsList = document.getElementById('supportingDocsList');
   const docsCard = document.getElementById('supportingDocsCard');
   const sdocCount= document.getElementById('sdocCount');
@@ -1042,7 +1042,7 @@ function openModal(row, triggerBtn = null) {
     docsCard.style.display = 'none';
   }
 
-  // �"?�"? Requestor info �"?�"?
+  // ────── Requestor info ──────
   document.getElementById('mFullName').value         = getNameFromDoc(d);
   document.getElementById('mGender').value           = d.gender           || '';
   document.getElementById('mAge').value              = d.birthday ? calcAge(d.birthday) : '';
@@ -1051,11 +1051,11 @@ function openModal(row, triggerBtn = null) {
   document.getElementById('mEmergencyPhone').value   = d.emergency_phone   || '';
   document.getElementById('mBloodType').value        = d.health_conditions || '';
   document.getElementById('mEmployment').value       = d.employment_status || '';
-  document.getElementById('mIncome').value           = d.monthly_income ? '�,� ' + parseFloat(d.monthly_income).toLocaleString('en-PH', { minimumFractionDigits: 2 }) : '';
+  document.getElementById('mIncome').value           = d.monthly_income ? '₱ ' + parseFloat(d.monthly_income).toLocaleString('en-PH', { minimumFractionDigits: 2 }) : '';
   document.getElementById('mDateMovedIn').value      = d.years_resident ? d.years_resident + ' year(s)' : '';
   document.getElementById('mResidentBirth').checked  = !!parseInt(d.resident_birth);
 
-  // �"?�"? ID photos �"?�"?
+  // ────── ID photos ──────
   const fImg = document.getElementById('frontIDImg'), bImg = document.getElementById('backIDImg');
   const fPh  = document.getElementById('frontIDPh'),  bPh  = document.getElementById('backIDPh');
   if (d.frontID) { fImg.src = resolveUserIDSrc(d.frontID); fImg.style.display = 'block'; fPh.style.display = 'none'; }
@@ -1063,7 +1063,7 @@ function openModal(row, triggerBtn = null) {
   if (d.backID)  { bImg.src = resolveUserIDSrc(d.backID);  bImg.style.display = 'block'; bPh.style.display = 'none'; }
   else           { bImg.style.display = 'none'; bPh.style.display = 'flex'; }
 
-  // �"?�"? Footer �"?�"?
+  // ────── Footer ──────
   document.getElementById('modalFooter').style.display = currentStatus === 'pending' ? 'grid' : 'none';
 
   document.getElementById('modalOverlay').classList.add('open');
@@ -1081,9 +1081,9 @@ function closeModalOnOverlay(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    CORE ACTION (approve / reject)
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 function executeAction(requestId, action, row) {
   return fetch('documentrequestAction.php', {
     method: 'POST',
@@ -1172,9 +1172,9 @@ async function bulkAction(action, triggerBtn = null) {
   });
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    PAGINATION
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 const ROWS_PER_PAGE = 10;
 let currentPage = 1;
 
@@ -1217,9 +1217,9 @@ function renderPagination() {
   c.appendChild(next);
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+/* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    INIT
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 const allRows = Array.from(document.querySelectorAll('#docTable tbody tr[data-doc]'));
 sortByStatusFirst(allRows);
 renderPagination();

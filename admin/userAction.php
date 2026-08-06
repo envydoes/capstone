@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $userID = trim($_POST['userID'] ?? '');
 $action = trim($_POST['action'] ?? '');
 
-// approve â�?��?T approved
-// reject  â�?��?T rejected
-// disable â�?��?T disabled
-// revert  â�?��?T pending
+// approve → approved
+// reject  → rejected
+// disable → disabled
+// revert  → pending
 if (empty($userID) || !in_array($action, ['approve', 'reject', 'disable', 'revert'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid input']);
     exit;

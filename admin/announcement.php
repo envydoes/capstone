@@ -54,7 +54,7 @@ if ($res) {
 }
 $total = count($announcements);
 
-// �"?�"? Stat cards: Announcements Overview �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ─── Stat cards: Announcements Overview ───
 
 // Announcements This Month, vs Last Month
 $annTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
@@ -159,7 +159,7 @@ flush();
       --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
     }
 
-    /* �"?�"? Sidebar �"?�"? */
+    /* ─── Sidebar ─── */
     .sidebar {
       width: 260px; flex-shrink: 0;
       background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%);
@@ -192,15 +192,15 @@ flush();
     .sidebar-bottom-links { padding: 0 16px 8px; }
     .side-link { display: block; width: 100%; font-size: 0.84rem; padding: 8px 8px; border-radius: 8px; transition: color 0.15s, background 0.15s; text-decoration: none; white-space: nowrap; border: none; background: none; text-align: left; cursor: pointer; }
 
-    /* �"?�"? Layout �"?�"? */
+    /* ─── Layout ─── */
     .main-wrapper { display: flex; min-height: 100vh; }
     .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; margin-left: 260px; transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1); overflow-x: hidden; }
     .main-content.sidebar-collapsed { margin-left: 0; }
 
-    /* �"?�"? Topbar �"?�"? */
+    /* ─── Topbar ─── */
     .topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; }
 
-    /* �"?�"? Stat cards �"?�"? */
+    /* ─── Stat cards ─── */
     .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,0.05); display:flex; flex-direction:column; gap:10px; transition:transform .2s, box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(21,128,61,.1); }
     .stat-label { font-size:.82rem; font-weight:600; color:#6b7280; }
@@ -213,7 +213,7 @@ flush();
     .stat-trend-down { color:#dc2626; }
     .stat-trend-flat { color:#9ca3af; }
 
-    /* �"?�"? Tag chips �"?�"? */
+    /* ─── Tag chips ─── */
     .tag-chip { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 600; border: 1px solid; white-space: nowrap; }
     .chip-health     { background: #f0fdf4; color: #15803d; border-color: #86efac; }
     .chip-assistance { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
@@ -223,7 +223,7 @@ flush();
     .chip-event      { background: #fefce8; color: #a16207; border-color: #fde047; }
     .chip-default    { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; }
 
-    /* �"?�"? Toolbar & Search �"?�"? */
+    /* ─── Toolbar & Search ─── */
     .toolbar { background: #fff; border: 1px solid #e5e7eb; border-bottom: none; padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-radius: 14px 14px 0 0; }
     .search-box { display: flex; align-items: center; gap: 8px; border: 1.5px solid #e5e7eb; border-radius: 9px; padding: 7px 12px; background: #fff; transition: border-color 0.15s; }
     .search-box:focus-within { border-color:var(--site-primary); }
@@ -239,7 +239,7 @@ flush();
     .icon-btn-delete:hover { background: #fee2e2; }
     .toolbar-divider { width: 1px; height: 22px; background: #e5e7eb; }
 
-    /* �"?�"? Announcement list items �"?�"? */
+    /* ─── Announcement list items ─── */
     .ann-list { background: #fff; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 14px 14px; }
     .ann-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px; border-bottom: 1px solid #f3f4f6; transition: background 0.12s; cursor: pointer; }
     .ann-item:last-child { border-bottom: none; }
@@ -258,17 +258,17 @@ flush();
     .ann-action-link.del:hover {background: #ef4444; color: #fff; box-shadow: 0 6px 18px rgba(220, 38, 38, 0.12); }
     .ann-action-link .fa-solid { font-size: 0.72rem; }
 
-    /* �"?�"? Empty state �"?�"? */
+    /* ─── Empty state ─── */
     .empty-state { padding: 52px 24px; text-align: center; color: #9ca3af; }
     .empty-state i { font-size: 2.2rem; margin-bottom: 10px; display: block; color: #d1d5db; }
 
-    /* �"?�"? Pagination �"?�"? */
+    /* ─── Pagination ─── */
     .page-btn { width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 0.82rem; font-weight: 600; color: #374151; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
     .page-btn:hover { border-color: var(--site-primary); color: var(--site-primary); }
     .page-btn.active { background: var(--site-primary); border-color: var(--site-primary); color: #fff; }
     .page-btn:disabled { opacity: 0.35; cursor: default; }
 
-    /* �.��.� MODAL �.��.� */
+    /* ═══ MODAL ═══ */
     .modal-overlay { position: fixed; inset: 0; z-index: 800; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 640px; box-shadow: 0 24px 60px rgba(5,46,22,0.22); transform: translateY(16px); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); margin: auto; display: flex; flex-direction: column; }
@@ -287,7 +287,7 @@ flush();
     .mf-submit:hover:not(:disabled) { background:#166534; box-shadow: 0 6px 20px rgba(22, 163, 74, 0.5); transform: none; color: #fff;}
     .mf-submit:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; box-shadow: none; transform: none; }
 
-    /* �"?�"? Form fields �"?�"? */
+    /* ─── Form fields ─── */
     .field-label { display: block; font-size: 0.72rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
     .required-star { color: #dc2626; }
     .field-input { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.84rem; color: #374151; background: #fff; font-family: inherit; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
@@ -296,7 +296,7 @@ flush();
     .field-textarea { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.84rem; color: #374151; background: #fff; font-family: inherit; outline: none; resize: vertical; min-height: 90px; transition: border-color 0.15s, box-shadow 0.15s; }
     .field-textarea:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
 
-    /* �"?�"? Content split area (title + body) �"?�"? */
+    /* ─── Content split area (title + body) ─── */
     .content-split { border: 1.5px solid #e5e7eb; border-radius: 9px; overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s; }
     .content-split:focus-within { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
     .content-title-input { width: 100%; padding: 10px 12px 8px; border: none; border-bottom: 1.5px dashed #e5e7eb; outline: none; font-size: 1rem; font-weight: 700; color: #111827; font-family: 'Playfair Display', serif; background: #fff; }
@@ -304,7 +304,7 @@ flush();
     .content-body-input { width: 100%; padding: 10px 12px; border: none; outline: none; font-size: 0.84rem; color: #374151; font-family: inherit; resize: vertical; min-height: 160px; background: #fff; }
     .content-body-input::placeholder { color: #9ca3af; }
 
-    /* �"?�"? Image upload list �"?�"? */
+    /* ─── Image upload list ─── */
     .upload-list { border: 1.5px solid #e5e7eb; border-radius: 9px; overflow: hidden; max-height: 180px; overflow-y: auto; }
     .upload-list:empty { display: none; }
     .upload-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f3f4f6; background: #fff; }
@@ -317,7 +317,7 @@ flush();
     .upload-drop-zone { border: 2px dashed #e5e7eb; border-radius: 9px; padding: 16px; text-align: center; color: #9ca3af; font-size: 0.8rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
     .upload-drop-zone:hover, .upload-drop-zone.dragover { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
 
-    /* �"?�"? Lightbox for image preview �"?�"? */
+    /* ─── Lightbox for image preview ─── */
     .lightbox-overlay { position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,0.88); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; padding: 16px; }
     .lightbox-overlay.open { opacity: 1; pointer-events: auto; }
     .lightbox-overlay img { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; animation: zoomIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -325,7 +325,7 @@ flush();
     .lightbox-close-btn:hover { background: rgba(255,255,255,0.25); }
     @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    /* �"?�"? Loading Overlay �"?�"? */
+    /* ─── Loading Overlay ─── */
     .loading-overlay { position: fixed; inset: 0; background: rgba(5, 46, 22, 0.6); backdrop-filter: blur(3px); z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .loading-overlay.show { opacity: 1; pointer-events: auto; }
     .spinner-box { display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -349,7 +349,7 @@ flush();
     .danger { background: #ef4444; color: #fff; }
     .danger:hover { background: #dc2626; }
 
-    /* �"?�"? Alert �"?�"? */
+    /* ─── Alert ─── */
     #alertBanner { display: none; }
     #alertBanner.show { display: flex; }
     .alert-inner { display: flex; align-items: center; gap: 10px; padding: 13px 16px; font-size: 0.85rem; font-weight: 600; border-radius: 10px; border: 1.5px solid transparent; width: 100%; flex-wrap: wrap; }
@@ -392,7 +392,7 @@ flush();
 <button class="expand-btn" id="expandBtn"><i class="fa-solid fa-bars"></i></button>
 
 <div class="main-wrapper">
-  <!-- �"?�"? SIDEBAR �"?�"? -->
+  <!-- ─── SIDEBAR ─── -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">
@@ -454,7 +454,7 @@ flush();
     </div>
   </aside>
 
-  <!-- �"?�"? MAIN �"?�"? -->
+  <!-- ─── MAIN ─── -->
   <main class="main-content" id="mainContent">
     <header class="topbar">
       <div class="topbar-title-block">
@@ -582,7 +582,7 @@ flush();
           <?php else: foreach ($announcements as $a):
             $tag      = $a['announcementTag'] ?? '';
             $chipCls  = tagBadge($tag);
-            $postDate = !empty($a['announcementPost']) ? date('F j, Y', strtotime($a['announcementPost'])) : '�?"';
+            $postDate = !empty($a['announcementPost']) ? date('F j, Y', strtotime($a['announcementPost'])) : '—';
             // Images: stored as JSON array in announcementImg
             $imgs = [];
             if (!empty($a['announcementImg'])) {
@@ -626,7 +626,7 @@ flush();
   </main>
 </div>
 
-<!-- �.��.� CREATE / EDIT MODAL �.��.� -->
+<!-- ═══ CREATE / EDIT MODAL ═══ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -719,7 +719,7 @@ flush();
   </div>
 </div>
 
-<!-- �.��.� CONFIRM DELETE DIALOG �.��.� -->
+<!-- ═══ CONFIRM DELETE DIALOG ═══ -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body-d">
@@ -734,14 +734,14 @@ flush();
   </div>
 </div>
 
-<!-- �.��.� LIGHTBOX FOR IMAGE PREVIEW �.��.� -->
+<!-- ═══ LIGHTBOX FOR IMAGE PREVIEW ═══ -->
 <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeZoom()">
   <button class="lightbox-close-btn" onclick="event.stopPropagation(); closeZoom()"><i class="fa-solid fa-xmark"></i></button>
   <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
 </div>
 
 <script>
-/* �"?�"? Sidebar �"?�"? */
+/* ─── Sidebar ─── */
 const sidebar = document.getElementById('sidebar'), mainContent = document.getElementById('mainContent'), expandBtn = document.getElementById('expandBtn'), backdrop = document.getElementById('sidebarBackdrop');
 const isMobile = () => window.innerWidth <= 1024;
 let collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
@@ -801,7 +801,7 @@ document.querySelectorAll('.sidebar button[onclick*="location.href"]').forEach(b
   });
 });
 
-/* �"?�"? Alert �"?�"? */
+/* ─── Alert ─── */
 let alertTimer;
 function showToast(type, title, desc) {
   const icons = {success:'fa-circle-check',error:'fa-circle-xmark',warning:'fa-triangle-exclamation'};
@@ -815,7 +815,7 @@ function showToast(type, title, desc) {
 }
 function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-/* �"?�"? Filter / Search �"?�"? */
+/* ─── Filter / Search ─── */
 function toggleFilter() { document.getElementById('filterPanel').classList.toggle('hidden'); }
 let searchTimeout;
 function filterAnn() {
@@ -843,10 +843,10 @@ function filterAnn() {
   }, 400);
 }
 
-/* �"?�"? Select All �"?�"? */
+/* ─── Select All ─── */
 function toggleAll(cb) { document.querySelectorAll('.ann-check').forEach(c => c.checked = cb.checked); }
 
-/* �"?�"? Pagination �"?�"? */
+/* ─── Pagination ─── */
 const PER_PAGE = 10; let currentPage = 1;
 function getVisible() { return Array.from(document.querySelectorAll('.ann-item')).filter(r => r.dataset.filteredout !== 'true'); }
 function renderPagination() {
@@ -869,7 +869,7 @@ function renderPagination() {
 }
 renderPagination();
 
-/* �"?�"? File upload management �"?�"? */
+/* ─── File upload management ─── */
 let pendingFiles = []; // {file, previewUrl, name}
 let removedExistingImgs = []; // filenames to delete on server
 
@@ -920,7 +920,7 @@ function renderUploadList() {
   detectChanges();
 }
 
-/* �"?�"? Lightbox zoom preview �"?�"? */
+/* ─── Lightbox zoom preview ─── */
 function openZoom(src) {
   if (!src || src.includes('data:')) return;
   const overlay = document.getElementById('lightboxOverlay');
@@ -937,7 +937,7 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape' && document.getElementById('lightboxOverlay').classList.contains('open')) closeZoom();
 });
 
-/* �"?�"? Modal �"?�"? */
+/* ─── Modal ─── */
 let modalMode = 'create';
 let initialFormState = {};
 function captureFormState() {
@@ -1055,7 +1055,7 @@ function handleSubmit() {
     });
 }
 
-/* �"?�"? Delete �"?�"? */
+/* ─── Delete ─── */
 let deleteCallback = null;
 function openConfirmDialog(title, message, buttonLabel, callback) {
   document.getElementById('dialogTitleText').textContent = title;
