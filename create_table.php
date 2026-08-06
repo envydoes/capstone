@@ -1,7 +1,5 @@
 <?php
-// �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
-// db_setup.php  �?" run once to create the table
-// �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+
 require_once __DIR__ . '/config/db_connection.php';
 
 // Drop old table so script is repeatable during development
@@ -15,7 +13,7 @@ CREATE TABLE tbl_busaptlisting (
     listingType    ENUM('apartment','business') NOT NULL,
     slotsAvailable INT          DEFAULT 0,
 
-    -- �"?�"? Apartment-specific columns �"?�"?
+    --  Apartment-specific columns --
     aptType        VARCHAR(50)  DEFAULT NULL,
     aptTitle       VARCHAR(255) DEFAULT NULL,
     aptStatus      ENUM('available','occupied','inquire') DEFAULT NULL,
@@ -31,7 +29,7 @@ CREATE TABLE tbl_busaptlisting (
     aptAddress     TEXT         DEFAULT NULL,
     aptMapsLink    TEXT         DEFAULT NULL,
 
-    -- �"?�"? Business-specific columns �"?�"?
+    -- Business-specific columns --
     bussCat        VARCHAR(100) DEFAULT NULL,
     bussName       VARCHAR(255) DEFAULT NULL,
     bussStatus     ENUM('open','new','temp-closed','for-rent') DEFAULT NULL,
@@ -45,7 +43,7 @@ CREATE TABLE tbl_busaptlisting (
     bussAddress    TEXT         DEFAULT NULL,
     bussMapsLink   TEXT         DEFAULT NULL,
 
-    -- �"?�"? Shared contact / address columns �"?�"?
+    --  Shared contact / address columns --
     contact        VARCHAR(30)  DEFAULT NULL,
     email          VARCHAR(255) DEFAULT NULL,
     houseNum       VARCHAR(50)  DEFAULT NULL,
@@ -53,7 +51,7 @@ CREATE TABLE tbl_busaptlisting (
     barangay       VARCHAR(255) DEFAULT NULL,
     city           VARCHAR(255) DEFAULT NULL,
 
-    -- �"?�"? Photos �"?�"?
+    -- Photos --
     photos         TEXT         DEFAULT NULL,   -- JSON array of file paths
 
     createdAt      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
