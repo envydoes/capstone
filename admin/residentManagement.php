@@ -253,8 +253,6 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .icon-btn-archive:hover { background: #fee2e2; color: #dc2626; }
     .icon-btn-restore { background: #f0fdf4; color: #15803d; }
     .icon-btn-restore:hover { background: #dcfce7; }
-    .icon-btn-permission { background: #fdf2f8; color: #a21caf; }
-    .icon-btn-permission:hover { background: #fae8ff; }
     .role-option { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: all 0.15s; margin-bottom: 8px; }
     .role-option:hover { border-color: #a21caf; background: #fdf2f8; }
     .role-option.selected { border-color: #a21caf; background: #fdf2f8; box-shadow: 0 0 0 3px rgba(162,28,175,0.1); }
@@ -866,11 +864,6 @@ mysqli_close($conn);
                     <button class="icon-btn icon-btn-edit" title="Edit" onclick="openEditModal(this.closest('tr'))">
                       <i class="fa-solid fa-pen-to-square text-xs"></i>
                     </button>
-                    <?php if ($isFounderAdmin): ?>
-                    <button class="icon-btn icon-btn-permission" title="Change Permission" onclick="openPermissionModal(this.closest('tr'))">
-                      <i class="fa-solid fa-user-shield text-xs"></i>
-                    </button>
-                    <?php endif; ?>
                     <button class="icon-btn icon-btn-archive" title="Archive" onclick="confirmArchive(<?= (int)$u['userID'] ?>,'<?= htmlspecialchars(addslashes($fn)) ?>',this.closest('tr'),this)">
                       <i class="fa-solid fa-box-archive text-xs"></i>
                     </button>
@@ -1150,43 +1143,20 @@ mysqli_close($conn);
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     CHANGE PERMISSION MODAL (founder admin only)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-<div class="modal-overlay" id="permModalOverlay" onclick="closePermModalOnOverlay(event)">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
       <div class="flex items-center gap-3 min-w-0">
         <div style="width:36px;height:36px;background:#fdf2f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i class="fa-solid fa-user-shield text-fuchsia-700 text-sm"></i>
         </div>
-        <div class="min-w-0">
-          <p class="font-bold text-gray-900 text-base">Change Permission</p>
-          <p class="text-gray-400 text-xs mt-0.5 truncate" id="permModalSubtitle">Update module access</p>
-        </div>
       </div>
-      <button class="modal-close" onclick="closePermModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
     <div class="modal-body">
       <input type="hidden" id="permUserID">
       <p class="text-xs text-gray-400 mb-3">Toggle modules on or off â€” takes effect immediately, no email is sent. Turn every module off to fully revoke access.</p>
 
-      <div id="permModuleList">
-        <?php foreach (PERMISSION_MODULES as $modKey => $modLabel): ?>
-        <div class="perm-toggle-row">
-          <span class="perm-toggle-label"><?= e($modLabel) ?></span>
-          <div class="perm-toggle-track" data-perm-key="<?= e($modKey) ?>" onclick="togglePermModule(this)"><div class="perm-toggle-thumb"></div></div>
-        </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="mf-btn mf-cancel" onclick="closePermModal()">Cancel <i class="fa-solid fa-xmark text-sm"></i></button>
-      <button class="mf-btn mf-update" id="permSaveBtn" onclick="handlePermSave()" style="background:#a21caf;">
-        Save <i class="fa-solid fa-check text-sm"></i>
-      </button>
+    
     </div>
   </div>
 </div>
@@ -1756,83 +1726,6 @@ function closeDialog() {
 }
 document.getElementById('dialogOverlay').addEventListener('click', function(e) { if (e.target === this) closeDialog(); });
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CHANGE PERMISSION â€” module access only, no positions.
-   Founder-admin only â€” button is server-side gated by
-   $isFounderAdmin, so this JS only ever runs for that account.
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-let permModalUserID = null;
-
-function openPermissionModal(row) {
-  permModalUserID = row.dataset.uid;
-  document.getElementById('permModalSubtitle').textContent = row.dataset.fullname || '';
-  document.getElementById('permUserID').value = permModalUserID;
-
-  const currentPerms = (row.dataset.permissions || '').split(',').map(s => s.trim()).filter(Boolean);
-  applyPermToggles(currentPerms);
-
-  document.getElementById('permModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closePermModal() {
-  document.getElementById('permModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  permModalUserID = null;
-}
-function closePermModalOnOverlay(e) { if (e.target === document.getElementById('permModalOverlay')) closePermModal(); }
-
-function applyPermToggles(keys) {
-  document.querySelectorAll('#permModuleList .perm-toggle-track').forEach(track => {
-    track.classList.toggle('on', keys.includes(track.dataset.permKey));
-  });
-}
-function togglePermModule(track) { track.classList.toggle('on'); }
-
-function handlePermSave() {
-  if (!permModalUserID) return;
-  const permissions = Array.from(document.querySelectorAll('#permModuleList .perm-toggle-track.on')).map(t => t.dataset.permKey);
-  const nameEl = document.getElementById('permModalSubtitle').textContent;
-  const isRevoke = permissions.length === 0;
-
-  showDialog(
-    'Change Permission',
-    isRevoke
-      ? `This will revoke all staff access for ${nameEl || 'this account'}.`
-      : `This updates module access for ${nameEl || 'this account'} â€” takes effect immediately.`,
-    null,
-    isRevoke ? 'Yes, Revoke' : 'Yes, Save',
-    () => {
-      const btn = document.getElementById('permSaveBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Saving...';
-
-      const body = new URLSearchParams();
-      body.append('userID', permModalUserID);
-      permissions.forEach(p => body.append('permissions[]', p));
-
-      fetch('changePermissionAction.php', { method: 'POST', body })
-        .then(r => r.json())
-        .then(d => {
-          if (d.success) {
-            const row = document.querySelector(`#activeTable tr[data-uid="${permModalUserID}"]`);
-            if (row) { row.dataset.permissions = permissions.join(','); }
-            closePermModal();
-            if (d.revoked) {
-              showToast('warning', 'Access Revoked', 'Staff access removed.');
-            } else {
-              showToast('success', 'Permission Updated', 'Module access saved.');
-            }
-            reloadAfterSuccess();
-          } else {
-            showToast('warning', 'Could Not Save', d.message || 'Please try again.');
-          }
-        })
-        .catch(() => showToast('warning', 'Network Error', 'Please try again.'))
-        .finally(() => { btn.disabled = false; btn.innerHTML = 'Save <i class="fa-solid fa-check text-sm"></i>'; });
-    },
-    isRevoke
-  );
-}
 function setActionButtonLoading(btn, label = 'Loading...') {
   if (!btn) return null;
   const original = btn.innerHTML;
