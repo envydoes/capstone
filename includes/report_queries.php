@@ -53,9 +53,9 @@ if (!function_exists('gf_run_nonbeneficiaries_query')) {
                 ])));
                 $out[] = [
                     'name'   => $name !== '' ? $name : '(No name on file)',
-                    'street' => $r['street'] ?: '—',
-                    'phone'  => $r['phone'] ?: '—',
-                    'email'  => $r['email'] ?: '—',
+                    'street' => $r['street'] ?: '-',
+                    'phone'  => $r['phone'] ?: '-',
+                    'email'  => $r['email'] ?: '-',
                 ];
             }
             mysqli_stmt_close($stmt);
@@ -168,7 +168,7 @@ if (!function_exists('gf_run_borrowed_query')) {
 
         $out = [];
         foreach ($rows as $r) {
-            $dt = !empty($r['returnDate']) ? date('M d, Y', strtotime($r['returnDate'])) : '—';
+            $dt = !empty($r['returnDate']) ? date('M d, Y', strtotime($r['returnDate'])) : '-';
             $statusHtml = $r['is_overdue']
                 ? '<span class="mini-badge mini-badge-overdue">Overdue</span>'
                 : '<span class="mini-badge mini-badge-ontime">On Time</span>';

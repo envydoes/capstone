@@ -1,48 +1,48 @@
 <?php
 /**
  *
- * ─── SCORING RUBRIC ─────────────────────────────────────────────────────────
+ * ??? SCORING RUBRIC ?????????????????????????????????????????????????????????
  *
  *  HOUSING & UTILITIES                                             Max = 45 pts
  *    Housing Status
- *      Informal Settler  → +10
- *      Renting           → +7
- *      Shared/Relatives  → +3
- *      Owned / Gov't     → +0
+ *      Informal Settler  ? +10
+ *      Renting           ? +7
+ *      Shared/Relatives  ? +3
+ *      Owned / Gov't     ? +0
  *    Primary Material
- *      Light/Salvaged (Bamboo, Cogon, Makeshift/Scrap) → +15
- *      Mixed Materials                                 → +7
- *      Concrete / Wood                                 → +0
- *    Electricity  : No Electricity OR Shared           → +5
- *    Water Source : Shared Well OR Bought/Mineral      → +5
- *    Toilet Type  : None/Pit OR Shared/Public          → +5
+ *      Light/Salvaged (Bamboo, Cogon, Makeshift/Scrap) ? +15
+ *      Mixed Materials                                 ? +7
+ *      Concrete / Wood                                 ? +0
+ *    Electricity  : No Electricity OR Shared           ? +5
+ *    Water Source : Shared Well OR Bought/Mineral      ? +5
+ *    Toilet Type  : None/Pit OR Shared/Public          ? +5
  *
  *  FAMILY & SPECIAL CLASSIFICATION                                Max = 35 pts
- *    Pregnant or Child < 5 = Yes  → +10
- *    PWD checkbox                 → +10
- *    Solo Parent                  → +10
- *    Indigenous Person (IP)       → +5
+ *    Pregnant or Child < 5 = Yes  ? +10
+ *    PWD checkbox                 ? +10
+ *    Solo Parent                  ? +10
+ *    Indigenous Person (IP)       ? +5
  *
  *  HEALTH & PENSION                                               Max = 35 pts
- *    Any health condition (hypertension/diabetes/asthma/other) → +10
- *    Requires maintenance medicine = Yes                        → +5
- *    Pension = None OR Social Pension (DSWD)                   → +10
- *    Senior Citizen (age >= 60)                                 → +10
+ *    Any health condition (hypertension/diabetes/asthma/other) ? +10
+ *    Requires maintenance medicine = Yes                        ? +5
+ *    Pension = None OR Social Pension (DSWD)                   ? +10
+ *    Senior Citizen (age >= 60)                                 ? +10
  *
  *  EDUCATION / SCHOLARSHIP                                        Max = 10 pts
- *    GWA/GPA 1.00–1.75 (Philippine honour range)               → +10
+ *    GWA/GPA 1.00-1.75 (Philippine honour range)               ? +10
  *
  *  GRAND MAX = 100 pts  (hard-capped at 100)
  *
- * ─── PROGRAM PRIORITY BANDS ─────────────────────────────────────────────────
- *  4Ps                  70–100   (housing + utilities + pregnant)
- *  Senior Citizen       60–100   (no pension + age >= 60 [via birthdate] + health)
- *  Scholarship Programs 75–100   (GWA 1.00–1.75 + low monthly income)
- *  PWD                  80–100   (PWD checked + valid PWD ID + health)
- *  Kabataan/SK          compliance-based (ages 15–30, handled by admin layer)
+ * ??? PROGRAM PRIORITY BANDS ?????????????????????????????????????????????????
+ *  4Ps                  70-100   (housing + utilities + pregnant)
+ *  Senior Citizen       60-100   (no pension + age >= 60 [via birthdate] + health)
+ *  Scholarship Programs 75-100   (GWA 1.00-1.75 + low monthly income)
+ *  PWD                  80-100   (PWD checked + valid PWD ID + health)
+ *  Kabataan/SK          compliance-based (ages 15-30, handled by admin layer)
  *  For Voters           compliance-based (ages 18+,  handled by admin layer)
  *
- * ─── SQL MIGRATION (run once) ───────────────────────────────────────────────
+ * ??? SQL MIGRATION (run once) ???????????????????????????????????????????????
  *
  *  CREATE TABLE IF NOT EXISTS `tbl_beneficiary` (
  *    `id`                    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -82,37 +82,37 @@
  *    FOREIGN KEY (`userId`) REFERENCES `tbl_userinfo` (`userID`)
  *  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
  *
- * ─── MONTHLY INCOME DROPDOWN VALUES (add to beneficiary form) ────────────────
+ * ??? MONTHLY INCOME DROPDOWN VALUES (add to beneficiary form) ????????????????
  *  <select name="monthly_income">
  *    <option value="">-- Select --</option>
- *    <option value="below_5000">Below ₱5,000</option>
- *    <option value="5000_9999">₱5,000 – ₱9,999</option>
- *    <option value="10000_14999">₱10,000 – ₱14,999</option>
- *    <option value="15000_19999">₱15,000 – ₱19,999</option>
- *    <option value="20000_above">₱20,000 and above</option>
+ *    <option value="below_5000">Below ?5,000</option>
+ *    <option value="5000_9999">?5,000 - ?9,999</option>
+ *    <option value="10000_14999">?10,000 - ?14,999</option>
+ *    <option value="15000_19999">?15,000 - ?19,999</option>
+ *    <option value="20000_above">?20,000 and above</option>
  *  </select>
  *
- * ────────────────────────────────────────────────────────────────────────────
+ * ????????????????????????????????????????????????????????????????????????????
  */
 
-// ── Guard: session must already be started by the parent page ────────────────
+// ?? Guard: session must already be started by the parent page ????????????????
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ── Guard: user must be logged in ───────────────────────────────────────────
+// ?? Guard: user must be logged in ???????????????????????????????????????????
 if (empty($_SESSION['user_id']) || empty($_SESSION['acc_id'])) {
     $_SESSION['beneficiary_save_status'] = 'error';
     $_SESSION['beneficiary_save_msg']    = 'Not authenticated.';
     return;
 }
 
-// ── Guard: form data must exist in session ──────────────────────────────────
+// ?? Guard: form data must exist in session ??????????????????????????????????
 if (empty($_SESSION['beneficiary_form']) || !is_array($_SESSION['beneficiary_form'])) {
-    return; // Nothing to save — silently skip
+    return; // Nothing to save - silently skip
 }
 
-// ── Database connection ──────────────────────────────────────────────────────
+// ?? Database connection ??????????????????????????????????????????????????????
 
 require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
@@ -122,7 +122,7 @@ if (!$conn) {
 }
 mysqli_set_charset($conn, 'utf8mb4');
 
-// ── Pull & sanitise session data ─────────────────────────────────────────────
+// ?? Pull & sanitise session data ?????????????????????????????????????????????
 $f = $_SESSION['beneficiary_form'];
 $accId = trim($_SESSION['acc_id'] ?? '');
 $userId = 0;
@@ -207,7 +207,7 @@ if ($birthday) {
     $age = $today->diff($birthDate)->y;
 }
 
-/** Sanitise a string value — trims whitespace and caps length. */
+/** Sanitise a string value - trims whitespace and caps length. */
 $str = static function (string $key, int $maxLen = 255) use ($f): string {
     $val = isset($f[$key]) ? trim((string)$f[$key]) : '';
     return substr($val, 0, $maxLen);
@@ -218,7 +218,7 @@ $bool = static function (string $key) use ($f): int {
     return !empty($f[$key]) ? 1 : 0;
 };
 
-/** Map 'yes' / 'no' string → 1 / 0. */
+/** Map 'yes' / 'no' string ? 1 / 0. */
 $yesNo = static function (string $key) use ($f): int {
     return (isset($f[$key]) && strtolower(trim($f[$key])) === 'yes') ? 1 : 0;
 };
@@ -233,7 +233,7 @@ if (!empty($f['submitted_at'])) {
 }
 $submittedAt = $submittedAt ?? date('Y-m-d H:i:s');
 
-// ── Build data array ─────────────────────────────────────────────────────────
+// ?? Build data array ?????????????????????????????????????????????????????????
 $data = [
     // Housing
     'housing_status'       => $str('housing_status',       50),
@@ -277,12 +277,12 @@ if (!$data['is_pwd'])            $data['pwd_id_number']        = '';
 if (!$data['requires_medicine']) $data['medicine_name']        = '';
 if (!$data['health_other'])      $data['health_other_specify'] = '';
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ???????????????????????????????????????????????????????????????????????????
 //  PRIORITY SCORE CALCULATION
-// ═══════════════════════════════════════════════════════════════════════════
+// ???????????????????????????????????????????????????????????????????????????
 $score = 0;
 
-// ── Housing Status ────────────────────────────────────────────────────────
+// ?? Housing Status ????????????????????????????????????????????????????????
 $score += match(strtolower($data['housing_status'])) {
     'informal_settler'   => 10,
     'renting'            => 7,
@@ -291,7 +291,7 @@ $score += match(strtolower($data['housing_status'])) {
     default              => 0,   // owned
 };
 
-// ── Primary Material ──────────────────────────────────────────────────────
+// ?? Primary Material ??????????????????????????????????????????????????????
 $score += match(strtolower($data['house_material'])) {
     'makeshift'       => 10,
     'light_materials' => 8,
@@ -300,7 +300,7 @@ $score += match(strtolower($data['house_material'])) {
     default           => 0, // concrete
 };
 
-// ── Utilities (10 pts combined) ───────────────────────────────────────────
+// ?? Utilities (10 pts combined) ???????????????????????????????????????????
 $score += match(strtolower($data['electricity'])) {
     'no_electricity' => 3,
     'shared'         => 2,
@@ -319,12 +319,12 @@ $score += match(strtolower($data['toilet_type'])) {
     default         => 0, // private
 };
 
-// ── Household Composition ─────────────────────────────────────────────────
+// ?? Household Composition ?????????????????????????????????????????????????
 // No specific point explicitly in new rules for pregnant here but keeping cap limits or skipping it if omitted.
 // The new points do not explicitly include "pregnant" in score directly, only in 4ps eligibility.
 // But let's leave it out of score if not in rubric, or keep it? The prompt says "Prio-score computation 1... 2... 3... 4...". It doesn't mention pregnancy or children in the scoring rubric. So I will remove it from scoring.
 
-// ── Special Classification & Pension (Max 20 pts combined) ─────────────────
+// ?? Special Classification & Pension (Max 20 pts combined) ?????????????????
 $socialScore = 0;
 if ($data['is_pwd'])         $socialScore += 10;
 if ($data['is_solo_parent']) $socialScore += 10;
@@ -338,7 +338,7 @@ $socialScore += match(strtolower((string)$data['pension_status'])) {
 
 $score += min($socialScore, 20);
 
-// ── Health Conditions (any one condition ticked) (Max 20 pts combined) ─────
+// ?? Health Conditions (any one condition ticked) (Max 20 pts combined) ?????
 $healthScore = 0;
 $anyHealth = $data['health_hypertension']
            || $data['health_diabetes']
@@ -349,14 +349,14 @@ if ($anyHealth) {
     $healthScore += 10;
 }
 
-// ── Maintenance Medicine ──────────────────────────────────────────────────
+// ?? Maintenance Medicine ??????????????????????????????????????????????????
 if ($data['requires_medicine']) {
     $healthScore += 10;
 }
 
 $score += min($healthScore, 20);
 
-// ── Economic Status (Monthly Income) ──────────────────────────────────────
+// ?? Economic Status (Monthly Income) ??????????????????????????????????????
 $incomeValue = trim((string)$monthlyIncome);
 if ($incomeValue === '' || strtolower($incomeValue) === 'none' || (is_numeric($incomeValue) && (float)$incomeValue == 0)) {
     $score += 30; // None
@@ -375,7 +375,7 @@ if ($incomeValue === '' || strtolower($incomeValue) === 'none' || (is_numeric($i
     }
 }
 
-// ── Education / Scholarship: (Remove from score according to rubric or keep?) ─────────────
+// ?? Education / Scholarship: (Remove from score according to rubric or keep?) ?????????????
 // The new rubric doesn't list scholarship in priority points. It only lists it in Eligibility criteria.
 
 
@@ -384,9 +384,9 @@ $data['prio_score'] = min((int)$score, 100);
 
 // Status always resets to 'pending' so admin must re-review after re-submit
 $data['status'] = 'pending';
-// ═══════════════════════════════════════════════════════════════════════════
+// ???????????????????????????????????????????????????????????????????????????
 
-// ── Check if a record already exists for this userId ─────────────────────────
+// ?? Check if a record already exists for this userId ?????????????????????????
 $existingId = null;
 $chkStmt    = $conn->prepare('SELECT id FROM tbl_beneficiary WHERE userId = ? LIMIT 1');
 if (!$chkStmt) {
@@ -401,9 +401,9 @@ $chkStmt->bind_result($existingId);
 $chkStmt->fetch();
 $chkStmt->close();
 
-// ── INSERT or UPDATE ─────────────────────────────────────────────────────────
+// ?? INSERT or UPDATE ?????????????????????????????????????????????????????????
 if ($existingId) {
-    // ── UPDATE ───────────────────────────────────────────────────────────────
+    // ?? UPDATE ???????????????????????????????????????????????????????????????
     // 26 SET values  (+1 WHERE = 27 total bind params)
     // Types (26 SET):
     //   s  housing_status
@@ -505,7 +505,7 @@ if ($existingId) {
     );
 
 } else {
-    // ── INSERT ────────────────────────────────────────────────────────────────
+    // ?? INSERT ????????????????????????????????????????????????????????????????
     // 26 columns (userId + 25 fields)
     // Types:
     //   i  userId
@@ -608,7 +608,7 @@ if ($existingId) {
     );
 }
 
-// ── Execute & report ─────────────────────────────────────────────────────────
+// ?? Execute & report ?????????????????????????????????????????????????????????
 if ($stmt->execute()) {
     $_SESSION['beneficiary_save_status'] = 'ok';
     $_SESSION['beneficiary_save_msg']    = $existingId
@@ -617,7 +617,7 @@ if ($stmt->execute()) {
     // Expose score to calling page (e.g. to show in a success banner)
     $_SESSION['beneficiary_prio_score']  = $data['prio_score'];
 
-    // Clear form data — prevents double-save on page refresh
+    // Clear form data - prevents double-save on page refresh
     unset($_SESSION['beneficiary_form']);
 
 } else {

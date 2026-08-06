@@ -83,7 +83,7 @@ if ($stmt) {
   $stmt->close();
 }
 
-// --- Tag → color/icon helper ---
+// --- Tag ? color/icon helper ---
 function tagColor(string $tag): array {
   return match(strtolower(trim($tag))) {
     'health'     => ['bg'=>'bg-green-100',  'text'=>'text-green-700',  'icon'=>'fa-heartbeat',           'icon_bg'=>'bg-green-100',  'icon_color'=>'text-green-600'],
@@ -116,7 +116,7 @@ function tagColor(string $tag): array {
   <style>
     body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
     h1, h2 { font-family: 'Playfair Display', serif; }
-    /* ── Hero Slider ── */
+    /* ?? Hero Slider ?? */
     .hero-slider-section {
       position: relative;
       overflow: hidden;
@@ -130,7 +130,7 @@ function tagColor(string $tag): array {
     .hero-slider {
       position: absolute;
       top: 0; left: 0;
-      /* slide 0 = green hero; slides 1-3 = photos → total 4 */
+      /* slide 0 = green hero; slides 1-3 = photos ? total 4 */
       width: 400%;
       height: 100%;
       display: flex;
@@ -145,7 +145,7 @@ function tagColor(string $tag): array {
       position: relative;
     }
 
-    /* Slide 0 — green gradient hero (matches residentLanding design) */
+    /* Slide 0 - green gradient hero (matches residentLanding design) */
    .hero-slide-green {
   background: linear-gradient(135deg, var(--site-primary-darker) 0%, var(--site-primary-dark) 40%, var(--site-primary-dark) 70%, var(--site-primary) 100%);
 }
@@ -158,7 +158,7 @@ function tagColor(string $tag): array {
         radial-gradient(ellipse at 20% 80%, rgba(20,83,45,0.6) 0%, transparent 50%);
       pointer-events: none;
     }
-    /* Large decorative circle — top-right */
+    /* Large decorative circle - top-right */
     .hero-slide-green::after {
       content: '';
       position: absolute;
@@ -168,7 +168,7 @@ function tagColor(string $tag): array {
       border: 70px solid rgba(134,239,172,0.07);
       pointer-events: none;
     }
-    /* Second decorative circle — bottom-left */
+    /* Second decorative circle - bottom-left */
     .hero-slide-green .circle-bl {
       position: absolute;
       bottom: -60px; left: -60px;
@@ -178,7 +178,7 @@ function tagColor(string $tag): array {
       pointer-events: none;
     }
 
-    /* Slides 1-3 — photo backgrounds */
+    /* Slides 1-3 - photo backgrounds */
     .hero-slide-photo {
       background-size: cover;
       background-position: center;
@@ -244,7 +244,7 @@ function tagColor(string $tag): array {
     .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); border: none; cursor: pointer; transition: background 0.3s, transform 0.3s; padding: 0; }
     .slider-dot.active { background: var(--site-primary-light); transform: scale(1.3); }
 
-    /* Tailwind-green → theme color overrides */
+    /* Tailwind-green ? theme color overrides */
   .bg-green-700 { background-color: var(--site-primary) !important; }
 .hover\:bg-green-800:hover { background-color: var(--site-primary-dark) !important; }
 .text-green-700, .text-green-600, .text-green-500 { color: var(--site-primary) !important; }
@@ -252,7 +252,7 @@ function tagColor(string $tag): array {
 .bg-green-950 { background-color: var(--site-primary-darker) !important; }
 .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
 
-/* Hover states (mobile nav, profile dropdown, etc.) — same classes as above,
+/* Hover states (mobile nav, profile dropdown, etc.) - same classes as above,
    but Tailwind's hover: variant needs its own selector to be overridden */
 .hover\:bg-green-50:hover { background-color: var(--site-primary-pale) !important; }
 .hover\:text-green-700:hover { color: var(--site-primary) !important; }
@@ -429,21 +429,21 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
   </div>
 
 
-  <!-- ══════════════════════════════════════════════
-       HERO SECTION — Slide 0: green hero | Slides 1-3: photos
-       ══════════════════════════════════════════════ -->
+  <!-- ??????????????????????????????????????????????
+       HERO SECTION - Slide 0: green hero | Slides 1-3: photos
+       ?????????????????????????????????????????????? -->
   <section class="hero-slider-section text-white py-20 px-6 relative overflow-hidden" id="hero">
 
-    <!-- ── Slider track (4 slides: 1 green + 3 photos) ── -->
+    <!-- ?? Slider track (4 slides: 1 green + 3 photos) ?? -->
    <div class="hero-slider" id="heroSlider" style="width: <?= $heroTotalSlides * 100 ?>%;">
 
-      <!-- SLIDE 0 — Green gradient hero (appears first) -->
+      <!-- SLIDE 0 - Green gradient hero (appears first) -->
       <div class="hero-slide hero-slide-green" style="flex-basis: <?= 100 / $heroTotalSlides ?>%;">
         <div class="circle-bl"></div>
         <div class="grain"></div>
       </div>
 
-      <!-- Uploaded hero photos (from Settings → Landing Page) -->
+      <!-- Uploaded hero photos (from Settings ? Landing Page) -->
       <?php foreach ($heroImages as $img): ?>
       <div class="hero-slide hero-slide-photo" style="flex-basis: <?= 100 / $heroTotalSlides ?>%; background-image: url('uploads/hero/<?= e($img['filename']) ?>');">
         <div class="photo-overlay"></div>
@@ -453,7 +453,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
 
     </div>
 
-    <!-- ── Hero content (sits above all slides) ── -->
+    <!-- ?? Hero content (sits above all slides) ?? -->
     <div class="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 pt-10 pb-10" style="z-index: 10;">
       <div class="flex-1" data-aos="fade-up">
         <span class="badge mb-4 inline-block">Barangay Integrated System</span>
@@ -467,7 +467,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
         </div>
         <?php endif; ?>
         <p class="text-gray-200 text-base max-w-md leading-relaxed">
-          Access all barangay services online — quickly, transparently, and from anywhere.
+          Access all barangay services online - quickly, transparently, and from anywhere.
         </p>
         <?php if (!$logged_in): ?>
         <div class="mt-6 flex gap-3 flex-wrap">
@@ -499,7 +499,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
     </div>
 
     <script>
-      // ── Hero Slider Logic ──
+      // ?? Hero Slider Logic ??
       // Slide 0 = green bg (shown first); slides 1-3 = photos
       // The slider track is 400% wide; each slide is 25% of that = 1 viewport width.
    (function () {
@@ -585,7 +585,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
                 <div class="w-px bg-green-700"></div>
 
                 <div>
-                    <p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km²</p>
+                    <p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km�</p>
                     <p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p>
                 </div>
 
@@ -613,7 +613,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
         <p class="section-label mb-2">About the System</p>
         <h2 class="text-3xl font-bold text-green-950 mb-4">Considerations in Barangay Services</h2>
         <p class="text-gray-600 leading-relaxed mb-6">This project introduces a web-based system that helps residents request documents and access assistance programs, barangay officials manage records and equipment efficiently, and local business owners and tenants find services and rentals easily.</p>
-        <p class="text-gray-500 text-sm leading-relaxed">By using technology, the barangay ensures transparency, fairness, and better governance — improving service delivery for all community members.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">By using technology, the barangay ensures transparency, fairness, and better governance - improving service delivery for all community members.</p>
         <div class="mt-8 p-5 bg-green-50 border-l-4 border-green-500 rounded-r-xl">
           <p class="text-green-800 text-sm font-semibold">Our Mission</p>
           <p class="text-green-700 text-sm mt-1">To make barangay governance accessible, fair, and efficient for every resident of <?= e($siteSettings['barangay_name']) ?>.</p>
@@ -715,7 +715,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
               <?php if ($startDate): ?>
                 <span><i class="fa-solid fa-flag mr-1 text-green-500"></i>Starts: <?php echo $startDate; ?></span>
               <?php endif; ?>
-              <a href="<?php echo $detailUrl; ?>" class="text-green-600 font-semibold ml-auto hover:underline">Read more →</a>
+              <a href="<?php echo $detailUrl; ?>" class="text-green-600 font-semibold ml-auto hover:underline">Read more ?</a>
             </div>
           </div>
         </div>
@@ -766,7 +766,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        © 2026 SumEste Portal. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.
+        � 2026 SumEste Portal. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.
       </div>
     </div>
   </footer>

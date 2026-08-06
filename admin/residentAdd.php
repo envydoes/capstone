@@ -95,7 +95,7 @@ if (mysqli_stmt_num_rows($chk) > 0) {
 }
 mysqli_stmt_close($chk);
 
-// accID written as NULL directly in SQL Ã¢â‚¬â€ never bind null through bind_param
+// accID written as NULL directly in SQL â�,��?� never bind null through bind_param
 $sql = "INSERT INTO tbl_userinfo (
     accID, account_role_csv,
     firstname, lastname, middlename, suffix,

@@ -9,7 +9,7 @@ $error      = null;
 $validLink  = false;
 $resetDone  = false;
 
-/* ── helpers ─────────────────────────────────────────────────────────────── */
+/* ?? helpers ??????????????????????????????????????????????????????????????? */
 function isValidHex(string $v): bool { return ctype_xdigit($v); }
 
 function validatePassword(string $pw): array
@@ -23,7 +23,7 @@ function validatePassword(string $pw): array
     return $errors;
 }
 
-/* ── validate selector / token ───────────────────────────────────────────── */
+/* ?? validate selector / token ????????????????????????????????????????????? */
 if (
     strlen($selector) === 16 &&
     strlen($tokenHex) === 64 &&
@@ -58,7 +58,7 @@ if (
     }
 }
 
-/* ── handle POST ─────────────────────────────────────────────────────────── */
+/* ?? handle POST ??????????????????????????????????????????????????????????? */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newPassword     = $_POST['password']         ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $conn->commit();
-                $resetDone = true;   // show inline success state — no hard redirect
+                $resetDone = true;   // show inline success state - no hard redirect
 
             } catch (Exception $e) {
                 $conn->rollback();
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/responsive-global.css">
-  <title>Reset Password — SumEste Portal</title>
+  <title>Reset Password - SumEste Portal</title>
   <link rel="icon" href="assets/logo2.png" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p class="text-xs uppercase tracking-widest text-green-700 font-semibold mb-2">Account Recovery</p>
     <h1 class="text-2xl text-green-950 font-bold mb-2">Reset Password</h1>
 
-    <?php if ($resetDone): /* ══════════ SUCCESS STATE ══════════ */ ?>
+    <?php if ($resetDone): /* ?????????? SUCCESS STATE ?????????? */ ?>
 
     <div class="text-center py-4">
       <!-- animated check -->
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const t = setInterval(() => { n--; num.textContent = n; if (n <= 0) { clearInterval(t); location.href = 'login.php?reset=1'; } }, 1000);
     </script>
 
-    <?php elseif (!$validLink): /* ══════════ INVALID LINK ══════════ */ ?>
+    <?php elseif (!$validLink): /* ?????????? INVALID LINK ?????????? */ ?>
 
     <?php if ($error): ?>
     <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2">
@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <i class="fa-solid fa-arrow-left"></i> Go to Forgot Password
     </a>
 
-    <?php else: /* ══════════ RESET FORM ══════════ */ ?>
+    <?php else: /* ?????????? RESET FORM ?????????? */ ?>
 
     <?php if ($error): ?>
     <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2">
@@ -257,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p id="strength-label" class="text-xs mt-1 text-gray-400"></p>
         <p id="password-hint" class="text-gray-400 text-xs mt-1">
-          Min 8 · max 72 characters — include uppercase, lowercase, and a number.
+          Min 8 � max 72 characters - include uppercase, lowercase, and a number.
         </p>
         <p id="password-error" class="text-red-500 text-xs mt-1.5 hidden" role="alert"></p>
       </div>
@@ -298,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div><!-- /card -->
 
 <script>
-/* ── UTILITIES ─────────────────────────────────────────────────────────── */
+/* ?? UTILITIES ??????????????????????????????????????????????????????????? */
 function validatePassword(pw) {
   const e = [];
   if (pw.length < 8)     e.push('at least 8 characters');
@@ -326,7 +326,7 @@ function setInputState(id, state) {
   if (state) el.classList.add(state);
 }
 
-/* ── STRENGTH METER ────────────────────────────────────────────────────── */
+/* ?? STRENGTH METER ?????????????????????????????????????????????????????? */
 const segEls      = [1,2,3,4].map(i => document.getElementById('seg'+i));
 const segColors   = [
   ['bg-red-400',    'bg-red-400',    'bg-gray-200',  'bg-gray-200'],
@@ -361,7 +361,7 @@ if (pwInput) {
   });
 }
 
-/* ── TOGGLE VISIBILITY ─────────────────────────────────────────────────── */
+/* ?? TOGGLE VISIBILITY ??????????????????????????????????????????????????? */
 document.querySelectorAll('.toggle-pw').forEach(btn => {
   btn.addEventListener('click', function () {
     const input = document.getElementById(this.dataset.target);
@@ -372,7 +372,7 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
   });
 });
 
-/* ── LIVE CONFIRM MATCH ────────────────────────────────────────────────── */
+/* ?? LIVE CONFIRM MATCH ?????????????????????????????????????????????????? */
 const confirmInput = document.getElementById('confirm_password');
 if (confirmInput) {
   confirmInput.addEventListener('input', function () {
@@ -386,7 +386,7 @@ if (confirmInput) {
   });
 }
 
-/* ── FORM SUBMIT ───────────────────────────────────────────────────────── */
+/* ?? FORM SUBMIT ????????????????????????????????????????????????????????? */
 const resetForm = document.getElementById('resetForm');
 if (resetForm) {
   resetForm.addEventListener('submit', function (e) {
@@ -418,7 +418,7 @@ if (resetForm) {
 
     const btn = document.getElementById('submitBtn');
     btn.disabled     = true;
-    btn.innerHTML    = '<i class="fa-solid fa-spinner fa-spin"></i> Updating…';
+    btn.innerHTML    = '<i class="fa-solid fa-spinner fa-spin"></i> Updating.';
     this.submit();
   });
 }

@@ -23,7 +23,7 @@ function s(array $input, string $key, int $maxLen = 255): string
 }
 
 // A logo value is either blank (revert to default asset) or a plain filename
-// that was actually returned by settingsLogoUpload.php — never a path.
+// that was actually returned by settingsLogoUpload.php - never a path.
 function sanitizeLogoFilename($input, string $key): string
 {
     $val = basename(trim((string) ($input[$key] ?? '')));

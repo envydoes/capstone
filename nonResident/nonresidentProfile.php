@@ -182,7 +182,7 @@ $fullName = $userName ?: trim($userData['firstname'] . ' ' . $userData['middlena
           --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
         }
 
-        /* Tailwind-green → theme color overrides */
+        /* Tailwind-green ? theme color overrides */
         .bg-green-100 { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
         .bg-green-700 { background-color: var(--site-primary) !important; }
         .text-green-500 { color: var(--site-primary) !important; }

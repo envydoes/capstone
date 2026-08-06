@@ -15,7 +15,7 @@ if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 
-// Which logo this upload is for — only used to prefix the stored filename.
+// Which logo this upload is for - only used to prefix the stored filename.
 $allowedFields = ['barangay_logo' => 'brgylogo', 'municipality_logo' => 'municilogo', 'site_logo' => 'sitelogo'];
 $field = $_POST['field'] ?? '';
 if (!isset($allowedFields[$field])) {

@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/db_connection.php';
 $q = trim($_GET['q'] ?? '');
 
 // Only staff accounts (those with a row in tbl_admin_permissions) are
-// shown here â€” this section is exclusively for managing granted access.
+// shown here �?" this section is exclusively for managing granted access.
 $sql = "
     SELECT ua.accID AS userID, ua.email,
            TRIM(CONCAT(COALESCE(ui.firstname,''), ' ', COALESCE(ui.lastname,''))) AS fullname,

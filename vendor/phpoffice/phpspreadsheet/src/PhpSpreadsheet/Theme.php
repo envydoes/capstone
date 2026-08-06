@@ -88,10 +88,10 @@ class Theme
     private array $minorFontSubstitutions = self::FONTS_ARIAL_SUBSTITUTIONS;
 
     public const FONTS_TIMES_SUBSTITUTIONS = [
-        'Jpan' => 'ＭＳ Ｐゴシック',
-        'Hang' => '맑은 고딕',
-        'Hans' => '宋体',
-        'Hant' => '新細明體',
+        'Jpan' => 'MS P????',
+        'Hang' => '?? ??',
+        'Hans' => '??',
+        'Hant' => '????',
         'Arab' => 'Times New Roman',
         'Hebr' => 'Times New Roman',
         'Thai' => 'Tahoma',
@@ -121,10 +121,10 @@ class Theme
     ];
 
     public const FONTS_ARIAL_SUBSTITUTIONS = [
-        'Jpan' => 'ＭＳ Ｐゴシック',
-        'Hang' => '맑은 고딕',
-        'Hans' => '宋体',
-        'Hant' => '新細明體',
+        'Jpan' => 'MS P????',
+        'Hang' => '?? ??',
+        'Hans' => '??',
+        'Hant' => '????',
         'Arab' => 'Arial',
         'Hebr' => 'Arial',
         'Thai' => 'Tahoma',

@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
           --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
         }
 
-        /* Tailwind-green Ã¢â€ â€™ theme color overrides */
+        /* Tailwind-green â�?��?T theme color overrides */
         .bg-green-100 { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
         .bg-green-700 { background-color: var(--site-primary) !important; }
         .text-green-500 { color: var(--site-primary) !important; }
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
         .hover\:bg-green-50:hover { background-color: var(--site-primary-pale) !important; }
         .hover\:text-green-700:hover { color: var(--site-primary) !important; }
 
-        /* Tailwind-emerald Ã¢â€ â€™ theme color overrides (role cards / focus rings) */
+        /* Tailwind-emerald â�?��?T theme color overrides (role cards / focus rings) */
         .bg-emerald-50  { background-color: var(--site-primary-pale) !important; }
         .bg-emerald-100 { background-color: color-mix(in srgb, var(--site-primary) 22%, white) !important; }
         .bg-emerald-600 { background-color: var(--site-primary) !important; }

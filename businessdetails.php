@@ -42,13 +42,13 @@ function labelMap(string $key, array $map): string {
 $APT_TYPE  = ['bed-spacer'=>'Bed Spacer','studio'=>'Studio Type','solo-room'=>'Solo Room','1br'=>'1-Bedroom','2br'=>'2-Bedroom','whole-unit'=>'Whole Unit'];
 $APT_STAT  = ['available'=>'Available','occupied'=>'Fully Occupied','inquire'=>'Inquire First'];
 $BIZ_STAT  = ['open'=>'Open / Operating','new'=>'Newly Opened','temp-closed'=>'Temporarily Closed','for-rent'=>'Space for Rent'];
-$BIZ_CAT   = ['food'=>'Food & Dining','water'=>'Water Station','sari-sari'=>'Sari-Sari Store','salon'=>'Salon / Barber','laundry'=>'Laundry Shop','pharmacy'=>'Pharmacy','printing'=>'Printing / Computer Shop','bakery'=>'Bakery / Café','hardware'=>'Hardware','other'=>'Other'];
+$BIZ_CAT   = ['food'=>'Food & Dining','water'=>'Water Station','sari-sari'=>'Sari-Sari Store','salon'=>'Salon / Barber','laundry'=>'Laundry Shop','pharmacy'=>'Pharmacy','printing'=>'Printing / Computer Shop','bakery'=>'Bakery / Caf�','hardware'=>'Hardware','other'=>'Other'];
 $INC_LBL   = ['electric'=>'Electricity','water'=>'Water','wifi'=>'WiFi','cable'=>'Cable TV'];
 $AMN_LBL   = ['aircon'=>'Aircon','fan'=>'Electric Fan','parking'=>'Parking','laundry'=>'Laundry Area','cctv'=>'CCTV','security'=>'Security','kitchen'=>'Shared Kitchen','gate'=>'Gated Compound'];
 $RULES_LBL = ['no-smoking'=>'No Smoking','no-pets'=>'No Pets','no-visitors'=>'No Overnight Visitors','curfew'=>'Curfew Policy','no-cooking'=>'No Cooking Inside'];
 $FEAT_LBL  = ['delivery'=>'Delivery','pickup'=>'Pick-up','dine-in'=>'Dine-in','parking'=>'Parking','gcash'=>'GCash','maya'=>'Maya','wifi'=>'Free WiFi','aircon'=>'Aircon'];
 $DAYS_LBL  = ['mon'=>'Monday','tue'=>'Tuesday','wed'=>'Wednesday','thu'=>'Thursday','fri'=>'Friday','sat'=>'Saturday','sun'=>'Sunday','holiday'=>'Holidays'];
-$YEARS_LBL = ['new'=>'Just opened','1'=>'1 year','2-5'=>'2–5 years','5-10'=>'5–10 years','10+'=>'10+ years'];
+$YEARS_LBL = ['new'=>'Just opened','1'=>'1 year','2-5'=>'2-5 years','5-10'=>'5-10 years','10+'=>'10+ years'];
 
 if ($l) {
     $isApt   = ($l['listingType'] === 'apt' || $l['listingType'] === 'apartment');
@@ -56,8 +56,8 @@ if ($l) {
     $type    = $isApt ? 'apartment' : 'business';
     $status  = $isApt ? ($l['aptStatus'] ?? 'available') : ($l['bussStatus'] ?? 'open');
     $price   = $isApt
-        ? ($l['aptPrice'] ? '₱' . number_format((float)$l['aptPrice'], 0) . ' / month' : 'Price on inquiry')
-        : ($l['bussPrice'] ? '₱' . $l['bussPrice'] : 'See details');
+        ? ($l['aptPrice'] ? '?' . number_format((float)$l['aptPrice'], 0) . ' / month' : 'Price on inquiry')
+        : ($l['bussPrice'] ? '?' . $l['bussPrice'] : 'See details');
     $location  = $isApt ? ($l['aptAddress'] ?? '') : ($l['bussAddress'] ?? '');
     $contact   = $l['contact'] ?? '0999-999-9999';
     $email     = $l['email']   ?? '';
@@ -88,7 +88,7 @@ if ($l) {
     $city      = $l['city']     ?? 'Cabanatuan City';
     $fullAddr  = trim("$houseNum $street, $barangay, $city");
     if (!$location) $location = $fullAddr;
-    $datePosted = !empty($l['createdAt']) ? date('F j, Y', strtotime($l['createdAt'])) : '—';
+    $datePosted = !empty($l['createdAt']) ? date('F j, Y', strtotime($l['createdAt'])) : '-';
 } else {
     $name      = isset($_GET['name'])     ? htmlspecialchars(urldecode($_GET['name']))     : 'Unknown Listing';
     $type      = isset($_GET['type'])     ? htmlspecialchars(urldecode($_GET['type']))     : 'business';
@@ -102,26 +102,26 @@ if ($l) {
     $isApt     = ($type === 'apartment');
     $statusLbl = $status === 'available' ? 'Available' : ($status === 'occupied' ? 'Fully Occupied' : 'Inquire');
     $photos    = [];
-    $datePosted = '—';
+    $datePosted = '-';
 }
 
-// ── Role display ──
+// ?? Role display ??
 $roleLower = strtolower(trim($role));
 $showMyPanel = $logged_in && (
     $roleLower === 'resident' ||
     $roleLower === 'resident,business/apartment owner'
 );
 
-// Staff accounts (granted individual admin modules — see includes/check_permissions.php)
+// Staff accounts (granted individual admin modules - see includes/check_permissions.php)
 // are treated like admin here: they land in the admin area, not the public
 // resident/non-resident profile pages.
 $isAdminLike = in_array($roleLower, ['admin', 'staff'], true);
 
-// "My Profile" link varies by role — shared by both the desktop dropdown
+// "My Profile" link varies by role - shared by both the desktop dropdown
 // and the mobile sidebar. Admins and staff don't get a profile link at all
 // (they already have Dashboard); residents and non-residents get their own
 // respective profile pages. (Previously this was hardcoded to profile.php
-// for everyone, and settings.php for admin — neither page exists.)
+// for everyone, and settings.php for admin - neither page exists.)
 if ($isAdminLike) {
     $profileUrl = null;
 } elseif ($showMyPanel) {
@@ -189,7 +189,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/responsive-global.css">
-  <title><?= esc($name) ?> — <?= e($siteSettings['site_title']) ?></title>
+  <title><?= esc($name) ?> - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -280,7 +280,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
 </head>
 <body>
 
-<!-- ══════════════════ HEADER ══════════════════ -->
+<!-- ?????????????????? HEADER ?????????????????? -->
 <header class="w-full h-[68px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="<?= $logged_in ? 'resident/residentLanding.php' : 'landing.php' ?>" class="flex items-center gap-3">
@@ -377,7 +377,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
   </nav>
 </header>
 
-<!-- ══════════════════ MOBILE SIDEBAR ══════════════════ -->
+<!-- ?????????????????? MOBILE SIDEBAR ?????????????????? -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -440,7 +440,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
   </div>
 </div>
 
-<!-- ══════════════════ MAIN ══════════════════ -->
+<!-- ?????????????????? MAIN ?????????????????? -->
 <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
   <!-- Breadcrumb -->
@@ -448,9 +448,9 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
     <a href="busaptListing.php" class="hover:text-[var(--site-primary)] transition font-medium flex items-center gap-1">
       <i class="fa-solid fa-arrow-left text-xs"></i> Back to Directory
     </a>
-    <span>·</span>
+    <span>�</span>
     <span class="text-gray-400"><?= esc($isApt ? 'Apartment' : 'Business') ?></span>
-    <span>·</span>
+    <span>�</span>
     <span class="text-green-700 font-semibold truncate max-w-[160px] sm:max-w-none"><?= esc($name) ?></span>
   </div>
 
@@ -517,10 +517,10 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
 
           <?php if ($isApt): ?>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
-            <div class="stat-card"><p class="stat-label">Rooms</p><p class="stat-val"><?= esc($aptRooms ?: '—') ?></p></div>
-            <div class="stat-card"><p class="stat-label">Max Occupants</p><p class="stat-val"><?= esc($aptOccupants ?: '—') ?></p></div>
-            <div class="stat-card"><p class="stat-label">Bathroom</p><p class="stat-val"><?= esc($aptBath ? ucfirst($aptBath) : '—') ?></p></div>
-            <div class="stat-card"><p class="stat-label">Slots Open</p><p class="stat-val"><?= esc($aptSlots !== '' ? $aptSlots : '—') ?></p></div>
+            <div class="stat-card"><p class="stat-label">Rooms</p><p class="stat-val"><?= esc($aptRooms ?: '-') ?></p></div>
+            <div class="stat-card"><p class="stat-label">Max Occupants</p><p class="stat-val"><?= esc($aptOccupants ?: '-') ?></p></div>
+            <div class="stat-card"><p class="stat-label">Bathroom</p><p class="stat-val"><?= esc($aptBath ? ucfirst($aptBath) : '-') ?></p></div>
+            <div class="stat-card"><p class="stat-label">Slots Open</p><p class="stat-val"><?= esc($aptSlots !== '' ? $aptSlots : '-') ?></p></div>
           </div>
           <?php if (!empty($aptInc)): ?><div class="mt-4"><p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Included in Rent</p><div><?= tagBadges($aptInc, $INC_LBL) ?></div></div><?php endif; ?>
           <?php if (!empty($aptAmn)): ?><div class="mt-4"><p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Amenities</p><div><?= tagBadges($aptAmn, $AMN_LBL) ?></div></div><?php endif; ?>
@@ -529,8 +529,8 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
           <?php else: ?>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
             <div class="stat-card"><p class="stat-label">Category</p><p class="stat-val" style="font-size:0.82rem;"><?= esc(labelMap($bussCat, $BIZ_CAT)) ?></p></div>
-            <div class="stat-card"><p class="stat-label">Open Hours</p><p class="stat-val" style="font-size:0.82rem;"><?= ($bussOpen && $bussClose) ? esc(fmt12($bussOpen) . ' – ' . fmt12($bussClose)) : '—' ?></p></div>
-            <div class="stat-card"><p class="stat-label">Years in Business</p><p class="stat-val" style="font-size:0.82rem;"><?= esc(labelMap($bussYears, $YEARS_LBL) ?: '—') ?></p></div>
+            <div class="stat-card"><p class="stat-label">Open Hours</p><p class="stat-val" style="font-size:0.82rem;"><?= ($bussOpen && $bussClose) ? esc(fmt12($bussOpen) . ' - ' . fmt12($bussClose)) : '-' ?></p></div>
+            <div class="stat-card"><p class="stat-label">Years in Business</p><p class="stat-val" style="font-size:0.82rem;"><?= esc(labelMap($bussYears, $YEARS_LBL) ?: '-') ?></p></div>
           </div>
           <?php if (!empty($bussDays)): ?><div class="mt-4"><p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Days Open</p><div><?= tagBadges($bussDays, $DAYS_LBL) ?></div></div><?php endif; ?>
           <?php if (!empty($bussFeatures)): ?><div class="mt-4"><p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Features &amp; Services</p><div><?= tagBadges($bussFeatures, $FEAT_LBL) ?></div></div><?php endif; ?>
@@ -561,7 +561,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
         <div class="p-5 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?= esc($isApt ? 'Apartment / Room' : 'Business') ?></span>
           <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mt-1 leading-tight" style="font-family:'Playfair Display',serif;"><?= esc($name) ?></h2>
-          <p class="text-xs text-gray-400 mt-0.5"><?= esc($isApt ? 'Apartment · ' . labelMap($aptType, $APT_TYPE) : 'Business · ' . labelMap($bussCat, $BIZ_CAT)) ?></p>
+          <p class="text-xs text-gray-400 mt-0.5"><?= esc($isApt ? 'Apartment � ' . labelMap($aptType, $APT_TYPE) : 'Business � ' . labelMap($bussCat, $BIZ_CAT)) ?></p>
           <p class="mt-3 text-xl sm:text-2xl font-bold <?= $isApt ? 'text-green-700' : 'text-blue-700' ?>"><?= esc($price) ?></p>
           <div class="mt-3 flex items-center gap-2 flex-wrap">
             <span class="<?= $statusPillClass ?>">
@@ -571,7 +571,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             <?php if ($isApt && $aptSlots): ?>
               <span class="pill available"><i class="fa-solid fa-circle-check mr-1 text-xs"></i> <?= (int)$aptSlots ?> slot<?= $aptSlots != 1 ? 's' : '' ?> open</span>
             <?php endif; ?>
-            <?php if ($datePosted !== '—'): ?>
+            <?php if ($datePosted !== '-'): ?>
               <span class="text-xs text-gray-400">Posted <?= esc($datePosted) ?></span>
             <?php endif; ?>
           </div>
@@ -628,21 +628,21 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
           </div>
           <?php if ($isApt): ?>
           <div class="info-grid">
-            <div class="info-row"><span class="info-label">Room Type</span><span class="info-value <?= $aptType?'':'empty' ?>"><?= $aptType ? esc(labelMap($aptType, $APT_TYPE)) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Floor / Level</span><span class="info-value <?= $aptFloor?'':'empty' ?>"><?= $aptFloor ? esc($aptFloor) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Rooms</span><span class="info-value <?= $aptRooms?'':'empty' ?>"><?= $aptRooms ? esc($aptRooms) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Max Occupants</span><span class="info-value <?= $aptOccupants?'':'empty' ?>"><?= $aptOccupants ? esc($aptOccupants) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Bathroom</span><span class="info-value <?= $aptBath?'':'empty' ?>"><?= $aptBath ? esc(ucfirst($aptBath)) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Slots Available</span><span class="info-value <?= $aptSlots!==''?'':'empty' ?>"><?= $aptSlots !== '' ? esc($aptSlots) : '—' ?></span></div>
+            <div class="info-row"><span class="info-label">Room Type</span><span class="info-value <?= $aptType?'':'empty' ?>"><?= $aptType ? esc(labelMap($aptType, $APT_TYPE)) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Floor / Level</span><span class="info-value <?= $aptFloor?'':'empty' ?>"><?= $aptFloor ? esc($aptFloor) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Rooms</span><span class="info-value <?= $aptRooms?'':'empty' ?>"><?= $aptRooms ? esc($aptRooms) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Max Occupants</span><span class="info-value <?= $aptOccupants?'':'empty' ?>"><?= $aptOccupants ? esc($aptOccupants) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Bathroom</span><span class="info-value <?= $aptBath?'':'empty' ?>"><?= $aptBath ? esc(ucfirst($aptBath)) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Slots Available</span><span class="info-value <?= $aptSlots!==''?'':'empty' ?>"><?= $aptSlots !== '' ? esc($aptSlots) : '-' ?></span></div>
           </div>
           <?php else: ?>
           <div class="info-grid">
             <div class="info-row"><span class="info-label">Category</span><span class="info-value"><?= esc(labelMap($bussCat, $BIZ_CAT)) ?></span></div>
             <div class="info-row"><span class="info-label">Status</span><span class="info-value"><?= esc(labelMap($status, $BIZ_STAT)) ?></span></div>
-            <div class="info-row"><span class="info-label">Opens</span><span class="info-value <?= $bussOpen?'':'empty' ?>"><?= $bussOpen ? esc(fmt12($bussOpen)) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Closes</span><span class="info-value <?= $bussClose?'':'empty' ?>"><?= $bussClose ? esc(fmt12($bussClose)) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Starting Price</span><span class="info-value <?= ($l['bussPrice']??'')?'':'empty' ?>"><?= ($l['bussPrice']??'') ? '₱'.esc($l['bussPrice']) : '—' ?></span></div>
-            <div class="info-row"><span class="info-label">Years Operating</span><span class="info-value <?= $bussYears?'':'empty' ?>"><?= $bussYears ? esc(labelMap($bussYears, $YEARS_LBL)) : '—' ?></span></div>
+            <div class="info-row"><span class="info-label">Opens</span><span class="info-value <?= $bussOpen?'':'empty' ?>"><?= $bussOpen ? esc(fmt12($bussOpen)) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Closes</span><span class="info-value <?= $bussClose?'':'empty' ?>"><?= $bussClose ? esc(fmt12($bussClose)) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Starting Price</span><span class="info-value <?= ($l['bussPrice']??'')?'':'empty' ?>"><?= ($l['bussPrice']??'') ? '?'.esc($l['bussPrice']) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Years Operating</span><span class="info-value <?= $bussYears?'':'empty' ?>"><?= $bussYears ? esc(labelMap($bussYears, $YEARS_LBL)) : '-' ?></span></div>
           </div>
           <?php endif; ?>
         </div>
@@ -662,7 +662,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
   <img id="lightboxImg" src="" alt="">
 </div>
 
-<!-- ══════════════════ FOOTER ══════════════════ -->
+<!-- ?????????????????? FOOTER ?????????????????? -->
 <footer class="bg-green-950 text-white pt-14 pb-6 px-4 sm:px-6 mt-8">
   <div class="max-w-6xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
@@ -703,7 +703,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">� 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 

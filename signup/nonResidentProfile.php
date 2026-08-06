@@ -52,7 +52,7 @@ function isValidBirthdate(string $date): bool
 }
 
 /**
- * Validate ZIP (4–10 digits/alphanumerics).
+ * Validate ZIP (4-10 digits/alphanumerics).
  */
 function isValidZip(string $zip): bool
 {
@@ -218,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['zip'] === '') {
         $errors['zip'] = 'ZIP code is required.';
     } elseif (!isValidZip($data['zip'])) {
-        $errors['zip'] = 'Please enter a valid ZIP code (4–10 alphanumeric characters).';
+        $errors['zip'] = 'Please enter a valid ZIP code (4-10 alphanumeric characters).';
     }
 
     // Phone
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Personal Information — SumEste Portal</title>
+<title>Personal Information - SumEste Portal</title>
 <link rel="icon" href="../assets/logo2.png" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -799,7 +799,7 @@ function validateField(el) {
 
     if (name === 'email'             && val && !isValidEmail(val))    { showError(el, 'Enter a valid email address.'); return false; }
     if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
-    if (name === 'zip'               && val && !isValidZip(val))      { showError(el, 'Enter a valid ZIP code (4–10 alphanumeric).'); return false; }
+    if (name === 'zip'               && val && !isValidZip(val))      { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
     if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a past date.'); return false; }
 
     // Name character check
@@ -858,7 +858,7 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     // Disable submit to prevent double-post
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting…';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting.';
 
     this.submit();
 });

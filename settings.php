@@ -37,7 +37,7 @@ $heroImageMax  = 5;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings — <?= e($siteSettings['site_title']) ?></title>
+  <title>Settings - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -49,7 +49,7 @@ $heroImageMax  = 5;
     * { box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
-    /* ── Sidebar (matches admin dashboard exactly) ── */
+    /* ?? Sidebar (matches admin dashboard exactly) ?? */
     .sidebar {
       width: 260px; flex-shrink: 0;
       background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%);
@@ -84,14 +84,14 @@ $heroImageMax  = 5;
     .topbar-title-block { transition: margin-left 0.25s ease; }
     body.sidebar-collapsed .topbar-title-block { margin-left: 46px; }
 
-    /* ── Tabs ── */
+    /* ?? Tabs ?? */
     .settings-tabs { display: flex; gap: 28px; border-bottom: 1px solid #e5e7eb; padding: 0 24px; background: #fff; }
     .settings-tab { display: flex; align-items: center; gap: 8px; padding: 16px 2px; font-size: 0.92rem; font-weight: 700; color: #9ca3af; cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; }
     .settings-tab.active { color: var(--site-primary); border-bottom-color: var(--site-primary); }
     .settings-tab:not(.active):not(:disabled):hover { color: #4b5563; }
     .settings-tab:disabled { cursor: not-allowed; opacity: 0.5; }
 
-    /* ── Section card ── */
+    /* ?? Section card ?? */
     .settings-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 26px 28px; box-shadow: 0 2px 12px rgba(21,128,61,0.05); }
     .settings-card + .settings-card { margin-top: 22px; }
     .settings-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
@@ -113,7 +113,7 @@ $heroImageMax  = 5;
     /* Hero images list */
  .hero-hint-text { font-size: 0.78rem; color: #9ca3af; margin-top: 10px; display: block; }
 
-/* Grid of clickable tiles — same interaction pattern as .logo-upload-zone */
+/* Grid of clickable tiles - same interaction pattern as .logo-upload-zone */
 .hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 12px; }
 .hero-tile {
   position: relative; aspect-ratio: 1/1; border-radius: 10px; overflow: hidden;
@@ -134,7 +134,7 @@ $heroImageMax  = 5;
 .hero-tile:hover .hero-tile-remove { opacity: 1; }
 .hero-tile-uploading { opacity: 0.5; pointer-events: none; }
 
-/* Add-new tile — visually identical to .logo-upload-zone */
+/* Add-new tile - visually identical to .logo-upload-zone */
 .hero-add-tile {
   aspect-ratio: 1/1; border: 1.5px dashed #d1d5db; border-radius: 10px; display: flex;
   align-items: center; justify-content: center; color: #d1d5db; font-size: 1.4rem;
@@ -221,10 +221,10 @@ $heroImageMax  = 5;
     .alert-close { margin-left: auto; background: none; border: none; cursor: pointer; opacity: 0.6; color: inherit; flex-shrink: 0; }
     .alert-close:hover { opacity: 1; }
 
-    /* ── Settings panels (tab content) ── */
+    /* ?? Settings panels (tab content) ?? */
     .settings-panel.hidden { display: none; }
 
-    /* ── Danger Zone (Security tab) ── */
+    /* ?? Danger Zone (Security tab) ?? */
     .danger-card { border-color: #fecaca !important; }
     .danger-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border-radius: 12px; border: 1px solid #fecaca; background: #fef2f2; flex-wrap: wrap; }
     .danger-row-title { font-size: 0.9rem; font-weight: 700; color: #111827; }
@@ -300,7 +300,7 @@ $heroImageMax  = 5;
     <div class="modal-card">
       <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <h3 class="modal-title">Apply these changes?</h3>
-      <p class="modal-desc">This updates settings for the <strong>entire site</strong> — every visitor will see the new information and theme right away. The page will refresh after saving.</p>
+      <p class="modal-desc">This updates settings for the <strong>entire site</strong> - every visitor will see the new information and theme right away. The page will refresh after saving.</p>
       <div class="modal-actions">
         <button type="button" class="modal-btn modal-btn-cancel" onclick="closeSaveConfirmModal()">Cancel</button>
         <button type="button" class="modal-btn modal-btn-confirm" id="modalConfirmBtn" onclick="confirmSave()">Yes, Save &amp; Refresh</button>
@@ -377,11 +377,11 @@ $heroImageMax  = 5;
         </div>
       </div>
 
-      <!-- ═══════════════════════ GENERAL PANEL ═══════════════════════ -->
+      <!-- ??????????????????????? GENERAL PANEL ??????????????????????? -->
       <div class="settings-panel" data-panel="general">
         <form id="settingsForm" class="p-6 flex-1">
 
-          <!-- ═══════════ BARANGAY INFORMATION ═══════════ -->
+          <!-- ??????????? BARANGAY INFORMATION ??????????? -->
           <div class="settings-card" data-section="barangay">
             <div class="settings-card-head">
               <div>
@@ -442,7 +442,7 @@ $heroImageMax  = 5;
             </div>
           </div>
 
-          <!-- ═══════════ LANDING PAGE ═══════════ -->
+          <!-- ??????????? LANDING PAGE ??????????? -->
           <div class="settings-card" data-section="landing">
             <div class="settings-card-head">
               <div>
@@ -468,7 +468,7 @@ $heroImageMax  = 5;
                   </div>
                 </div>
                 <input type="file" id="heroFileInput" accept="image/jpeg,image/png" style="display:none;" onchange="handleHeroUpload(this)">
-                <span class="hero-hint-text">Accepted files: JPG, PNG &nbsp;|&nbsp; 1920×1080 &nbsp;|&nbsp; Click a tile's × to remove, or the + tile to add</span>
+                <span class="hero-hint-text">Accepted files: JPG, PNG &nbsp;|&nbsp; 1920�1080 &nbsp;|&nbsp; Click a tile's � to remove, or the + tile to add</span>
 
                 <hr class="section-divider">
 
@@ -484,7 +484,7 @@ $heroImageMax  = 5;
                     <label class="field-label">Area Served</label>
                     <div class="relative">
                       <input type="number" step="0.01" class="field-input" name="area_served" data-section-field="landing" disabled min="0" style="padding-right:44px;" value="<?= e($siteSettings['area_served']) ?>">
-                      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:#9ca3af;">km²</span>
+                      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:#9ca3af;">km�</span>
                     </div>
                   </div>
                 </div>
@@ -537,7 +537,7 @@ $heroImageMax  = 5;
             </div>
           </div>
 
-          <!-- ═══════════ SITE SETTINGS ═══════════ -->
+          <!-- ??????????? SITE SETTINGS ??????????? -->
           <div class="settings-card" data-section="site">
             <div class="settings-card-head">
               <div>
@@ -618,7 +618,7 @@ $heroImageMax  = 5;
         </form>
       </div>
 
-  <!-- ═══════════════════════ SECURITY PANEL ═══════════════════════ -->
+  <!-- ??????????????????????? SECURITY PANEL ??????????????????????? -->
       <!-- <div class="settings-panel hidden" data-panel="security">
         <div class="p-6 flex-1">
 
@@ -648,11 +648,11 @@ $heroImageMax  = 5;
         </div>
       </div> -->
 
-      <!-- ═══════════════════════ PERMISSIONS PANEL ═══════════════════════ -->
+      <!-- ??????????????????????? PERMISSIONS PANEL ??????????????????????? -->
       <div class="settings-panel hidden" data-panel="permissions">
         <div class="p-6 flex-1">
 
-          <!-- ═══ CREATE STAFF ACCOUNT ═══ -->
+          <!-- ??? CREATE STAFF ACCOUNT ??? -->
           <div class="settings-card" style="margin-bottom:22px;">
             <div class="settings-card-head">
               <div>
@@ -691,7 +691,7 @@ $heroImageMax  = 5;
             </div>
           </div>
 
-          <!-- ═══ MANAGE ADMINISTRATOR ═══ -->
+          <!-- ??? MANAGE ADMINISTRATOR ??? -->
           <div class="settings-card">
             <div class="settings-card-head">
               <div>
@@ -715,7 +715,7 @@ $heroImageMax  = 5;
                 </thead>
                 <tbody id="permUserResults">
                   <tr><td colspan="4" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
-                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators…
+                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators.
                   </td></tr>
                 </tbody>
               </table>
@@ -728,9 +728,9 @@ $heroImageMax  = 5;
     </main>
   </div>
 
-  <!-- ══════════════════════════════════════
+  <!-- ??????????????????????????????????????
        CHANGE PERMISSION MODAL (founder admin only)
-  ══════════════════════════════════════ -->
+  ?????????????????????????????????????? -->
 
   <div class="modal-overlay" id="permModalOverlay" style="display:none;align-items:center;justify-content:center;" onclick="closePermModalOnOverlay(event)">
     <div class="modal-card" style="max-width:480px;text-align:left;padding:0;overflow:hidden;">
@@ -749,7 +749,7 @@ $heroImageMax  = 5;
 
       <div style="padding:16px 18px;max-height:60vh;overflow-y:auto;">
         <input type="hidden" id="permUserID">
-        <p class="text-xs text-gray-400 mb-3">Toggle modules on or off — takes effect immediately, no email confirmation is sent. Turn every module off to fully revoke access.</p>
+        <p class="text-xs text-gray-400 mb-3">Toggle modules on or off - takes effect immediately, no email confirmation is sent. Turn every module off to fully revoke access.</p>
 
         <div id="permModuleList">
           <?php foreach (PERMISSION_MODULES as $modKey => $modLabel): ?>
@@ -767,16 +767,16 @@ $heroImageMax  = 5;
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════
+  <!-- ??????????????????????????????????????
        REMOVE ADMIN CONFIRMATION MODAL
-  ══════════════════════════════════════ -->
+  ?????????????????????????????????????? -->
   <div class="modal-overlay" id="removeAdminModalOverlay" style="display:none;align-items:center;justify-content:center;" onclick="closeRemoveAdminModalOnOverlay(event)">
     <div class="modal-card">
       <div class="modal-icon" style="background:#fef2f2;color:#dc2626;"><i class="fa-solid fa-user-xmark"></i></div>
       <h3 class="modal-title">Remove admin access?</h3>
     <p class="modal-desc">
   This will revoke <strong id="removeAdminName"></strong>'s admin module access.
-  Their regular account will not be affected — they'll simply lose access to admin features.
+  Their regular account will not be affected - they'll simply lose access to admin features.
 </p>
       <div class="modal-actions">
         <button type="button" class="modal-btn modal-btn-cancel" onclick="closeRemoveAdminModal()">Cancel</button>
@@ -799,20 +799,20 @@ $heroImageMax  = 5;
   </div>
 
   <script>
-    /* ══════════════════════════════════════════
-   Shared staff defaults (single source of truth —
+    /* ??????????????????????????????????????????
+   Shared staff defaults (single source of truth -
    remove the duplicate inline STAFF_DEFAULTS consts
    that were inside openPermissionModal() and the
    role-option click handler; they all use this one now)
-══════════════════════════════════════════ */
+?????????????????????????????????????????? */
 const STAFF_DEFAULTS = {
   barangay_secretary: ['dashboard','manage_residents','manage_beneficiaries','manage_documents','manage_listings','manage_announcements'],
   barangay_treasurer: ['dashboard','manage_documents','manage_borrowing'],
 };
 
-/* ══════════════════════════════════════════
+/* ??????????????????????????????????????????
    CREATE STAFF ACCOUNT
-══════════════════════════════════════════ */
+?????????????????????????????????????????? */
 function selectStaffPosition(label) {
   document.querySelectorAll('#staffCreateSection .role-option, .settings-card .role-option[data-role]').forEach(o => {});
   // Scope to this card only (position radios named "staffPosition")
@@ -881,7 +881,7 @@ function handleCreateStaff() {
     .catch(() => showToast('error', 'Network error. Please try again.'))
     .finally(() => { btn.disabled = false; btn.innerHTML = originalHtml; });
 }
-    /* ── Map Display autocomplete (Nominatim / OpenStreetMap) ── */
+    /* ?? Map Display autocomplete (Nominatim / OpenStreetMap) ?? */
 let mapSearchDebounce = null;
 let mapSearchAbort = null;
 
@@ -969,7 +969,7 @@ document.addEventListener('click', (e) => {
     collapseBtn.addEventListener('click', () => { collapsed = true; localStorage.setItem('sidebarCollapsed', 'true'); applyState(); });
     expandBtn.addEventListener('click', () => { collapsed = false; localStorage.setItem('sidebarCollapsed', 'false'); applyState(); });
 
-    /* ── Tabs ── */
+    /* ?? Tabs ?? */
     document.querySelectorAll('.settings-tab[data-tab]').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.settings-tab[data-tab]').forEach(t => t.classList.remove('active'));
@@ -982,7 +982,7 @@ document.addEventListener('click', (e) => {
     });
     document.querySelector('.settings-tab[data-tab="general"]').classList.add('active');
 
-    /* ── Alert banner ── */
+    /* ?? Alert banner ?? */
     let alertTimer = null;
     function showToast(type, text) {
       const banner = document.getElementById('alertBanner');
@@ -997,7 +997,7 @@ document.addEventListener('click', (e) => {
     }
     function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-    /* ── Per-section Edit toggle ── */
+    /* ?? Per-section Edit toggle ?? */
     const originalValues = {};
     document.querySelectorAll('[data-section-field]').forEach(el => { originalValues[el.name] = el.value; });
 
@@ -1096,7 +1096,7 @@ document.addEventListener('click', (e) => {
       document.getElementById('saveBtn').disabled = !anyChanged;
     }
 
-    /* ── Live previews ── */
+    /* ?? Live previews ?? */
     function updateReachPreview() {
       const val = document.getElementById('reachContentInput').value.trim();
       document.getElementById('reachPreviewText').textContent = val || 'Lorem ipsum dolor sit amet, consectetur adipiscing';
@@ -1107,7 +1107,7 @@ document.addEventListener('click', (e) => {
       document.getElementById('themePreviewTitle').textContent = val;
     }
 
-    /* ── Color theme (with circular wipe transition) ── */
+    /* ?? Color theme (with circular wipe transition) ?? */
     function selectColorTheme(hex, event) {
       const applyChange = () => {
         document.getElementById('colorThemeInput').value = hex;
@@ -1131,7 +1131,7 @@ document.addEventListener('click', (e) => {
       }
     }
 
-    /* ── Hero images preview carousel ── */
+    /* ?? Hero images preview carousel ?? */
     let heroImages = <?= json_encode(array_map(fn($i) => $i['filename'], $heroImages), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
     let heroPreviewIndex = 0;
     function renderHeroPreview() {
@@ -1164,8 +1164,8 @@ document.addEventListener('click', (e) => {
       renderHeroPreview();
     }
 
-    /* ── Hero image upload/remove (immediate, not tied to Save Changes) ── */
- /* ── Hero image upload/remove (tile grid, immediate — same click-to-upload pattern as the logo) ── */
+    /* ?? Hero image upload/remove (immediate, not tied to Save Changes) ?? */
+ /* ?? Hero image upload/remove (tile grid, immediate - same click-to-upload pattern as the logo) ?? */
     function handleHeroUpload(input) {
       if (!input.files || !input.files[0]) return;
       const addTile = document.getElementById('heroAddTile');
@@ -1229,15 +1229,15 @@ document.addEventListener('click', (e) => {
         .catch(() => showToast('error', 'Network error.'));
     }
 
-    /* ── Site logo upload (immediate) ── */
-    // Site Logo — now staged the same way as Barangay/Municipality Logo:
+    /* ?? Site logo upload (immediate) ?? */
+    // Site Logo - now staged the same way as Barangay/Municipality Logo:
     // uploads immediately for preview, but only commits to the database
     // when "Save Changes" is confirmed. Cancel deletes the orphaned file.
     function handleLogoUpload(input) {
       handleStagedLogoUpload(input, 'site_logo', 'siteLogoInput', 'logoZonePreview');
     }
 
-    // Barangay Logo / Municipality Logo / Site Logo — uploads immediately so
+    // Barangay Logo / Municipality Logo / Site Logo - uploads immediately so
     // you can see a preview, but the filename is only staged in a hidden
     // field. Nothing is written to the database until "Save Changes" is
     // confirmed; if you click Cancel instead, the uploaded file is deleted
@@ -1278,7 +1278,7 @@ document.addEventListener('click', (e) => {
       return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* ── Save Changes (text/number fields + color theme) ── */
+    /* ?? Save Changes (text/number fields + color theme) ?? */
     function handleSave() {
       document.getElementById('saveConfirmModal').style.display = 'flex';
     }
@@ -1307,7 +1307,7 @@ document.addEventListener('click', (e) => {
         .then(r => r.json())
         .then(d => {
           if (d.success) {
-            showToast('success', 'Settings saved successfully. Refreshing…');
+            showToast('success', 'Settings saved successfully. Refreshing.');
             setTimeout(() => { window.location.reload(); }, 900);
           } else {
             showToast('error', d.message || 'Could not save settings.');
@@ -1320,9 +1320,9 @@ document.addEventListener('click', (e) => {
           btn.innerHTML = originalHtml;
           checkFormChanged();
         });
-    }/* ══════════════════════════════════════════
+    }/* ??????????????????????????????????????????
    USER PERMISSIONS SEARCH + MODAL
-══════════════════════════════════════════ */
+?????????????????????????????????????????? */
 const STAFF_LABELS = {
   barangay_secretary: 'Barangay Secretary',
   barangay_treasurer: 'Barangay Treasurer',
@@ -1338,7 +1338,7 @@ function loadStaffList() {
 
   tbody.innerHTML = `
     <tr><td colspan="4" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
-      <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators…
+      <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators.
     </td></tr>`;
 
   fetch('admin/userSearch.php', { signal: permListAbort.signal })
@@ -1410,16 +1410,16 @@ function handleRemoveAdmin(userID, fullname) {
     })
     .catch(() => showToast('error', 'Network error. Please try again.'));
 }
-/* ══════════════════════════════════════════
+/* ??????????????????????????????????????????
    REMOVE ADMIN ACCOUNT
-══════════════════════════════════════════ */
+?????????????????????????????????????????? */
 let removeAdminTargetID = null;
 let removeAdminTargetName = null;
 
 function handleRemoveAdmin(userID, fullname) {
-  // ── Validation ──
+  // ?? Validation ??
   if (!userID) {
-    showToast('error', 'Invalid user — cannot remove.');
+    showToast('error', 'Invalid user - cannot remove.');
     return;
   }
   const currentUserID = <?= json_encode($_SESSION['user_id']) ?>;
@@ -1477,9 +1477,9 @@ function confirmRemoveAdmin() {
       btn.innerHTML = originalHtml;
     });
 }
-/* ══════════════════════════════════════════
+/* ??????????????????????????????????????????
    CHANGE PERMISSION MODAL
-══════════════════════════════════════════ */
+?????????????????????????????????????????? */
 let permModalUserID = null;
 
 function openPermissionModal(userID) {
@@ -1521,7 +1521,7 @@ function handlePermSave() {
     .then(d => {
       if (d.success) {
         closePermModal();
-        showToast('success', d.revoked ? 'Staff access revoked.' : 'Permission updated — takes effect immediately.');
+        showToast('success', d.revoked ? 'Staff access revoked.' : 'Permission updated - takes effect immediately.');
         loadStaffList();
       } else {
         showToast('error', d.message || 'Could not save changes.');

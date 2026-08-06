@@ -610,7 +610,7 @@ class Date
              *
              * > Warning: DateTime::modify(): Failed to parse time string (+ 3172011706730017 days)
              * > at position 0 (+): Unexpected character in
-             * > […]/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Shared/Date.php on line 220
+             * > [.]/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Shared/Date.php on line 220
              *
              * @param int $severity The severity level of the error.
              * @param string $message The error message to process.

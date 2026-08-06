@@ -48,8 +48,8 @@ if ($result) {
             ? ($row['aptStatus'] ?? 'available')
             : ($row['bussStatus'] ?? 'open');
         $row['display_price'] = $isApt
-            ? ($row['aptPrice'] ? '₱' . number_format((float)$row['aptPrice'], 0) . ' / month' : 'Price on inquiry')
-            : ($row['bussPrice'] ? '₱' . $row['bussPrice'] : ($row['bussCat'] ? ucfirst(str_replace('-', ' ', $row['bussCat'])) : 'Business'));
+            ? ($row['aptPrice'] ? '?' . number_format((float)$row['aptPrice'], 0) . ' / month' : 'Price on inquiry')
+            : ($row['bussPrice'] ? '?' . $row['bussPrice'] : ($row['bussCat'] ? ucfirst(str_replace('-', ' ', $row['bussCat'])) : 'Business'));
         $row['display_category'] = $isApt
             ? ($row['aptType'] ?? 'apartment')
             : ($row['bussCat'] ?? 'business');
@@ -84,19 +84,19 @@ $roleBadgeClass = match($role) {
     default        => 'bg-gray-100 text-gray-600 border border-gray-200',
 };
 
-// ── Show My Panel only for pure resident or resident+owner (NOT non-resident variants) ──
+// ?? Show My Panel only for pure resident or resident+owner (NOT non-resident variants) ??
 $roleLower = strtolower(trim($role));
 $showMyPanel = $logged_in && (
     $roleLower === 'resident' ||
     $roleLower === 'resident,business/apartment owner'
 );
 
-// Staff accounts (granted individual admin modules — see includes/check_permissions.php)
+// Staff accounts (granted individual admin modules - see includes/check_permissions.php)
 // are treated like admin here: they land in the admin area, not the public
 // resident/non-resident profile pages.
 $isAdminLike = in_array($roleLower, ['admin', 'staff'], true);
 
-// "My Profile" link varies by role — shared by both the desktop dropdown
+// "My Profile" link varies by role - shared by both the desktop dropdown
 // and the mobile sidebar. Admins and staff don't get a profile link at all
 // (they already have Dashboard); residents and non-residents get their own
 // respective profile pages.
@@ -182,7 +182,7 @@ function getBizCatLabel(string $cat): string {
         'laundry'  => 'Laundry Shop',
         'pharmacy' => 'Pharmacy',
         'printing' => 'Printing / Computer Shop',
-        'bakery'   => 'Bakery / Café',
+        'bakery'   => 'Bakery / Caf�',
         'hardware' => 'Hardware',
         'other'    => 'Other',
         default    => ucfirst($cat),
@@ -207,7 +207,7 @@ function getAptTypeLabel(string $type): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/responsive-global.css">
-  <title>Local Directory — <?= e($siteSettings['site_title']) ?></title>
+  <title>Local Directory - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings)) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -219,13 +219,13 @@ function getAptTypeLabel(string $type): string {
     html { scroll-behavior: smooth; }
     body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, var(--site-primary-pale) 0%, color-mix(in srgb, var(--site-primary-pale) 70%, white) 48%, #eff6ff 100%); color: #134e4a; min-height: 100vh; }
 
-    /* ── NAV ── */
+    /* ?? NAV ?? */
     .nav-link { position: relative; transition: color 0.2s ease, transform 0.2s ease; }
     .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s ease; }
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { color: var(--site-primary-dark); transform: translateY(-1px); }
 
-    /* ── SEARCH ── */
+    /* ?? SEARCH ?? */
     .search-wrap { display: flex; align-items: center; background: rgba(255,255,255,0.96); border: 1.5px solid #d1d5db; border-radius: 14px; overflow: visible; box-shadow: 0 8px 20px rgba(15,23,42,0.08); transition: border-color 0.2s, box-shadow 0.2s; position: relative; }
     .search-wrap:focus-within { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.15); }
     .search-input { flex: 1; border: none; outline: none; padding: 14px 14px 14px 44px; font-size: 0.95rem; background: transparent; min-width: 0; width: 100%; }
@@ -233,12 +233,12 @@ function getAptTypeLabel(string $type): string {
     .sact { padding: 0 14px; color: #6b7280; background: none; border: none; cursor: pointer; font-size: 0.95rem; flex-shrink: 0; }
     .sact:hover { color: var(--site-primary); }
 
-    /* ── FILTER BUTTONS ── */
+    /* ?? FILTER BUTTONS ?? */
     .filter-btn { padding: 8px 18px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid #d1d5db; background: #fff; color: #4b5563; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .filter-btn:hover { border-color: var(--site-primary); color: var(--site-primary-dark); }
     .filter-btn.active { border-color: var(--site-primary); background: var(--site-primary); color: #fff; box-shadow: 0 5px 16px rgba(var(--site-primary-rgb),0.25); }
 
-    /* ── CARDS ── */
+    /* ?? CARDS ?? */
     .card { background: #fff; border-radius: 22px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.25s ease, box-shadow 0.25s ease; }
     .card:hover { transform: translateY(-6px); box-shadow: 0 25px 38px rgba(15,23,42,0.15); }
     .card-img { width: 100%; height: 190px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; flex-shrink: 0; }
@@ -266,17 +266,17 @@ function getAptTypeLabel(string $type): string {
 
     #emptyState { display: none; }
 
-    /* ── FILTER DROPDOWN ── */
+    /* ?? FILTER DROPDOWN ?? */
     #filterDropdown { position: absolute; right: 0; top: calc(100% + 8px); width: min(288px, calc(100vw - 32px)); background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 12px 32px rgba(15,23,42,0.12); padding: 16px; z-index: 100; }
 
-    /* ── RESPONSIVE GRID ── */
+    /* ?? RESPONSIVE GRID ?? */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
       gap: 20px;
     }
 
-    /* ── FILTER SCROLL CONTAINER (mobile) ── */
+    /* ?? FILTER SCROLL CONTAINER (mobile) ?? */
     .filter-scroll { display: flex; flex-wrap: wrap; gap: 8px; }
     @media (max-width: 640px) {
       .filter-scroll { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none; }
@@ -284,18 +284,18 @@ function getAptTypeLabel(string $type): string {
       .filter-btn { flex-shrink: 0; }
     }
 
-    /* ── MOBILE SIDEBAR ── */
+    /* ?? MOBILE SIDEBAR ?? */
     #mobile-sidebar { overflow-y: auto; }
 
-    /* ── HEADER ── */
+    /* ?? HEADER ?? */
     header { position: sticky; top: 0; z-index: 50; }
 
-    /* ── FOOTER RESPONSIVE ── */
+    /* ?? FOOTER RESPONSIVE ?? */
     @media (max-width: 768px) {
       .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
     }
 
-    /* ── MAIN PADDING ── */
+    /* ?? MAIN PADDING ?? */
     @media (max-width: 480px) {
       main { padding-left: 16px; padding-right: 16px; padding-top: 32px; }
       .card-img { height: 170px; }
@@ -308,7 +308,7 @@ function getAptTypeLabel(string $type): string {
       --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
     }
 
-    /* Tailwind-green → theme color overrides (matches landing.php / adminLanding.php) */
+    /* Tailwind-green ? theme color overrides (matches landing.php / adminLanding.php) */
     .text-green-400 { color: var(--site-primary-light) !important; }
     .text-green-200 { color: color-mix(in srgb, var(--site-primary-light) 60%, white) !important; }
     .text-green-100 { color: color-mix(in srgb, var(--site-primary-light) 40%, white) !important; }
@@ -342,7 +342,7 @@ function getAptTypeLabel(string $type): string {
 </head>
 <body>
 
-<!-- ══════════════════════════ HEADER ══════════════════════════ -->
+<!-- ?????????????????????????? HEADER ?????????????????????????? -->
 <header class="w-full h-[68px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="<?= $logged_in ? 'resident/residentLanding.php' : 'landing.php' ?>" class="flex items-center gap-3">
@@ -448,7 +448,7 @@ function getAptTypeLabel(string $type): string {
   </nav>
 </header>
 
-<!-- ══════════════════════════ MOBILE SIDEBAR ══════════════════════════ -->
+<!-- ?????????????????????????? MOBILE SIDEBAR ?????????????????????????? -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -524,7 +524,7 @@ function getAptTypeLabel(string $type): string {
   </div>
 </div>
 
-<!-- ══════════════════════════ MAIN ══════════════════════════ -->
+<!-- ?????????????????????????? MAIN ?????????????????????????? -->
 <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
   <!-- Back -->
@@ -555,7 +555,7 @@ function getAptTypeLabel(string $type): string {
     <div class="relative flex-1 min-w-0">
       <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
       <input type="text" id="searchInput"
-        placeholder="Search by name, category, address…"
+        placeholder="Search by name, category, address."
         class="search-input"
         oninput="filterCards()">
     </div>
@@ -590,7 +590,7 @@ function getAptTypeLabel(string $type): string {
         <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="laundry"     class="filter-category accent-blue-600"> Laundry Shop</label>
         <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="pharmacy"    class="filter-category accent-blue-600"> Pharmacy</label>
         <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="printing"    class="filter-category accent-blue-600"> Printing / Computer Shop</label>
-        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="bakery"      class="filter-category accent-blue-600"> Bakery / Café</label>
+        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="bakery"      class="filter-category accent-blue-600"> Bakery / Caf�</label>
         <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="hardware"    class="filter-category accent-blue-600"> Hardware</label>
       </div>
 
@@ -656,7 +656,7 @@ function getAptTypeLabel(string $type): string {
 
       <div class="card-body">
         <?php if ($isNew): ?>
-          <span style="font-size:0.65rem;font-weight:800;color:var(--site-primary);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;display:block;">✦ New Listing</span>
+          <span style="font-size:0.65rem;font-weight:800;color:var(--site-primary);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;display:block;">? New Listing</span>
         <?php endif; ?>
         <h3 class="font-bold text-gray-800 text-base mb-0.5 leading-snug"><?= htmlspecialchars($l['display_name']) ?></h3>
         <p class="<?= $isApt ? 'text-green-700' : 'text-blue-600' ?> font-semibold text-sm mb-0.5"><?= htmlspecialchars($l['display_price']) ?></p>
@@ -665,7 +665,7 @@ function getAptTypeLabel(string $type): string {
           <i class="fa-solid <?= $icon ?> text-[9px]"></i>
           <?= htmlspecialchars($typeLabel) ?>
           <?php if ($isApt && !empty($l['slotsAvailable']) && $l['slotsAvailable'] > 0): ?>
-            · <?= (int)$l['slotsAvailable'] ?> slot<?= $l['slotsAvailable'] > 1 ? 's' : '' ?> open
+            � <?= (int)$l['slotsAvailable'] ?> slot<?= $l['slotsAvailable'] > 1 ? 's' : '' ?> open
           <?php endif; ?>
         </span>
 
@@ -685,7 +685,7 @@ function getAptTypeLabel(string $type): string {
     <div style="grid-column:1/-1;" class="text-center py-20 text-gray-400">
       <i class="fa-solid fa-folder-open text-5xl mb-4 opacity-25 block"></i>
       <p class="font-semibold text-lg">No listings yet</p>
-      <p class="text-sm mt-1">Check back soon — listings from the community will appear here.</p>
+      <p class="text-sm mt-1">Check back soon - listings from the community will appear here.</p>
     </div>
     <?php endif; ?>
   </div>
@@ -698,7 +698,7 @@ function getAptTypeLabel(string $type): string {
 
 </main>
 
-<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<!-- ?????????????????????????? FOOTER ?????????????????????????? -->
 <footer class="bg-green-950 text-white pt-14 pb-6 px-4 sm:px-6">
   <div class="max-w-6xl mx-auto">
     <div class="footer-grid grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
@@ -745,17 +745,17 @@ function getAptTypeLabel(string $type): string {
       </div>
     </div>
     <div class="text-center mt-6 text-green-500 text-sm">
-      © 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.
+      � 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.
     </div>
   </div>
 </footer>
 
 <script>
-  /* ── State ── */
+  /* ?? State ?? */
   let activeFilter = 'all';
   let activeCats   = [];
 
-  /* ── Handle ?type= on load ── */
+  /* ?? Handle ?type= on load ?? */
   (function () {
     const t = new URLSearchParams(window.location.search).get('type');
     if (t === 'apartment' || t === 'business') {
@@ -823,13 +823,13 @@ function getAptTypeLabel(string $type): string {
     document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
   }
 
-  /* ── Profile dropdown ── */
+  /* ?? Profile dropdown ?? */
   function toggleProfileMenu() {
     const dd = document.getElementById('profile-dropdown');
     if (dd) dd.classList.toggle('hidden');
   }
 
-  /* ── Close on outside click ── */
+  /* ?? Close on outside click ?? */
   document.addEventListener('click', function (e) {
     const fd = document.getElementById('filterDropdown');
     const pd = document.getElementById('profile-dropdown');
@@ -844,7 +844,7 @@ function getAptTypeLabel(string $type): string {
     }
   });
 
-  /* ── Mobile sidebar ── */
+  /* ?? Mobile sidebar ?? */
   const overlay    = document.getElementById('mobile-sidebar-overlay');
   const sidebar    = document.getElementById('mobile-sidebar');
   const openBtn    = document.getElementById('mobile-menu-btn');
@@ -867,7 +867,7 @@ function getAptTypeLabel(string $type): string {
   closeBtn?.addEventListener('click', closeSidebar);
   overlay?.addEventListener('click', closeSidebar);
 
-  /* ── Initial filter ── */
+  /* ?? Initial filter ?? */
   document.addEventListener('DOMContentLoaded', filterCards);
 </script>
 </body>

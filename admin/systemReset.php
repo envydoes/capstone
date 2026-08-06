@@ -13,14 +13,14 @@ $currentAdminAccId = $_SESSION['acc_id'] ?? '';
 $message = '';
 $messageType = '';
 
-// Load settings BEFORE handling POST — the barangay name at this point
+// Load settings BEFORE handling POST - the barangay name at this point
 // is what the admin must type to confirm (matches what's shown on screen).
 $siteSettings = site_config_load($conn);
 
 /**
  * Runs a COUNT(*) query and returns the total as an int.
  * Returns 0 (rather than throwing) if the query fails, so a missing/renamed
- * table can't accidentally block a legitimate reset — worst case it just
+ * table can't accidentally block a legitimate reset - worst case it just
  * won't be part of the "has data" check.
  */
 function count_rows(mysqli $conn, string $sql): int
@@ -34,7 +34,7 @@ function count_rows(mysqli $conn, string $sql): int
 }
 
 /**
- * True if there is anything in the system that a reset would actually delete —
+ * True if there is anything in the system that a reset would actually delete -
  * any non-admin account, or any row in the dependent tables. Used to stop a
  * reset from running (and destroying the admin's session) when there's
  * nothing to clear.
@@ -77,8 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
         $message = 'Could not identify your admin account. Aborted for safety.';
         $messageType = 'error';
     } elseif (!system_has_resettable_data($conn, $currentAdminAccId)) {
-        // Nothing to delete — do not touch the database, do not destroy the session.
-        $message = 'Nothing to reset — the system has no residents, accounts, listings, requests, or other data yet.';
+        // Nothing to delete - do not touch the database, do not destroy the session.
+        $message = 'Nothing to reset - the system has no residents, accounts, listings, requests, or other data yet.';
         $messageType = 'info';
     } else {
         mysqli_begin_transaction($conn);
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
     // reset reflects the freshly-reset default barangay name, not stale data.
     $siteSettings = site_config_load($conn);
 
-    // Force re-authentication after a successful wipe — the admin's old
+    // Force re-authentication after a successful wipe - the admin's old
     // session shouldn't keep working against a freshly reset system.
     if ($messageType === 'success') {
         $_SESSION = [];
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Reset — <?= e($siteSettings['site_title']) ?></title>
+  <title>System Reset - <?= e($siteSettings['site_title']) ?></title>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
       <p class="text-sm text-gray-500 mb-4 leading-relaxed">
         This permanently deletes all residents, accounts (except Admin), announcements, listings,
         document requests, equipment records, and hero images, then resets Site Settings to defaults.
-        <strong class="text-gray-700">Table structures are not affected</strong> — this only clears the
+        <strong class="text-gray-700">Table structures are not affected</strong> - this only clears the
         data, so the system is ready for a new barangay.
       </p>
 
@@ -250,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
           <li>All equipment records and hero images</li>
           <li>Site Settings (reset to defaults)</li>
         </ul>
-        <p class="text-xs text-gray-400 mt-2">If the system currently has no data, the reset button won't delete or change anything — you'll just see a confirmation that there was nothing to clear.</p>
+        <p class="text-xs text-gray-400 mt-2">If the system currently has no data, the reset button won't delete or change anything - you'll just see a confirmation that there was nothing to clear.</p>
       </div>
 
       <form method="POST" id="resetForm">
@@ -297,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
         e.preventDefault();
         return;
       }
-      if (!confirm('This is your final warning — this action cannot be undone. Proceed?')) {
+      if (!confirm('This is your final warning - this action cannot be undone. Proceed?')) {
         e.preventDefault();
       }
     });

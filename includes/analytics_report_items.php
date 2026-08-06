@@ -9,9 +9,9 @@
  *      the printed report (print_global_list.php, ?list=analytics)
  *
  * type:
- *   'image' — a Google Chart; the browser captures it via chart.getImageURI()
+ *   'image' - a Google Chart; the browser captures it via chart.getImageURI()
  *             and posts the PNG data URI to the print page.
- *   'bars'  — a plain HTML/CSS bar panel (no chart library involved); the
+ *   'bars'  - a plain HTML/CSS bar panel (no chart library involved); the
  *             browser reads the numbers straight out of the DOM and posts
  *             them as small JSON, which the print page redraws as crisp
  *             (non-image) bars.

@@ -4809,7 +4809,7 @@ class Xls extends XlsBase
                     // it seems that the following characters are not accepted for sheet names
                     // and we may assume that they are not present: []*/:\?
                     // 'u' qualifier makes it risky to use Preg::isMatch here
-                    if (preg_match("/[ !\"@#£$%&{()}<>=+'|^,;-]/u", $sheetRange)) {
+                    if (preg_match("/[ !\"@#�$%&{()}<>=+'|^,;-]/u", $sheetRange)) {
                         $sheetRange = "'$sheetRange'";
                     }
 

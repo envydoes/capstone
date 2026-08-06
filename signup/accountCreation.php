@@ -23,7 +23,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Account Creation — <?= e($siteSettings['site_title']) ?></title>
+<title>Account Creation - <?= e($siteSettings['site_title']) ?></title>
 <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -79,7 +79,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.25s; }
 
-  /* Tailwind-green → theme color overrides (same pattern as login.php) */
+  /* Tailwind-green ? theme color overrides (same pattern as login.php) */
   .bg-green-700 { background-color: var(--site-primary) !important; }
   .bg-green-600 { background-color: var(--site-primary) !important; }
   .text-green-700 { color: var(--site-primary) !important; }
@@ -302,7 +302,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
 </div>
 
 <script>
-/* ── UTILITIES ──────────────────────────────────────────────────────────── */
+/* ?? UTILITIES ???????????????????????????????????????????????????????????? */
 function isValidEmail(e) {
   if (e.length > 254) return false;
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(e);
@@ -327,7 +327,7 @@ function passwordStrengthScore(pw) {
   return Math.min(s, 4);
 }
 
-/* ── ERROR HELPERS ──────────────────────────────────────────────────────── */
+/* ?? ERROR HELPERS ???????????????????????????????????????????????????????? */
 function showError(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg;
@@ -344,13 +344,13 @@ function setInputState(id, state) {
   if (state) el.classList.add(state);
 }
 
-/* ── CSRF TOKEN ─────────────────────────────────────────────────────────── */
+/* ?? CSRF TOKEN ??????????????????????????????????????????????????????????? */
 document.getElementById('csrf_token').value = (() => {
   const a = new Uint8Array(32); crypto.getRandomValues(a);
   return Array.from(a).map(b => b.toString(16).padStart(2,'0')).join('');
 })();
 
-/* ── STRENGTH METER ─────────────────────────────────────────────────────── */
+/* ?? STRENGTH METER ??????????????????????????????????????????????????????? */
 const segEls      = [1,2,3,4].map(i => document.getElementById('seg'+i));
 const segColors   = [
   ['bg-red-400',   'bg-red-400',   'bg-gray-200', 'bg-gray-200'],
@@ -370,7 +370,7 @@ document.getElementById('password').addEventListener('input', function() {
   lbl.className    = 'text-xs mt-1 ' + ['text-red-500','text-orange-500','text-yellow-600','text-lime-600'][idx];
 });
 
-/* ── TOGGLE PASSWORD VISIBILITY ─────────────────────────────────────────── */
+/* ?? TOGGLE PASSWORD VISIBILITY ??????????????????????????????????????????? */
 document.querySelectorAll('.toggle-pw').forEach(btn => {
   btn.addEventListener('click', function() {
     const input = document.getElementById(this.dataset.target);
@@ -381,7 +381,7 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
   });
 });
 
-/* ── ROLE CARD HIGHLIGHT ────────────────────────────────────────────────── */
+/* ?? ROLE CARD HIGHLIGHT ?????????????????????????????????????????????????? */
 const roleMap = [
   { cb: 'resident',    card: 'card-resident' },
   { cb: 'non-resident',card: 'card-non-resident' },
@@ -412,9 +412,9 @@ roleMap.forEach(({ cb, card }) => {
   });
 });
 
-/* ── LIVE EMAIL AVAILABILITY CHECK (AJAX) ───────────────────────────────── */
+/* ?? LIVE EMAIL AVAILABILITY CHECK (AJAX) ????????????????????????????????? */
 let emailCheckTimer = null;
-let emailAvailable  = true;   // optimistic — confirmed after check
+let emailAvailable  = true;   // optimistic - confirmed after check
 
 const emailInput  = document.getElementById('email');
 const emailStatus = document.getElementById('email-status');
@@ -448,7 +448,7 @@ emailInput.addEventListener('input', function() {
 
   if (!val || !isValidEmail(val)) return;
 
-  // Debounce 600ms — don't hammer the server on every keystroke
+  // Debounce 600ms - don't hammer the server on every keystroke
   setEmailStatus('checking');
   emailCheckTimer = setTimeout(async () => {
     try {
@@ -468,7 +468,7 @@ emailInput.addEventListener('input', function() {
         setInputState('email', 'valid');
       }
     } catch {
-      // Network error — allow form to proceed; server will catch it
+      // Network error - allow form to proceed; server will catch it
       setEmailStatus('');
       emailAvailable = true;
     }
@@ -483,7 +483,7 @@ emailInput.addEventListener('blur', function() {
   if (!isValidEmail(val)) { showError('email-error','Please enter a valid email address.'); setInputState('email','error'); }
 });
 
-/* ── RATE LIMIT ─────────────────────────────────────────────────────────── */
+/* ?? RATE LIMIT ??????????????????????????????????????????????????????????? */
 let attemptCount = 0, firstAttemptTime = null;
 function isRateLimited() {
   const now = Date.now();
@@ -491,7 +491,7 @@ function isRateLimited() {
   return ++attemptCount > 5;
 }
 
-/* ── FORM SUBMIT ────────────────────────────────────────────────────────── */
+/* ?? FORM SUBMIT ?????????????????????????????????????????????????????????? */
 document.getElementById('registrationForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
@@ -524,7 +524,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
   } else if (pwErrors.length > 0) {
     showError('password-error','Must include: ' + pwErrors.join(', ') + '.'); setInputState('password','error'); valid = false;
   } else if (password.toLowerCase() === rawEmail.toLowerCase()) {
-    /* ── Password must not equal the email ── */
+    /* ?? Password must not equal the email ?? */
     showError('password-error','Your password must not be the same as your email address.'); setInputState('password','error'); valid = false;
   } else {
     /* Also warn if password contains the local part of the email (before @) */
@@ -568,7 +568,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
   this.submit();
 });
 
-/* ── LIVE VALIDATION (blur / input) ─────────────────────────────────────── */
+/* ?? LIVE VALIDATION (blur / input) ??????????????????????????????????????? */
 document.getElementById('confirm_password').addEventListener('input', function() {
   const pw = document.getElementById('password').value;
   if (this.value && this.value !== pw) { showError('confirm-error','Passwords do not match.'); setInputState('confirm_password','error'); }

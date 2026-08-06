@@ -6,22 +6,22 @@
  * @author Eduards M. <e@npd.lv>
  */
 
-$PHPMAILER_LANG['authenticate']         = 'SMTP kļūda: Autorizācija neizdevās.';
-$PHPMAILER_LANG['connect_host']         = 'SMTP Kļūda: Nevar izveidot savienojumu ar SMTP serveri.';
-$PHPMAILER_LANG['data_not_accepted']    = 'SMTP Kļūda: Nepieņem informāciju.';
-$PHPMAILER_LANG['empty_message']        = 'Ziņojuma teksts ir tukšs';
-$PHPMAILER_LANG['encoding']             = 'Neatpazīts kodējums: ';
-$PHPMAILER_LANG['execute']              = 'Neizdevās izpildīt komandu: ';
+$PHPMAILER_LANG['authenticate']         = 'SMTP kluda: Autorizacija neizdevas.';
+$PHPMAILER_LANG['connect_host']         = 'SMTP Kluda: Nevar izveidot savienojumu ar SMTP serveri.';
+$PHPMAILER_LANG['data_not_accepted']    = 'SMTP Kluda: Nepienem informaciju.';
+$PHPMAILER_LANG['empty_message']        = 'Zinojuma teksts ir tukss';
+$PHPMAILER_LANG['encoding']             = 'Neatpazits kodejums: ';
+$PHPMAILER_LANG['execute']              = 'Neizdevas izpildit komandu: ';
 $PHPMAILER_LANG['file_access']          = 'Fails nav pieejams: ';
-$PHPMAILER_LANG['file_open']            = 'Faila kļūda: Nevar atvērt failu: ';
-$PHPMAILER_LANG['from_failed']          = 'Nepareiza sūtītāja adrese: ';
-$PHPMAILER_LANG['instantiate']          = 'Nevar palaist sūtīšanas funkciju.';
+$PHPMAILER_LANG['file_open']            = 'Faila kluda: Nevar atvert failu: ';
+$PHPMAILER_LANG['from_failed']          = 'Nepareiza sutitaja adrese: ';
+$PHPMAILER_LANG['instantiate']          = 'Nevar palaist sutisanas funkciju.';
 $PHPMAILER_LANG['invalid_address']      = 'Nepareiza adrese: ';
-$PHPMAILER_LANG['mailer_not_supported'] = ' sūtītājs netiek atbalstīts.';
-$PHPMAILER_LANG['provide_address']      = 'Lūdzu, norādiet vismaz vienu adresātu.';
-$PHPMAILER_LANG['recipients_failed']    = 'SMTP kļūda: neizdevās nosūtīt šādiem saņēmējiem: ';
-$PHPMAILER_LANG['signing']              = 'Autorizācijas kļūda: ';
-$PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP savienojuma kļūda';
-$PHPMAILER_LANG['smtp_error']           = 'SMTP servera kļūda: ';
-$PHPMAILER_LANG['variable_set']         = 'Nevar piešķirt mainīgā vērtību: ';
+$PHPMAILER_LANG['mailer_not_supported'] = ' sutitajs netiek atbalstits.';
+$PHPMAILER_LANG['provide_address']      = 'Ludzu, noradiet vismaz vienu adresatu.';
+$PHPMAILER_LANG['recipients_failed']    = 'SMTP kluda: neizdevas nosutit sadiem sanemejiem: ';
+$PHPMAILER_LANG['signing']              = 'Autorizacijas kluda: ';
+$PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP savienojuma kluda';
+$PHPMAILER_LANG['smtp_error']           = 'SMTP servera kluda: ';
+$PHPMAILER_LANG['variable_set']         = 'Nevar pieskirt mainiga vertibu: ';
 //$PHPMAILER_LANG['extension_missing']    = 'Extension missing: ';

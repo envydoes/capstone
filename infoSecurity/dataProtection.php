@@ -16,7 +16,7 @@ $userEmail = $_SESSION['user_id']      ?? '';
 $accId     = $_SESSION['acc_id']       ?? '';
 $roleLower = strtolower(trim($role));
 
-// ── Show My Panel only for resident / resident+owner (NOT non-resident) ──
+// ?? Show My Panel only for resident / resident+owner (NOT non-resident) ??
 $showMyPanel = $logged_in && (
     $roleLower === 'resident' ||
     $roleLower === 'resident,business/apartment owner'
@@ -140,7 +140,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
 
 <div id="readProgress"></div>
 
-<!-- ══════════════════ HEADER ══════════════════ -->
+<!-- ?????????????????? HEADER ?????????????????? -->
 <header class="w-full h-[64px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="../landing" class="flex items-center gap-3">
@@ -225,7 +225,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
   </nav>
 </header>
 
-<!-- ══════════════════ MOBILE SIDEBAR ══════════════════ -->
+<!-- ?????????????????? MOBILE SIDEBAR ?????????????????? -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -285,7 +285,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
   </div>
 </div>
 
-<!-- ══════════════════ HERO ══════════════════ -->
+<!-- ?????????????????? HERO ?????????????????? -->
 <div class="hero-banner py-12 sm:py-14 px-4 sm:px-6 fade-1">
   <div class="dot-grid"></div>
   <div class="circle-deco" style="width:300px;height:300px;top:-90px;right:-60px;"></div>
@@ -295,11 +295,11 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       <i class="fa-solid fa-shield-halved text-xs" style="color:var(--site-primary-pale)"></i> Legal Document
     </div>
     <h1 class="text-white font-bold text-3xl sm:text-4xl mb-3" style="font-family:'Playfair Display',serif;" id="heroTitle">Data Protection Notice</h1>
-    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;·&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
+    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;�&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
   </div>
 </div>
 
-<!-- ══════════════════ MAIN ══════════════════ -->
+<!-- ?????????????????? MAIN ?????????????????? -->
 <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
   <div class="flex items-center justify-between mb-7 fade-2 flex-wrap gap-3">
@@ -319,7 +319,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       </div>
       <div class="min-w-0">
         <h2 class="text-white font-bold text-lg" id="cardTitle">Data Protection Notice</h2>
-        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">9 sections · Read time ~3 min</p>
+        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">9 sections � Read time ~3 min</p>
       </div>
       <div class="ml-auto bg-white/15 border border-white/20 rounded-xl px-4 py-2 text-center hidden sm:block flex-shrink-0">
         <p class="text-white font-bold text-lg leading-none">9</p>
@@ -341,7 +341,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
     </div>
     <div>
       <p class="font-bold text-white text-sm" id="complianceTitle">Compliant with Philippine Data Privacy Act of 2012</p>
-      <p class="text-xs mt-1" id="complianceSub" style="color:var(--site-primary-pale)">Republic Act No. 10173 — This system is designed to handle personal information responsibly and securely.</p>
+      <p class="text-xs mt-1" id="complianceSub" style="color:var(--site-primary-pale)">Republic Act No. 10173 - This system is designed to handle personal information responsibly and securely.</p>
     </div>
   </div>
 
@@ -356,7 +356,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
   </div>
 </main>
 
-<!-- ══════════════════ FOOTER ══════════════════ -->
+<!-- ?????????????????? FOOTER ?????????????????? -->
 <footer class="mt-16 bg-green-950 text-white pt-14 pb-6 px-4 sm:px-6">
   <div class="max-w-6xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
@@ -393,18 +393,18 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">� 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
 const content = {
   en: {
-    heroTitle:'Data Protection Notice', heroMeta:'Last Updated: March 2026 · Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Data Protection Notice', cardMeta:'9 sections · Read time ~3 min', sectionLabel:'Sections',
+    heroTitle:'Data Protection Notice', heroMeta:'Last Updated: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Data Protection Notice', cardMeta:'9 sections � Read time ~3 min', sectionLabel:'Sections',
     introNote:'This Data Protection Notice explains how the <?= e($siteSettings['site_title']) ?> collects, uses, stores, and protects personal information submitted by users of the platform.',
     backLabel:'Back', complianceTitle:'Compliant with Philippine Data Privacy Act of 2012',
-    complianceSub:'Republic Act No. 10173 — This system is designed to handle personal information responsibly and securely.',
+    complianceSub:'Republic Act No. 10173 - This system is designed to handle personal information responsibly and securely.',
     bottomTitle:'Questions about your data?', bottomSub:'Contact us at',
     sections:[
       {title:'Collection of Personal Data',body:'The system collects personal information necessary for providing barangay services. This may include full name, address, contact number, email address, date of birth, and identification documents.',bullets:[]},
@@ -419,11 +419,11 @@ const content = {
     ]
   },
   fil: {
-    heroTitle:'Paunawa sa Proteksyon ng Datos', heroMeta:'Huling na bago: March 2026 · Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Paunawa sa Proteksyon ng Datos', cardMeta:'9 seksyon · Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
+    heroTitle:'Paunawa sa Proteksyon ng Datos', heroMeta:'Huling na bago: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Paunawa sa Proteksyon ng Datos', cardMeta:'9 seksyon � Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
     introNote:'Ang Paunawa sa Proteksyon ng Datos na ito ay nagpapaliwanag kung paano kinokolekta, ginagamit, itinatago, at pinoprotektahan ng <?= e($siteSettings['site_title']) ?> ang personal na impormasyong ibinibigay ng mga user.',
     backLabel:'Bumalik', complianceTitle:'Sumusunod sa Philippine Data Privacy Act of 2012',
-    complianceSub:'Republic Act No. 10173 — Ang sistemang ito ay idinisenyo upang pangasiwaan ang personal na impormasyon nang may pananagutan at seguridad.',
+    complianceSub:'Republic Act No. 10173 - Ang sistemang ito ay idinisenyo upang pangasiwaan ang personal na impormasyon nang may pananagutan at seguridad.',
     bottomTitle:'May katanungan tungkol sa iyong datos?', bottomSub:'Makipag-ugnayan sa amin sa',
     sections:[
       {title:'Koleksyon ng Personal na Datos',body:'Kinokolekta ng system ang personal na impormasyong kinakailangan para sa pagbibigay ng mga serbisyo ng barangay. Maaaring kabilang dito ang buong pangalan, tirahan, numero ng telepono, email, petsa ng kapanganakan, at mga ID.',bullets:[]},

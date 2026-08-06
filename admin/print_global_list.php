@@ -3,11 +3,11 @@
  * print_global_list.php
  * ------------------------------------------------------------
  * Unified printable / "Save as PDF" report page for admin lists:
- *   ?list=global   (default) — Global Resident List filtered results
- *   ?list=outreach            — Residents NOT Yet Registered as Beneficiaries
- *   ?list=owners              — Owner Directory (Business & Apartment listings)
- *   ?list=borrowed            — Currently Borrowed / Overdue Items
- *   ?list=analytics (POST)    — "Print Report" chart/graph picker from adminDashboard.php
+ *   ?list=global   (default) - Global Resident List filtered results
+ *   ?list=outreach            - Residents NOT Yet Registered as Beneficiaries
+ *   ?list=owners              - Owner Directory (Business & Apartment listings)
+ *   ?list=borrowed            - Currently Borrowed / Overdue Items
+ *   ?list=analytics (POST)    - "Print Report" chart/graph picker from adminDashboard.php
  *
  * Paper size is formatted to Legal via @page CSS in print_report_layout.php.
  * ------------------------------------------------------------
@@ -56,8 +56,8 @@ $neededModule = $moduleForList[$list];
 // 4. Role / Permission Check
 //    Founder admin always passes (has_permission() short-circuits true
 //    for account_role === 'admin'). Staff need the specific module for
-//    the report they're trying to print. Anyone else — resident,
-//    non-resident, or a staff account without that module — never falls
+//    the report they're trying to print. Anyone else - resident,
+//    non-resident, or a staff account without that module - never falls
 //    through to the public landing.php; they're sent back into the
 //    admin panel (or the public site only if they're not admin-panel
 //    users at all).
@@ -76,7 +76,7 @@ if (!has_permission($conn, $neededModule)) {
 // 5. System Configuration
 $siteSettings = site_config_load($conn);
 
-// 5b. ANALYTICS REPORT (Print Report → chart/graph picker from adminDashboard.php)
+// 5b. ANALYTICS REPORT (Print Report ? chart/graph picker from adminDashboard.php)
 //     Has no tabular "#, Name, columns" shape at all, so it's handled as its
 //     own render path and exits before the list/table logic below ever runs.
 if ($list === 'analytics') {
@@ -93,7 +93,7 @@ if ($list === 'analytics') {
     $charts   = isset($payload['charts'])   && is_array($payload['charts'])   ? $payload['charts']   : [];
     $bars     = isset($payload['bars'])     && is_array($payload['bars'])     ? $payload['bars']     : [];
 
-    // Enforce module access on the selection itself — a hand-crafted POST
+    // Enforce module access on the selection itself - a hand-crafted POST
     // payload can't smuggle in a chart from a module this account doesn't
     // have, even though the picker UI already disables those checkboxes.
     $myPermissions   = get_my_permissions($conn);
@@ -144,7 +144,7 @@ if ($list === 'analytics') {
                 if ($dataUri !== '' && strpos($dataUri, 'data:image') === 0) {
                     echo '<img class="analytics-item-image" src="' . e($dataUri) . '" alt="' . e($meta['title']) . '">';
                 } else {
-                    echo '<p class="analytics-item-unavailable">Chart image unavailable — try re-generating the report.</p>';
+                    echo '<p class="analytics-item-unavailable">Chart image unavailable - try re-generating the report.</p>';
                 }
             } else { // 'bars'
                 $rows = $bars[$key] ?? [];
@@ -183,20 +183,20 @@ $summaryLabel   = 'Total residents';
 switch ($list) {
     case 'outreach':
         $result       = gf_run_nonbeneficiaries_query($conn, $_GET);
-        $title        = 'Outreach List — Residents Not Yet Registered as Beneficiaries';
+        $title        = 'Outreach List - Residents Not Yet Registered as Beneficiaries';
         $summaryLabel = 'Total residents';
         break;
 
     case 'owners':
         $result       = gf_run_owners_query($conn, $_GET);
-        $title        = 'Owner Directory — Business & Apartment Listings';
+        $title        = 'Owner Directory - Business & Apartment Listings';
         $nameLabel    = 'Owner';
         $summaryLabel = 'Total owners';
         break;
 
     case 'borrowed':
         $result       = gf_run_borrowed_query($conn, $_GET);
-        $title        = 'Borrowers List — Currently Borrowed / Overdue Items';
+        $title        = 'Borrowers List - Currently Borrowed / Overdue Items';
         $nameLabel    = 'Item';
         $summaryLabel = 'Total items out';
         break;
@@ -226,7 +226,7 @@ if ($list === 'global') {
         $dateRangeLabel = 'All Records';
     } else {
         $dateRangeLabel = ($dateFromRaw !== '' ? date('M d, Y', strtotime($dateFromRaw)) : 'Earliest')
-            . ' – '
+            . ' - '
             . ($dateToRaw !== '' ? date('M d, Y', strtotime($dateToRaw)) : 'Present');
     }
     $metaLines[] = 'Date Range: ' . $dateRangeLabel;
@@ -247,7 +247,7 @@ print_report_start($siteSettings, $title, $metaLines);
     <div class="conditions-box">
       <p class="label">Conditions Applied</p>
       <?php if (empty($filters)): ?>
-        <p class="conditions-empty">No conditions applied — showing all approved residents.</p>
+        <p class="conditions-empty">No conditions applied - showing all approved residents.</p>
       <?php else: ?>
         <div class="conditions-chips">
           <?php foreach ($filters as $f): ?>
@@ -287,11 +287,11 @@ print_report_start($siteSettings, $title, $metaLines);
       <?php foreach ($rows as $i => $row): ?>
         <tr>
           <td style="text-align: center; color: #6b7280; font-weight: 600;"><?= $i + 1 ?></td>
-          <td style="font-weight: 600; color: #111827;"><?= e($row['name'] ?? '—') ?></td>
+          <td style="font-weight: 600; color: #111827;"><?= e($row['name'] ?? '-') ?></td>
           <?php foreach ($columns as $c): ?>
             <td>
               <?php
-                $val = $row[$c['key']] ?? '—';
+                $val = $row[$c['key']] ?? '-';
                 echo !empty($c['raw']) ? $val : e($val);
               ?>
             </td>

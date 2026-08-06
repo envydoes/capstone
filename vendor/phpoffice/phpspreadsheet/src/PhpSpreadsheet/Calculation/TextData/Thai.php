@@ -10,33 +10,33 @@ class Thai
     use ArrayEnabled;
 
     private const THAI_DIGITS = [
-        0 => 'ศูนย์',
-        1 => 'หนึ่ง',
-        2 => 'สอง',
-        3 => 'สาม',
-        4 => 'สี่',
-        5 => 'ห้า',
-        6 => 'หก',
-        7 => 'เจ็ด',
-        8 => 'แปด',
-        9 => 'เก้า',
+        0 => '?????',
+        1 => '?????',
+        2 => '???',
+        3 => '???',
+        4 => '???',
+        5 => '???',
+        6 => '??',
+        7 => '????',
+        8 => '???',
+        9 => '????',
     ];
 
     private const THAI_UNITS = [
-        1 => 'สิบ',
-        2 => 'ร้อย',
-        3 => 'พัน',
-        4 => 'หมื่น',
-        5 => 'แสน',
-        6 => 'ล้าน',
+        1 => '???',
+        2 => '????',
+        3 => '???',
+        4 => '?????',
+        5 => '???',
+        6 => '????',
     ];
 
-    private const THAI_COMPOUND_ONE = 'เอ็ด';
-    private const THAI_COMPOUND_TWO = 'ยี่';
-    private const THAI_INTEGER = 'ถ้วน';
-    private const THAI_MINUS = 'ลบ';
-    private const THAI_BAHT = 'บาท';
-    private const THAI_SATANG = 'สตางค์';
+    private const THAI_COMPOUND_ONE = '????';
+    private const THAI_COMPOUND_TWO = '???';
+    private const THAI_INTEGER = '????';
+    private const THAI_MINUS = '??';
+    private const THAI_BAHT = '???';
+    private const THAI_SATANG = '??????';
 
     /**
      * BAHTTEXT.

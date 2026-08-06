@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../includes/check_permissions.php';
 
 // This endpoint powers the Business/Apartment "Owner Directory" report.
 // Founder admin always passes (has_permission() short-circuits true for
-// them); staff need the manage_listings module specifically — not
+// them); staff need the manage_listings module specifically - not
 // manage_residents, which was copy-pasted in by mistake.
 if (($_SESSION['account_role'] ?? '') !== 'admin') {
     require_permission_ajax($conn, 'manage_listings');

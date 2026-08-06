@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['zip'] === '') {
         $errors['zip'] = 'ZIP code is required.';
     } elseif (!isValidZip($data['zip'])) {
-        $errors['zip'] = 'Enter a valid ZIP code (4–10 alphanumeric characters).';
+        $errors['zip'] = 'Enter a valid ZIP code (4-10 alphanumeric characters).';
     }
 
     // Phone
@@ -255,15 +255,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['years_resident'] === '') {
         $errors['years_resident'] = 'Years as resident is required.';
     } elseif (!isValidYearsResident($data['years_resident'])) {
-        $errors['years_resident'] = 'Enter a valid number of years (0–120).';
+        $errors['years_resident'] = 'Enter a valid number of years (0-120).';
     }
 
-    // Voter ID — alphanumeric + dashes only if provided
+    // Voter ID - alphanumeric + dashes only if provided
     if ($data['voter_id'] !== '' && !preg_match('/^[A-Z0-9\-]{3,50}$/i', $data['voter_id'])) {
         $errors['voter_id'] = 'Voter ID contains invalid characters.';
     }
 
-    // Precinct — alphanumeric + dashes only if provided
+    // Precinct - alphanumeric + dashes only if provided
     if ($data['precinct'] !== '' && !preg_match('/^[A-Z0-9\-]{1,50}$/i', $data['precinct'])) {
         $errors['precinct'] = 'Precinct number contains invalid characters.';
     }
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Personal Information — SumEste Portal</title>
+<title>Personal Information - SumEste Portal</title>
 <link rel="icon" href="../assets/logo2.png" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -834,10 +834,10 @@ function validateField(el) {
 
     if (name === 'email'             && val && !isValidEmail(val))        { showError(el, 'Enter a valid email address.'); return false; }
     if ((name==='phone'||name==='emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
-    if (name === 'zip'               && val && !isValidZip(val))          { showError(el, 'Enter a valid ZIP code (4–10 alphanumeric).'); return false; }
+    if (name === 'zip'               && val && !isValidZip(val))          { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
     if (name === 'birthday'          && val && !isValidBirthdate(val))    { showError(el, 'Birthday must be a past date.'); return false; }
-    if (name === 'monthly_income'    && val && !isValidIncome(val))       { showError(el, 'Enter a valid income (0–9,999,999).'); return false; }
-    if (name === 'years_resident'    && val && !isValidYears(val))        { showError(el, 'Enter a valid number of years (0–120).'); return false; }
+    if (name === 'monthly_income'    && val && !isValidIncome(val))       { showError(el, 'Enter a valid income (0-9,999,999).'); return false; }
+    if (name === 'years_resident'    && val && !isValidYears(val))        { showError(el, 'Enter a valid number of years (0-120).'); return false; }
     if (name === 'voter_id'          && val && !isValidId(val))           { showError(el, 'Voter ID contains invalid characters.'); return false; }
     if (name === 'precinct'          && val && !isValidPrecinct(val))     { showError(el, 'Precinct contains invalid characters.'); return false; }
 
@@ -894,7 +894,7 @@ document.getElementById('residentForm').addEventListener('submit', function(e) {
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting…';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting.';
     this.submit();
 });
 

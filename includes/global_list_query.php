@@ -32,7 +32,7 @@ if (!function_exists('gf_label')) {
     function gf_label($str): string
     {
         $str = trim((string) $str);
-        if ($str === '') return '—';
+        if ($str === '') return '-';
         return ucwords(str_replace('_', ' ', $str));
     }
 }
@@ -46,12 +46,12 @@ if (!function_exists('gf_yesno')) {
 if (!function_exists('gf_run_global_list_query')) {
     /**
      * @param mysqli $conn
-     * @param array  $get             Usually $_GET — any array of filter params
+     * @param array  $get             Usually $_GET - any array of filter params
      * @param array  $myPermissions   The calling account's permission keys
      *                                (from get_my_permissions()). Any filter
      *                                that reads from tbl_beneficiary is
      *                                silently ignored unless 'manage_beneficiaries'
-     *                                is present — this is enforced HERE, not
+     *                                is present - this is enforced HERE, not
      *                                just in the UI, so a hand-crafted request
      *                                can't bypass a disabled dropdown.
      * @return array{count:int, columns:array, data:array, filters:array}
@@ -70,7 +70,7 @@ if (!function_exists('gf_run_global_list_query')) {
             }
         }
 
-        /* ── Read filters ── */
+        /* ?? Read filters ?? */
         $accountRole      = gf_str($get, 'account_role');
         $dateFrom         = gf_str($get, 'date_from');
         $dateTo           = gf_str($get, 'date_to');
@@ -109,7 +109,7 @@ if (!function_exists('gf_run_global_list_query')) {
         $yearLevel        = gf_str($get, 'year_level');
         $gwa              = gf_str($get, 'gwa');
 
-        /* ── Build the SQL-expressible portion of the WHERE clause ── */
+        /* ?? Build the SQL-expressible portion of the WHERE clause ?? */
         $where  = ["u.userStatus = 'approved'"];
         $types  = '';
         $params = [];
@@ -190,8 +190,8 @@ if (!function_exists('gf_run_global_list_query')) {
             mysqli_stmt_close($stmt);
         }
 
-        /* ── PHP-side: age + the derived program flags (mirrors the logic used for the
-              Beneficiary Programs chart elsewhere in adminDashboard.php), then build rows ── */
+        /* ?? PHP-side: age + the derived program flags (mirrors the logic used for the
+              Beneficiary Programs chart elsewhere in adminDashboard.php), then build rows ?? */
 
         $jobTitleExempt = ['student', 'unemployed'];
 
@@ -239,27 +239,27 @@ if (!function_exists('gf_run_global_list_query')) {
             $row = ['name' => $name];
 
             if ($accountRole !== '')                 $row['account_role'] = gf_label($r['account_role']);
-            if ($dateFrom !== '' || $dateTo !== '')   $row['date_created'] = !empty($r['dateRegistered']) ? date('M d, Y', strtotime($r['dateRegistered'])) : '—';
+            if ($dateFrom !== '' || $dateTo !== '')   $row['date_created'] = !empty($r['dateRegistered']) ? date('M d, Y', strtotime($r['dateRegistered'])) : '-';
             if ($sex !== '')                          $row['sex'] = gf_label($r['gender']);
-            if ($birthMonth !== null)                 $row['birth_month'] = !empty($r['birthday']) ? date('F', strtotime($r['birthday'])) : '—';
-            if ($birthYear !== null)                  $row['birth_year'] = !empty($r['birthday']) ? date('Y', strtotime($r['birthday'])) : '—';
-            if ($ageMin !== null || $ageMax !== null) $row['age'] = $age ?? '—';
-            if ($address !== '')                      $row['address'] = trim(implode(', ', array_filter([$r['street'], $r['barangay'], $r['city'], $r['province']]))) ?: '—';
+            if ($birthMonth !== null)                 $row['birth_month'] = !empty($r['birthday']) ? date('F', strtotime($r['birthday'])) : '-';
+            if ($birthYear !== null)                  $row['birth_year'] = !empty($r['birthday']) ? date('Y', strtotime($r['birthday'])) : '-';
+            if ($ageMin !== null || $ageMax !== null) $row['age'] = $age ?? '-';
+            if ($address !== '')                      $row['address'] = trim(implode(', ', array_filter([$r['street'], $r['barangay'], $r['city'], $r['province']]))) ?: '-';
             if ($familyRole !== '')                   $row['family_role'] = gf_label($r['family_role']);
             if ($civilStatus !== '')                  $row['civil_status'] = gf_label($r['civil_status']);
-            if ($citizenship !== '')                  $row['citizenship'] = $r['citizenship'] ?: '—';
-            if ($religion !== '')                     $row['religion'] = $r['religion'] ?: '—';
-            if ($ethnicity !== '')                    $row['ethnicity'] = $r['ethnicity'] ?: '—';
-            if ($bloodType !== '')                    $row['blood_type'] = $r['blood_type'] ?: '—';
+            if ($citizenship !== '')                  $row['citizenship'] = $r['citizenship'] ?: '-';
+            if ($religion !== '')                     $row['religion'] = $r['religion'] ?: '-';
+            if ($ethnicity !== '')                    $row['ethnicity'] = $r['ethnicity'] ?: '-';
+            if ($bloodType !== '')                    $row['blood_type'] = $r['blood_type'] ?: '-';
 
             if ($employmentStatus !== '') {
                 $row['employment_status'] = gf_label($r['employment_status']);
                 if (!in_array(strtolower($r['employment_status'] ?? ''), $jobTitleExempt)) {
-                    $row['job_title'] = $r['job_title'] ?: '—';
+                    $row['job_title'] = $r['job_title'] ?: '-';
                 }
             }
 
-            if ($incomeMin !== null || $incomeMax !== null) $row['monthly_income'] = '₱' . number_format((float) ($r['monthly_income'] ?? 0), 2);
+            if ($incomeMin !== null || $incomeMax !== null) $row['monthly_income'] = '?' . number_format((float) ($r['monthly_income'] ?? 0), 2);
             if ($housingStatus !== '') $row['housing_status'] = gf_label($r['housing_status']);
             if ($houseMaterial !== '') $row['house_material'] = gf_label($r['house_material']);
             if ($electricity !== '')   $row['electricity'] = gf_label($r['electricity']);
@@ -269,14 +269,14 @@ if (!function_exists('gf_run_global_list_query')) {
 
             if ($isPwd !== '') {
                 $row['is_pwd']        = gf_yesno(!empty($r['is_pwd']));
-                $row['pwd_id_number'] = $r['pwd_id_number'] ?: '—';
+                $row['pwd_id_number'] = $r['pwd_id_number'] ?: '-';
                 $healthTypes = [];
                 if (!empty($r['health_hypertension'])) $healthTypes[] = 'Hypertension';
                 if (!empty($r['health_diabetes']))     $healthTypes[] = 'Diabetes';
                 if (!empty($r['health_asthma']))       $healthTypes[] = 'Asthma';
                 if (!empty($r['health_other']))        $healthTypes[] = ($r['health_other_specify'] ?: 'Other');
                 if (empty($healthTypes) && !empty($r['health_none'])) $healthTypes[] = 'None';
-                $row['health_type'] = $healthTypes ? implode(', ', $healthTypes) : '—';
+                $row['health_type'] = $healthTypes ? implode(', ', $healthTypes) : '-';
             }
 
             if ($isSoloParent !== '')  $row['is_solo_parent'] = gf_yesno(!empty($r['is_solo_parent']));
@@ -288,20 +288,20 @@ if (!function_exists('gf_run_global_list_query')) {
 
             if ($isVoter !== '') {
                 $row['is_voter'] = gf_yesno($flagVoter);
-                $row['voter_id'] = $r['voter_id'] ?: '—';
-                $row['precinct'] = $r['precinct'] ?: '—';
+                $row['voter_id'] = $r['voter_id'] ?: '-';
+                $row['precinct'] = $r['precinct'] ?: '-';
             }
 
             if ($residentBirth !== '') $row['resident_birth'] = gf_yesno(!empty($r['resident_birth']));
-            if ($school !== '')        $row['school'] = $r['school_name'] ?: '—';
-            if ($course !== '')        $row['course'] = $r['course'] ?: '—';
+            if ($school !== '')        $row['school'] = $r['school_name'] ?: '-';
+            if ($course !== '')        $row['course'] = $r['course'] ?: '-';
             if ($yearLevel !== '')     $row['year_level'] = gf_label($r['year_level']);
-            if ($gwa !== '')           $row['gwa'] = $r['gwa_gpa'] ?: '—';
+            if ($gwa !== '')           $row['gwa'] = $r['gwa_gpa'] ?: '-';
 
             $out[] = $row;
         }
 
-        /* ── Column metadata, in the same order as the filter spec ── */
+        /* ?? Column metadata, in the same order as the filter spec ?? */
         $jobTitleActive = ($employmentStatus !== '' && !in_array(strtolower($employmentStatus), $jobTitleExempt));
 
         $columnDefs = [
@@ -351,16 +351,16 @@ if (!function_exists('gf_run_global_list_query')) {
             if ($c['active']) $columns[] = ['key' => $c['key'], 'label' => $c['label']];
         }
 
-        /* ── Human-readable summary of the conditions applied (for the printable report) ── */
+        /* ?? Human-readable summary of the conditions applied (for the printable report) ?? */
         $filters = [];
         if ($accountRole !== '')      $filters[] = ['label' => 'Account Role', 'value' => gf_label($accountRole)];
         if ($dateFrom !== '' || $dateTo !== '') {
-            $filters[] = ['label' => 'Date Created', 'value' => trim(($dateFrom !== '' ? date('M d, Y', strtotime($dateFrom)) : 'Any') . ' – ' . ($dateTo !== '' ? date('M d, Y', strtotime($dateTo)) : 'Any'))];
+            $filters[] = ['label' => 'Date Created', 'value' => trim(($dateFrom !== '' ? date('M d, Y', strtotime($dateFrom)) : 'Any') . ' - ' . ($dateTo !== '' ? date('M d, Y', strtotime($dateTo)) : 'Any'))];
         }
         if ($sex !== '')               $filters[] = ['label' => 'Sex', 'value' => gf_label($sex)];
         if ($birthMonth !== null)      $filters[] = ['label' => 'Birth Month', 'value' => date('F', mktime(0, 0, 0, (int) $birthMonth, 1))];
         if ($birthYear !== null)       $filters[] = ['label' => 'Birth Year', 'value' => (string) $birthYear];
-        if ($ageMin !== null || $ageMax !== null) $filters[] = ['label' => 'Age', 'value' => ($ageMin ?? 'Any') . ' – ' . ($ageMax ?? 'Any')];
+        if ($ageMin !== null || $ageMax !== null) $filters[] = ['label' => 'Age', 'value' => ($ageMin ?? 'Any') . ' - ' . ($ageMax ?? 'Any')];
         if ($address !== '')           $filters[] = ['label' => 'Address', 'value' => $address];
         if ($familyRole !== '')        $filters[] = ['label' => 'Family Role', 'value' => gf_label($familyRole)];
         if ($civilStatus !== '')       $filters[] = ['label' => 'Civil Status', 'value' => gf_label($civilStatus)];
@@ -369,7 +369,7 @@ if (!function_exists('gf_run_global_list_query')) {
         if ($ethnicity !== '')         $filters[] = ['label' => 'Ethnicity', 'value' => $ethnicity];
         if ($bloodType !== '')         $filters[] = ['label' => 'Blood Type', 'value' => strtoupper($bloodType)];
         if ($employmentStatus !== '')  $filters[] = ['label' => 'Employment Status', 'value' => gf_label($employmentStatus)];
-        if ($incomeMin !== null || $incomeMax !== null) $filters[] = ['label' => 'Monthly Income', 'value' => '₱' . ($incomeMin ?? '0') . ' – ₱' . ($incomeMax ?? 'Any')];
+        if ($incomeMin !== null || $incomeMax !== null) $filters[] = ['label' => 'Monthly Income', 'value' => '?' . ($incomeMin ?? '0') . ' - ?' . ($incomeMax ?? 'Any')];
         if ($housingStatus !== '')     $filters[] = ['label' => 'Housing Status', 'value' => gf_label($housingStatus)];
         if ($houseMaterial !== '')     $filters[] = ['label' => 'House Material', 'value' => gf_label($houseMaterial)];
         if ($electricity !== '')       $filters[] = ['label' => 'Electricity', 'value' => gf_label($electricity)];

@@ -16,7 +16,7 @@ require_once __DIR__ . '/../config/db_connection.php';
 require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission($conn, 'manage_residents');
 
-// True only for the single founding admin account â€” used to gate the
+// True only for the single founding admin account �?" used to gate the
 // "Change Permission" button itself, since only the founder may
 // grant/revoke staff positions.
 $isFounderAdmin = (($_SESSION['account_role'] ?? '') === 'admin');
@@ -51,7 +51,7 @@ $sidebarSections = [
   ],
 ];
 
-// Preload accID â†’ staff grant (position + permissions) so each row
+// Preload accID �?' staff grant (position + permissions) so each row
 // can be stamped with its current grant without a query per row.
 $staffGrants = [];
 $grantRes = mysqli_query($conn, "SELECT accID, permissions_csv FROM tbl_admin_permissions");
@@ -91,7 +91,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     * { box-sizing: border-box; }
    body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
-    /* â”€â”€ Sidebar â”€â”€ */
+    /* �"?�"? Sidebar �"?�"? */
     .sidebar {
       width: 260px;
       flex-shrink: 0;
@@ -122,7 +122,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .collapse-btn { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.1); border: none; cursor: pointer; color: #fff; font-size: 0.72rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
     .collapse-btn:hover { background: rgba(255,255,255,0.22); }
 
-    /* Expand button â€” shown ONLY when sidebar is collapsed/hidden */
+    /* Expand button �?" shown ONLY when sidebar is collapsed/hidden */
     .expand-btn {
       position: fixed;
       top: 18px;
@@ -160,7 +160,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .sidebar-bottom-links { padding: 0 16px 8px; }
     .side-link { display: block; width: 100%; font-size: 0.84rem; padding: 8px 8px; border-radius: 8px; transition: color 0.15s, background 0.15s; text-decoration: none; white-space: nowrap; border: none; background: none; text-align: left; cursor: pointer; }
 
-    /* â”€â”€ Main content wrapper â”€â”€ */
+    /* �"?�"? Main content wrapper �"?�"? */
     .main-wrapper {
       display: flex;
       min-height: 100vh;
@@ -178,7 +178,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     }
     .main-content.sidebar-collapsed { margin-left: 0; }
 
-    /* â”€â”€ Topbar â”€â”€ */
+    /* �"?�"? Topbar �"?�"? */
     .topbar {
       background: #fff;
       border-bottom: 1px solid #e5e7eb;
@@ -194,7 +194,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     }
     .topbar-title-block { transition: margin-left 0.25s ease; }
 
-    /* â”€â”€ Stat cards â”€â”€ */
+    /* �"?�"? Stat cards �"?�"? */
     .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,0.05); display:flex; flex-direction:column; gap:10px; transition:transform .2s, box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(21,128,61,.1); }
     .stat-label { font-size:.82rem; font-weight:600; color:#6b7280; }
@@ -207,7 +207,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .stat-trend-down { color:#dc2626; }
     .stat-trend-flat { color:#9ca3af; }
 
-    /* â”€â”€ Table wrapper â€” horizontal scroll on small screens â”€â”€ */
+    /* �"?�"? Table wrapper �?" horizontal scroll on small screens �"?�"? */
     .tbl-wrap {
       background: #fff;
       border-radius: 0 0 14px 14px;
@@ -223,7 +223,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     tbody tr:hover { background: #f0fdf4; }
     tbody td { padding: 14px 16px; font-size: 0.84rem; color: #374151; vertical-align: middle; }
 
-    /* â”€â”€ Tabs â”€â”€ */
+    /* �"?�"? Tabs �"?�"? */
     .tabs-bar { background: #fff; border: 1px solid #e5e7eb; border-bottom: none; border-radius: 14px 14px 0 0; display: grid; grid-template-columns: 1fr 1fr; }
     .tab-btn { padding: 13px; text-align: center; font-size: 0.84rem; font-weight: 600; color: #6b7280; cursor: pointer; border: none; background: none; transition: all 0.18s; border-bottom: 2px solid transparent; }
     .tab-btn.active {
@@ -234,7 +234,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .tab-btn:first-child { border-radius: 14px 0 0 0; }
     .tab-btn:last-child  { border-radius: 0 14px 0 0; }
 
-    /* â”€â”€ Toolbar â”€â”€ */
+    /* �"?�"? Toolbar �"?�"? */
     .toolbar { background: #fff; border: 1px solid #e5e7eb; border-top: none; border-bottom: none; padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .toolbar-divider { width: 1px; height: 22px; background: #e5e7eb; }
 
@@ -303,7 +303,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .empty-state { padding: 52px 24px; text-align: center; color: #9ca3af; }
     .empty-state i { font-size: 2.2rem; margin-bottom: 10px; display: block; color: #d1d5db; }
 
-    /* â•â• SHARED MODAL STYLES â•â• */
+    /* �.��.� SHARED MODAL STYLES �.��.� */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 800;
       background: rgba(5,46,22,0.45); backdrop-filter: blur(4px);
@@ -361,13 +361,13 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     /* Changes badge */
     .changes-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: #fef9c3; color: #a16207; font-size: 0.72rem; font-weight: 700; border: 1px solid #fde047; white-space: nowrap; }
 
-    /* â”€â”€ Lightbox â”€â”€ */
+    /* �"?�"? Lightbox �"?�"? */
     .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.82); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 16px; }
     .lightbox.open { opacity: 1; pointer-events: auto; }
     .lightbox img { max-width: 90vw; max-height: 88vh; border-radius: 10px; }
     .lightbox-close { position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 1.1rem; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    /* â”€â”€ Confirm Dialog â”€â”€ */
+    /* �"?�"? Confirm Dialog �"?�"? */
     .dialog-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .dialog-overlay.open { opacity: 1; pointer-events: auto; }
     .dialog-box { background: #fff; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 24px 64px rgba(5,46,22,0.3), 0 4px 16px rgba(0,0,0,0.08); transform: scale(0.94) translateY(12px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; opacity: 0; overflow: hidden; }
@@ -389,9 +389,9 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     .dbtn-confirm.danger { background: #ef4444; box-shadow: 0 4px 14px rgba(239,68,68,0.35); }
     .dbtn-confirm.danger:hover { background: #dc2626; transform: translateY(-1px); }
 
-    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       ALERT BANNER â€” inline, above table
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+       ALERT BANNER �?" inline, above table
+    �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
     #alertBanner { display: none; border-radius: 10px; margin-bottom: 4px; }
     #alertBanner.show { display: flex; }
     .alert-inner { display: flex; align-items: center; gap: 10px; padding: 13px 16px; font-size: 0.85rem; font-weight: 600; border-radius: 10px; border: 1.5px solid transparent; width: 100%; flex-wrap: wrap; }
@@ -410,9 +410,9 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     .fade-up { animation: fadeUp 0.35s ease both; }
 
-    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       RESPONSIVE â€” Tablet (â‰¤ 1024px)
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+       RESPONSIVE �?" Tablet (�?� 1024px)
+    �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
     @media (max-width: 1024px) {
       .sidebar {
         transform: translateX(-100%);
@@ -422,7 +422,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
         transform: translateX(0);
       }
       /* On mobile the expand btn visibility is controlled by JS (same .visible class),
-         but we always want it reachable â€” JS sets .visible on init for mobile */
+         but we always want it reachable �?" JS sets .visible on init for mobile */
       .main-content {
         margin-left: 0 !important;
       }
@@ -434,9 +434,9 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
       }
     }
 
-    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       RESPONSIVE â€” Mobile (â‰¤ 640px)
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+       RESPONSIVE �?" Mobile (�?� 640px)
+    �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
     @media (max-width: 640px) {
       .topbar {
         padding: 10px 14px;
@@ -488,19 +488,19 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
       .dialog-title-d { font-size: 1rem; }
       .dialog-desc-d  { font-size: 0.85rem; }
 
-      /* Pagination â€” smaller buttons */
+      /* Pagination �?" smaller buttons */
       .page-btn { width: 30px; height: 30px; font-size: 0.76rem; }
 
       /* Alert banner */
       .alert-inner { font-size: 0.8rem; }
 
-      /* Changes badge â€” hide text on very small */
+      /* Changes badge �?" hide text on very small */
       .changes-badge span:not(.badge-count) { display: none; }
     }
 
-    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       RESPONSIVE â€” Extra small (â‰¤ 380px)
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+       RESPONSIVE �?" Extra small (�?� 380px)
+    �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
     @media (max-width: 380px) {
       .btn-add .btn-label { display: none; }
       .btn-filter .btn-label { display: none; }
@@ -524,7 +524,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
 <!-- Mobile sidebar backdrop -->
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
 
-<!-- Expand (hamburger) button â€” always visible on mobile, visible when collapsed on desktop -->
+<!-- Expand (hamburger) button �?" always visible on mobile, visible when collapsed on desktop -->
 <button class="expand-btn" id="expandBtn"><i class="fa-solid fa-bars"></i></button>
 
 <div class="main-wrapper">
@@ -579,7 +579,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
     </div>
   </aside>
 
-  <!-- â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â• -->
+  <!-- �.��.��.��.��.��.��.��.��.��.� MAIN �.��.��.��.��.��.��.��.��.��.� -->
   <main class="main-content" id="mainContent">
 
     <header class="topbar">
@@ -605,7 +605,7 @@ echo str_repeat("<!-- PADDING TO FORCE BROWSER RENDER -->\n", 100);
 ob_flush();
 flush();
 
-// â”€â”€ Fetch active residents â”€â”€
+// �"?�"? Fetch active residents �"?�"?
 $sql_active = "
     SELECT
         userID, accID, account_role_csv,
@@ -625,7 +625,7 @@ $res_active   = mysqli_query($conn, $sql_active);
 $active_users = [];
 if ($res_active) { while ($r = mysqli_fetch_assoc($res_active)) $active_users[] = $r; }
 
-// â”€â”€ Fetch archived residents â”€â”€
+// �"?�"? Fetch archived residents �"?�"?
 $sql_arch = "
     SELECT
         userID, accID, account_role_csv,
@@ -648,7 +648,7 @@ if ($res_arch) { while ($r = mysqli_fetch_assoc($res_arch)) $archived_users[] = 
 $total_active   = count($active_users);
 $total_archived = count($archived_users);
 
-// â”€â”€ Stat cards: Resident Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// �"?�"? Stat cards: Resident Overview �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
 // All four use the same "active resident" population as the table above:
 // approved accounts with a resident role.
 $residentFilter = "LOWER(userStatus) = 'approved' AND account_role_csv LIKE '%resident%' AND NOT account_role_csv LIKE '%non-resident%'";
@@ -693,7 +693,7 @@ $voterCount   = (int) ($voterRow['voters'] ?? 0);
 $voterTotal   = (int) ($voterRow['total'] ?? 0);
 $voterRate    = $voterTotal > 0 ? round(($voterCount / $voterTotal) * 100) : 0;
 
-// Households/Families Count â€” approximate. There's no dedicated household/
+// Households/Families Count �?" approximate. There's no dedicated household/
 // family ID linking members together, so this counts residents marked as
 // family_role = 'head' (Head of Family) as a stand-in for household count.
 // It undercounts if a household never designated a head, and overcounts if
@@ -836,7 +836,7 @@ mysqli_close($conn);
               <tr id="emptyActiveRow"><td colspan="5"><div class="empty-state"><i class="fa-regular fa-folder-open"></i><p class="font-semibold text-sm">No active residents found.</p></div></td></tr>
               <?php else: foreach ($active_users as $u):
                 $fn   = trim($u['firstname'].' '.($u['middlename'] ? $u['middlename'].' ' : '').' '.$u['lastname'].($u['suffix'] ? ' '.$u['suffix'] : ''));
-                $date = !empty($u['dateRegistered']) ? date('F j, Y', strtotime($u['dateRegistered'])) : 'â€”';
+                $date = !empty($u['dateRegistered']) ? date('F j, Y', strtotime($u['dateRegistered'])) : '�?"';
                 $roles = explode(',', $u['account_role_csv'] ?? '');
               ?>
            <tr data-uid="<?= (int)$u['userID'] ?>"
@@ -887,7 +887,7 @@ mysqli_close($conn);
               <tr><td colspan="5"><div class="empty-state"><i class="fa-regular fa-folder-open"></i><p class="font-semibold text-sm">No archived residents.</p></div></td></tr>
               <?php else: foreach ($archived_users as $u):
                 $fn   = trim($u['firstname'].' '.($u['middlename'] ? $u['middlename'].' ' : '').' '.$u['lastname'].($u['suffix'] ? ' '.$u['suffix'] : ''));
-                $date = !empty($u['dateRegistered']) ? date('F j, Y', strtotime($u['dateRegistered'])) : 'â€”';
+                $date = !empty($u['dateRegistered']) ? date('F j, Y', strtotime($u['dateRegistered'])) : '�?"';
                 $roles = explode(',', $u['account_role_csv'] ?? '');
               ?>
               <tr data-uid="<?= (int)$u['userID'] ?>"
@@ -969,9 +969,9 @@ mysqli_close($conn);
   </main>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
      EDIT MODAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
 <div class="modal-overlay" id="editModalOverlay" onclick="closeEditModalOnOverlay(event)">
   <div class="modal" id="editModal">
     <div class="modal-header">
@@ -1030,9 +1030,9 @@ mysqli_close($conn);
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
      ADD RESIDENT MODAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
 <div class="modal-overlay" id="addModalOverlay" onclick="closeAddModalOnOverlay(event)">
   <div class="modal" id="addModal">
     <div class="modal-header">
@@ -1180,9 +1180,9 @@ mysqli_close($conn);
 </div>
 
 <script>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   SIDEBAR â€” Desktop collapse + Mobile drawer
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+   SIDEBAR �?" Desktop collapse + Mobile drawer
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 const sidebar     = document.getElementById('sidebar');
 const mainContent = document.getElementById('mainContent');
 const expandBtn   = document.getElementById('expandBtn');
@@ -1236,9 +1236,9 @@ expandBtn.addEventListener('click', () => {
 window.addEventListener('resize', applyCollapse);
 applyCollapse();
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
    ALERT BANNER SYSTEM
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 let alertTimer = null;
 
 function showToast(type, title, desc) {
@@ -1260,7 +1260,7 @@ function showToast(type, title, desc) {
 }
 function dismissAlert() { document.getElementById('alertBanner').classList.remove('show'); }
 
-/* â”€â”€ Tab switching â”€â”€ */
+/* �"?�"? Tab switching �"?�"? */
 let activeTab = 'active';
 function switchTab(tab) {
   activeTab = tab;
@@ -1280,7 +1280,7 @@ function toggleAll(cb) {
   document.querySelectorAll(sel + ' .row-check').forEach(c => c.checked = cb.checked);
 }
 
-/* â”€â”€ Filter / Search â”€â”€ */
+/* �"?�"? Filter / Search �"?�"? */
 let searchTimeout;
 
 function filterTable() {
@@ -1344,9 +1344,9 @@ function handleExport(btn) {
   }, 1500);
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
    EDIT MODAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 const FIELD_MAP = [
   ['e_firstname','firstname'],['e_lastname','lastname'],['e_middlename','middlename'],
   ['e_suffix','suffix'],['e_family_role','family_role'],['e_gender','gender'],
@@ -1509,9 +1509,9 @@ function handleUpdate() {
   });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
    ADD RESIDENT MODAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 const ADD_FIELDS = [
   'a_firstname','a_lastname','a_middlename','a_suffix',
   'a_family_role','a_gender','a_birthday','a_birthplace',
@@ -1669,7 +1669,7 @@ function escHtml(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* â”€â”€ Lightbox â”€â”€ */
+/* �"?�"? Lightbox �"?�"? */
 function openLightbox(side) {
   const src = side === 'front' ? currentFront : currentBack;
   if (!src) return;
@@ -1678,7 +1678,7 @@ function openLightbox(side) {
 }
 function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 
-/* â”€â”€ Confirm Dialog â”€â”€ */
+/* �"?�"? Confirm Dialog �"?�"? */
 let dialogCallback = null;
 function showDialog(title, desc, nameBadge, confirmLabel, onConfirm, isDanger = false) {
   const overlay     = document.getElementById('dialogOverlay');
@@ -1729,7 +1729,7 @@ function setActionButtonLoading(btn, label = 'Loading...') {
   };
 }
 
-/* â”€â”€ Archive / Unarchive â”€â”€ */
+/* �"?�"? Archive / Unarchive �"?�"? */
 function confirmArchive(uid, name, row, triggerBtn = null) {
   showDialog('Archive Resident', `This will archive the account. They will lose active access.`, null, 'Yes, Archive', 
     () => doAction(uid, 'archive', row, name, triggerBtn), true);
@@ -1782,7 +1782,7 @@ function doAction(uid, action, row, name, triggerBtn = null, shouldReload = true
   });
 }
 
-/* â”€â”€ Pagination â”€â”€ */
+/* �"?�"? Pagination �"?�"? */
 const ROWS = 10; let currentPage = 1;
 function getVisibleRows() {
   const sel = activeTab === 'active' ? '#activeTable' : '#archivedTable';
@@ -1815,9 +1815,9 @@ function renderPagination() {
 }
 renderPagination();
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
    BUILD EDIT MODAL FORM FIELDS (injected by JS)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 (function buildEditModalBody() {
   const body = document.getElementById('editModalBody');
   if (!body) return;
@@ -1895,9 +1895,9 @@ renderPagination();
   if (idSection) idSection.insertAdjacentHTML('afterend', html);
 })();
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
    SIDEBAR NAVIGATION LOADER
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
 document.querySelectorAll('.menu-item, .side-link, .sidebar-logo button').forEach(btn => {
   btn.addEventListener('click', function() {
     const hasTarget = this.getAttribute('data-nav') || this.getAttribute('onclick');

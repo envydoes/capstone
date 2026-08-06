@@ -42,7 +42,7 @@ function sendVerificationEmail(string $recipientEmail, string $token, ?string &$
         $mail->addAddress($recipientEmail);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Verify Your Email — SumEste Portal';
+        $mail->Subject = 'Verify Your Email - SumEste Portal';
         $mail->Body = '
             <div style="margin:0;padding:24px;background:#f0fdf4;font-family:Arial,sans-serif;color:#14532d;">
               <div style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #dcfce7;border-radius:14px;overflow:hidden;">

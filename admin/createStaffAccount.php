@@ -1,6 +1,6 @@
-  <!-- ══════════════════════════════════════════════════════
+  <!-- ??????????????????????????????????????????????????????
            ADDITIONAL REPORTS
-      ═══════════════════════════════════════════════════════ -->
+      ??????????????????????????????????????????????????????? -->
       <div class="panel f3">
         <div class="panel-head" style="padding-bottom:10px;">
           <p class="panel-title">Additional Reports</p>
@@ -15,7 +15,7 @@
           <button class="report-tab-btn"        data-tab="accounts"    onclick="switchReportTab('accounts',this)">User / Accounts</button>
         </div>
 
-        <!-- ══ RESIDENT MANAGEMENT ══ -->
+        <!-- ?? RESIDENT MANAGEMENT ?? -->
         <div class="report-pane" id="pane-resident">
 
           <div class="subpanel">
@@ -28,8 +28,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div id="chartAgeBracket" class="w-full h-[220px]"></div>
               <div class="flex flex-col justify-center gap-3 text-sm">
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Minors (0–17)</span><strong id="bkMinors">0</strong></div>
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Working Age (18–59)</span><strong id="bkWorking">0</strong></div>
+                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Minors (0-17)</span><strong id="bkMinors">0</strong></div>
+                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Working Age (18-59)</span><strong id="bkWorking">0</strong></div>
                 <div class="flex justify-between"><span>Seniors (60+)</span><strong id="bkSeniors">0</strong></div>
               </div>
             </div>
@@ -37,7 +37,7 @@
 
         </div>
 
-        <!-- ══ BENEFICIARY MANAGEMENT ══ -->
+        <!-- ?? BENEFICIARY MANAGEMENT ?? -->
         <div class="report-pane hidden" id="pane-beneficiary">
 
           <div class="subpanel">
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <!-- ══ BUSINESS / APARTMENT MANAGEMENT ══ -->
+        <!-- ?? BUSINESS / APARTMENT MANAGEMENT ?? -->
 
         <div class="report-pane hidden" id="pane-business">
 
@@ -106,7 +106,7 @@
 
         </div>
 
-        <!-- ══ EQUIPMENT ══ -->
+        <!-- ?? EQUIPMENT ?? -->
         <div class="report-pane hidden" id="pane-equipment">
 
           <div class="subpanel">

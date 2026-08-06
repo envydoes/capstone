@@ -79,7 +79,7 @@ if ($accID && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Set Up Your Account — <?= e($siteSettings['site_title']) ?></title>
+<title>Set Up Your Account - <?= e($siteSettings['site_title']) ?></title>
 <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '')) ?>" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <?= site_config_css_vars($siteSettings) ?>
@@ -121,7 +121,7 @@ if ($accID && $_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
     <?php else: ?>
       <div class="alert"><?= e($error) ?></div>
-      <a href="login.php" style="color:var(--site-primary);font-weight:700;font-size:0.85rem;">← Back to Login</a>
+      <a href="login.php" style="color:var(--site-primary);font-weight:700;font-size:0.85rem;">? Back to Login</a>
     <?php endif; ?>
   </div>
 </body>

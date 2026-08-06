@@ -33,7 +33,7 @@ $htmlBody = "
 ";
 
 $mailError = null;
-$sent = sendMail($email, 'Verify Your Email — SumEste Portal', $htmlBody, $mailError);
+$sent = sendMail($email, 'Verify Your Email - SumEste Portal', $htmlBody, $mailError);
 
 if (!$sent) {
     error_log('Brevo send failed (finalizeRegistration): ' . $mailError);

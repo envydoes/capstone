@@ -1592,7 +1592,7 @@ class Worksheet extends WriterPart
         $preCalc = $this->getParentWriter()->getPreCalculateFormulas();
         // When pre-calc is off we have no calculated value to infer the cell type from. The
         // previous fall-back of $cellValue (the formula source) made every formula cell write
-        // t="str" because the source is always a string — misleading for formulas that resolve
+        // t="str" because the source is always a string - misleading for formulas that resolve
         // to numbers/booleans. Leave $calculatedValue/$calculatedValueString null so the
         // type-inference branches below are skipped and no t attribute is written.
         $calculatedValue = $preCalc ? $cell->getCalculatedValue() : null;

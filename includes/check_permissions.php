@@ -6,9 +6,9 @@
  * the existing account_role gate.
  *
  * IMPORTANT: this does NOT replace account_role. A resident granted
- * module access keeps logging in with their normal credentials —
+ * module access keeps logging in with their normal credentials -
  * this only grants extra module access, tracked in
- * tbl_admin_permissions. There is no named "position" anymore —
+ * tbl_admin_permissions. There is no named "position" anymore -
  * the admin assigns individual modules directly.
  * ------------------------------------------------------------
  */
@@ -24,7 +24,7 @@ const PERMISSION_MODULES = [
 ];
 
 // NOTE: 'manage_users' (account approvals) and permission-granting
-// itself are intentionally NOT in PERMISSION_MODULES — they remain
+// itself are intentionally NOT in PERMISSION_MODULES - they remain
 // exclusive to the founding admin (account_role === 'admin') so a
 // granted staff account can never approve new admins or self-promote.
 
@@ -78,7 +78,7 @@ function has_permission(mysqli $conn, string $key): bool
 
 /**
  * Full list of permission keys the CURRENT session account can
- * access — used for building UI (e.g. sidebar menus).
+ * access - used for building UI (e.g. sidebar menus).
  */
 function get_my_permissions(mysqli $conn): array
 {
@@ -126,7 +126,7 @@ function get_post_login_redirect(mysqli $conn, string $accID, string $accountRol
  *
  * require_permission() is meant for full page loads: on failure it
  * issues an HTTP redirect (header('Location: ...')) and exits. That
- * breaks any endpoint that's supposed to return JSON — a fetch()
+ * breaks any endpoint that's supposed to return JSON - a fetch()
  * call just follows the redirect, gets back HTML, JSON.parse()
  * throws, and the table silently stays empty. Every ajax/search_*.php
  * and report endpoint should call THIS instead.

@@ -1070,12 +1070,12 @@ class Style
 
     protected static function formatCurrencyGbpInteger(self $obj, string $name): void
     {
-        self::formatCurrencyUsdInteger($obj, $name, '£');
+        self::formatCurrencyUsdInteger($obj, $name, '�');
     }
 
     protected static function formatCurrencyYenYuanInteger(self $obj, string $name): void
     {
-        self::formatCurrencyUsdInteger($obj, $name, '￥');
+        self::formatCurrencyUsdInteger($obj, $name, '?');
     }
 
     protected static function formatCurrencyUsd(self $obj, string $name, string $symbol = '$'): void
@@ -1097,12 +1097,12 @@ class Style
 
     protected static function formatCurrencyGbp(self $obj, string $name): void
     {
-        self::formatCurrencyUsd($obj, $name, '£');
+        self::formatCurrencyUsd($obj, $name, '�');
     }
 
     protected static function formatCurrencyYenYuan(self $obj, string $name): void
     {
-        self::formatCurrencyUsd($obj, $name, '￥');
+        self::formatCurrencyUsd($obj, $name, '?');
     }
 
     protected static function formatCurrencyEurInteger(self $obj, string $name): void
@@ -1126,7 +1126,7 @@ class Style
         $obj->writer->startElement('number:currency-symbol');
         $obj->writer->writeAttribute('number:language', 'en');
         $obj->writer->writeAttribute('number:country', 'us');
-        $obj->writer->text('€');
+        $obj->writer->text('?');
         $obj->writer->endElement(); // number:currency-symbol
 
         $obj->writer->endElement(); // number:currency-style
@@ -1151,7 +1151,7 @@ class Style
         $obj->writer->startElement('number:currency-symbol');
         $obj->writer->writeAttribute('number:language', 'en');
         $obj->writer->writeAttribute('number:country', 'us');
-        $obj->writer->text('€');
+        $obj->writer->text('?');
         $obj->writer->endElement(); // number:currency-symbol
 
         $obj->writer->endElement(); // number:currency-style

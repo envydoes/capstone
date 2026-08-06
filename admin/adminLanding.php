@@ -12,7 +12,7 @@ require_once __DIR__ . '/../includes/check_permissions.php';
 require_once __DIR__ . '/../includes/site_config.php';
 
 // This landing page is the shared entry hub for BOTH full 'admin' and
-// limited 'custom_admin' accounts — it just shows tiles linking to
+// limited 'custom_admin' accounts - it just shows tiles linking to
 // whichever sections exist. It is NOT gated behind any single feature
 // permission (that check happens on each individual page, e.g.
 // residentManagement.php checks 'manage_residents').
@@ -108,7 +108,7 @@ if ($stmt) {
     $stmt->close();
 }
 
-// --- Tag → color/icon helper ---
+// --- Tag ? color/icon helper ---
 function tagColor(string $tag): array {
     return match(strtolower(trim($tag))) {
         'health'     => ['bg'=>'bg-green-100',  'text'=>'text-green-700',  'icon'=>'fa-heartbeat',          'icon_bg'=>'bg-green-100',  'icon_color'=>'text-green-600'],
@@ -232,7 +232,7 @@ function tagColor(string $tag): array {
     .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); border: none; cursor: pointer; transition: background 0.3s, transform 0.3s; padding: 0; }
     .slider-dot.active { background: var(--site-primary-light); transform: scale(1.3); }
 
-    /* Tailwind-green → theme color overrides (matches landing.php) */
+    /* Tailwind-green ? theme color overrides (matches landing.php) */
     .text-green-400 { color: var(--site-primary-light) !important; }
     .text-green-200 { color: color-mix(in srgb, var(--site-primary-light) 60%, white) !important; }
     .text-green-100 { color: color-mix(in srgb, var(--site-primary-light) 40%, white) !important; }
@@ -542,7 +542,7 @@ function tagColor(string $tag): array {
         <div class="mt-6 flex gap-6">
           <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['puroks_covered']) ?></p><p class="text-xs text-green-400 uppercase tracking-wider">Puroks Covered</p></div>
           <div class="w-px bg-green-700"></div>
-          <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km²</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>
+          <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km�</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>
         </div>
       </div>
     <div class="flex-1 w-full flex justify-center" data-aos="fade-left">
@@ -560,7 +560,7 @@ function tagColor(string $tag): array {
         <p class="section-label mb-2">About the System</p>
         <h2 class="text-3xl font-bold text-green-950 mb-4">Considerations in Barangay Services</h2>
         <p class="text-gray-600 leading-relaxed mb-6">This project introduces a web-based system that helps residents request documents and access assistance programs, barangay officials manage records and equipment efficiently, and local business owners and tenants find services and rentals easily.</p>
-        <p class="text-gray-500 text-sm leading-relaxed">By using technology, the barangay ensures transparency, fairness, and better governance — improving service delivery for all community members.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">By using technology, the barangay ensures transparency, fairness, and better governance - improving service delivery for all community members.</p>
         <div class="mt-8 p-5 bg-green-50 border-l-4 border-green-500 rounded-r-xl">
           <p class="text-green-800 text-sm font-semibold"> Our Mission</p>
           <p class="text-green-700 text-sm mt-1">To make barangay governance accessible, fair, and efficient for every resident of <?= e($siteSettings['barangay_name']) ?>.</p>
@@ -596,7 +596,7 @@ function tagColor(string $tag): array {
   </section>
 
   <!-- =========================================
-       ANNOUNCEMENTS — live from tbl_announcement
+       ANNOUNCEMENTS - live from tbl_announcement
        ========================================= -->
   <section id="announcements" class="max-w-6xl mx-auto px-4 py-16" data-aos="fade-up">
     <div class="flex items-center justify-between mb-6">
@@ -673,7 +673,7 @@ function tagColor(string $tag): array {
                 <span><i class="fa-solid fa-flag mr-1 text-green-500"></i>Starts: <?php echo $startDate; ?></span>
               <?php endif; ?>
               <a href="<?php echo $detailUrl; ?>" class="text-green-600 font-semibold ml-auto hover:underline">
-                Read more →
+                Read more ?
               </a>
             </div>
           </div>
@@ -726,7 +726,7 @@ function tagColor(string $tag): array {
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        © 2026 SumEste Portal. All Rights Reserved. Made with 🌿 for <?= e($siteSettings['barangay_name']) ?>.
+        � 2026 SumEste Portal. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.
       </div>
     </div>
   </footer>

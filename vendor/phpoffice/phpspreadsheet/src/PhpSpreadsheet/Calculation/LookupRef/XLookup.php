@@ -13,7 +13,7 @@ class XLookup extends LookupBase
     //use ArrayEnabled; // not yet supported
 
     /**
-     * XLOOKUP — PHP emulation of Excel's XLOOKUP function.
+     * XLOOKUP - PHP emulation of Excel's XLOOKUP function.
      *
      * @param mixed $lookupValue Value to search for
      * @param mixed $lookupArray Expect array, Array to search in
@@ -146,7 +146,7 @@ class XLookup extends LookupBase
             $cmp = self::compareValues($candidate, $lookupValue);
 
             if ($cmp === 0) {
-                return $i; // Exact match — return immediately
+                return $i; // Exact match - return immediately
             }
 
             if ($matchMode === -1 && $cmp < 0) {

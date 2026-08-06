@@ -1,6 +1,6 @@
 <?php
 /**
- * check_email.php — AJAX email availability endpoint
+ * check_email.php - AJAX email availability endpoint
  * Lives in: signup/check_email.php
  * Called by: accountCreation.php via fetch()
  */

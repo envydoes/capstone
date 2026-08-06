@@ -84,7 +84,7 @@ if (!function_exists('site_config_logo_url')) {
 
 if (!function_exists('site_config_barangay_logo_url')) {
     /**
-     * Barangay Logo — falls back to assets/sumacabLogo.jpg when none uploaded.
+     * Barangay Logo - falls back to assets/sumacabLogo.jpg when none uploaded.
      */
     function site_config_barangay_logo_url(array $settings, string $rootRelativePath = ''): string
     {
@@ -98,7 +98,7 @@ if (!function_exists('site_config_barangay_logo_url')) {
 
 if (!function_exists('site_config_municipality_logo_url')) {
     /**
-     * Municipality Logo — falls back to assets/cabanatuan.png when none uploaded.
+     * Municipality Logo - falls back to assets/cabanatuan.png when none uploaded.
      */
     function site_config_municipality_logo_url(array $settings, string $rootRelativePath = ''): string
     {

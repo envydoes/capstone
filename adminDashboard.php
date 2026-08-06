@@ -37,7 +37,7 @@ require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
 /**
- * The database has no "province" column — the only place that info lives
+ * The database has no "province" column - the only place that info lives
  * is the free-text Nominatim address string saved in $siteSettings['map_query']
  * (Settings > Landing Page > Map Display), e.g.:
  *   "075, Purok 3, Sumacab Este, Cabanatuan City, Nueva Ecija, Central Luzon, 3100, Philippines"
@@ -45,7 +45,7 @@ $siteSettings = site_config_load($conn);
  *
  * Reading from the end: Country -> (optional) Zip Code -> Region -> Province.
  * Nominatim doesn't label which segment is the region vs. the province, so we
- * can't reliably tell them apart — we settle for the region, which is the
+ * can't reliably tell them apart - we settle for the region, which is the
  * segment right after the country/zip are stripped off.
  */
 function extract_region_from_map_query(string $mapQuery): string {
@@ -287,39 +287,39 @@ $incomeAgeStats = mysqli_fetch_assoc(mysqli_query($conn, "
 "));
 
 $incomeCounts = [
-    'Below ₱5k/mo' => (int) ($incomeBracketStats['below_5k'] ?? 0),
-    '₱5k – ₱10k/mo' => (int) ($incomeBracketStats['from_5k_10k'] ?? 0),
-    '₱10k – ₱20k/mo' => (int) ($incomeBracketStats['from_10k_20k'] ?? 0),
-    '₱20k – ₱40k/mo' => (int) ($incomeBracketStats['from_20k_40k'] ?? 0),
-    'Above ₱40k/mo' => (int) ($incomeBracketStats['above_40k'] ?? 0),
+    'Below ?5k/mo' => (int) ($incomeBracketStats['below_5k'] ?? 0),
+    '?5k - ?10k/mo' => (int) ($incomeBracketStats['from_5k_10k'] ?? 0),
+    '?10k - ?20k/mo' => (int) ($incomeBracketStats['from_10k_20k'] ?? 0),
+    '?20k - ?40k/mo' => (int) ($incomeBracketStats['from_20k_40k'] ?? 0),
+    'Above ?40k/mo' => (int) ($incomeBracketStats['above_40k'] ?? 0),
 ];
 
 $totalIncomeCount = array_sum($incomeCounts);
 
 $incomeAgeChartData = [
-    ['Age Group', 'Below ₱5k', '₱5k–₱10k', '₱10k–₱20k', '₱20k–₱40k', 'Above ₱40k'],
-    ['0–17',
+    ['Age Group', 'Below ?5k', '?5k-?10k', '?10k-?20k', '?20k-?40k', 'Above ?40k'],
+    ['0-17',
         (int) ($incomeAgeStats['age0_17_below5k'] ?? 0),
         (int) ($incomeAgeStats['age0_17_5k10k'] ?? 0),
         (int) ($incomeAgeStats['age0_17_10k20k'] ?? 0),
         (int) ($incomeAgeStats['age0_17_20k40k'] ?? 0),
         (int) ($incomeAgeStats['age0_17_above40k'] ?? 0),
     ],
-    ['18–30',
+    ['18-30',
         (int) ($incomeAgeStats['age18_30_below5k'] ?? 0),
         (int) ($incomeAgeStats['age18_30_5k10k'] ?? 0),
         (int) ($incomeAgeStats['age18_30_10k20k'] ?? 0),
         (int) ($incomeAgeStats['age18_30_20k40k'] ?? 0),
         (int) ($incomeAgeStats['age18_30_above40k'] ?? 0),
     ],
-    ['31–45',
+    ['31-45',
         (int) ($incomeAgeStats['age31_45_below5k'] ?? 0),
         (int) ($incomeAgeStats['age31_45_5k10k'] ?? 0),
         (int) ($incomeAgeStats['age31_45_10k20k'] ?? 0),
         (int) ($incomeAgeStats['age31_45_20k40k'] ?? 0),
         (int) ($incomeAgeStats['age31_45_above40k'] ?? 0),
     ],
-    ['46–60',
+    ['46-60',
         (int) ($incomeAgeStats['age46_60_below5k'] ?? 0),
         (int) ($incomeAgeStats['age46_60_5k10k'] ?? 0),
         (int) ($incomeAgeStats['age46_60_10k20k'] ?? 0),
@@ -335,14 +335,14 @@ $incomeAgeChartData = [
     ],
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// ADDITIONAL REPORTS — Resident / Beneficiary / Operations
+// ???????????????????????????????????????????????????????????????????
+// ADDITIONAL REPORTS - Resident / Beneficiary / Operations
 //
-// Note: there is no dedicated "purok/zone" column in tbl_userinfo — the
+// Note: there is no dedicated "purok/zone" column in tbl_userinfo - the
 // residentManagement.php add/edit form stores that under the `street`
 // field (e.g. "Purok 5"), so "population by purok" is derived from that.
 // There is also no "disability type" column anywhere (tbl_beneficiary
-// only has is_pwd + pwd_id_number) — the PWD registry reflects exactly
+// only has is_pwd + pwd_id_number) - the PWD registry reflects exactly
 // what's stored: whether someone is PWD-registered and their ID number,
 // not a breakdown by type of disability.
 //
@@ -352,7 +352,7 @@ $incomeAgeChartData = [
 // pre-loaded into JS arrays here. This lets the search/filter loading
 // spinner reflect the real database round-trip time, not a fake delay.
 // Only the chart-only aggregates below stay server-rendered.
-// ═══════════════════════════════════════════════════════════════════
+// ???????????????????????????????????????????????????????????????????
 
 // ---- RESIDENT: population by purok (derived from street field) ----
 $purokRes = mysqli_query($conn, "
@@ -501,7 +501,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Dashboard — <?= e($siteSettings['site_title']) ?></title>
+  <title>Dashboard - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -544,7 +544,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       height: 100%;
     }
 
-    /* ── Logo bar ── */
+    /* ?? Logo bar ?? */
     .sidebar-logo {
       padding: 20px 18px 16px;
       border-bottom: 1px solid rgba(134,239,172,0.12);
@@ -554,7 +554,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       flex-shrink: 0;
     }
 
-    /* ── Section labels ── */
+    /* ?? Section labels ?? */
     .section-label {
       padding: 18px 18px 6px;
       font-size: 0.62rem;
@@ -565,7 +565,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       white-space: nowrap;
     }
 
-    /* ── Menu items ── */
+    /* ?? Menu items ?? */
     .menu-item {
       display: flex;
       align-items: center;
@@ -591,7 +591,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .menu-item .mi { width: 17px; text-align: center; font-size: 0.85rem; flex-shrink: 0; }
     .active-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--site-primary-light); flex-shrink: 0; }
 
-    /* ── Collapse button (inside header) ── */
+    /* ?? Collapse button (inside header) ?? */
     .collapse-btn {
       width: 28px; height: 28px;
       border-radius: 8px;
@@ -606,7 +606,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     }
     .collapse-btn:hover { background: rgba(255,255,255,0.22); }
 
-    /* ── Floating expand button (only visible when collapsed) ── */
+    /* ?? Floating expand button (only visible when collapsed) ?? */
     .expand-btn {
       position: fixed;
       top: 18px;
@@ -634,7 +634,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     }
     .expand-btn:hover { background: var(--site-primary-dark); }
 
-    /* ── Bottom section ── */
+    /* ?? Bottom section ?? */
     .sidebar-bottom { margin-top: auto; flex-shrink: 0; }
     .sidebar-bottom-links { padding: 0 16px 8px; }
     .sidebar-bottom-links .side-link {
@@ -652,9 +652,9 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       cursor: pointer;
     }
 
-    /* ────────────────────────────────
+    /* ????????????????????????????????
        TOPBAR
-    ──────────────────────────────── */
+    ???????????????????????????????? */
     .topbar {
       background: #fff;
       border-bottom: 1px solid #e5e7eb;
@@ -668,7 +668,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .topbar-title-block { transition: margin-left 0.25s ease; }
     body.sidebar-collapsed .topbar-title-block { margin-left: 46px; }
 
-    /* ── Stat cards ── */
+    /* ?? Stat cards ?? */
     .stat-card {
       background: #fff; border-radius: 14px; padding: 20px 22px;
       border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(21,128,61,0.05);
@@ -681,25 +681,25 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .stat-ico   { font-size: 1.6rem; }
     .stat-num   { font-size: 2.4rem; font-weight: 800; color: #111827; line-height: 1; }
 
-    /* ── Panel ── */
+    /* ?? Panel ?? */
     .panel { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(21,128,61,0.05); overflow: hidden; }
     .panel-head { padding: 16px 18px 0; display: flex; align-items: center; justify-content: space-between; }
     .panel-title { font-weight: 700; color: #1a2e1a; font-size: 0.9rem; }
 
-    /* ── Info cards ── */
+    /* ?? Info cards ?? */
     .info-card {
       background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
       padding: 12px 18px; display: flex; align-items: center; gap: 12px;
       box-shadow: 0 2px 10px rgba(21,128,61,0.05);
     }
 
-    /* ── Horizontal bars ── */
+    /* ?? Horizontal bars ?? */
     .hbar-row { margin-bottom: 14px; }
     .hbar-label-row { display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280; margin-bottom: 5px; }
     .hbar-track { height: 8px; background: #f3f4f6; border-radius: 6px; overflow: hidden; }
     .hbar-fill  { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--site-primary), var(--site-primary-light)); }
 
-    /* ── Status bars ── */
+    /* ?? Status bars ?? */
     .status-row  { margin-bottom: 18px; }
     .status-top  { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
     .status-pct  { font-size: 1.05rem; font-weight: 800; color: #111827; }
@@ -710,16 +710,16 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .s-pending    { background: #f59e0b; }
     .s-rejected   { background: #ef4444; }
 
-    /* ── Tag chip ── */
+    /* ?? Tag chip ?? */
     .tag-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; }
 
-    /* ── Animations ── */
+    /* ?? Animations ?? */
     @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
     .f1 { animation: fadeUp 0.4s 0.05s ease both; }
     .f2 { animation: fadeUp 0.4s 0.12s ease both; }
     .f3 { animation: fadeUp 0.4s 0.19s ease both; }
 
-    /* ── Extra Reports section ── */
+    /* ?? Extra Reports section ?? */
     .report-tab-bar { display: flex; gap: 6px; padding: 4px 18px 14px; flex-wrap: wrap; }
     .report-tab-btn {
       padding: 8px 16px; border-radius: 999px; font-size: 0.8rem; font-weight: 700;
@@ -756,7 +756,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .mini-stat-inline .num { font-size: 1.6rem; font-weight: 800; color: #111827; }
     .mini-empty { padding: 24px; text-align: center; color: #9ca3af; font-size: 0.8rem; }
 
-    /* ── Live-search loading overlay (tied to real fetch duration) ── */
+    /* ?? Live-search loading overlay (tied to real fetch duration) ?? */
     .mini-loading-overlay {
       position: absolute; inset: 0;
       background: rgba(255,255,255,0.78);
@@ -787,7 +787,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     .mini-search-spinner.show { opacity: 1; }
     .mini-search-wrap { position: relative; }
 
-    /* ── Global List: filter button + modal ── */
+    /* ?? Global List: filter button + modal ?? */
     .btn-set-conditions {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 8px 16px; background: var(--site-primary); color: #fff;
@@ -885,7 +885,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     <i class="fa-solid fa-bars"></i>
   </button>
 
-  <!-- ══════════ SIDEBAR ══════════ -->
+  <!-- ?????????? SIDEBAR ?????????? -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
 
@@ -949,7 +949,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     </div>
   </aside>
 
-  <!-- ══════════ MAIN ══════════ -->
+  <!-- ?????????? MAIN ?????????? -->
   <main class="flex-1 overflow-x-hidden flex flex-col min-w-0">
 
     <header class="topbar">
@@ -967,7 +967,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
             <p id="weatherSummary" class="text-xs text-gray-500 flex items-center gap-1.5 mb-1">
               <i class="fa-solid fa-cloud-sun text-amber-400"></i> Loading weather...
             </p>
-            <p id="weatherTemp" class="text-3xl font-bold text-gray-800 leading-none">--°</p>
+            <p id="weatherTemp" class="text-3xl font-bold text-gray-800 leading-none">--�</p>
             <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-[10px]" style="color: var(--site-primary);"></i>Cabanatuan City
             </p>
@@ -1013,7 +1013,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
         <div class="panel-head" style="flex-wrap:wrap; gap:10px; padding-bottom:12px;">
           <div>
             <p class="panel-title">Global List</p>
-            <p class="text-xs text-gray-400 mt-0.5">Build a custom resident list — set conditions to filter and display exactly the fields you need.</p>
+            <p class="text-xs text-gray-400 mt-0.5">Build a custom resident list - set conditions to filter and display exactly the fields you need.</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="mini-stat-inline"><span class="num" id="globalCount">0</span><span class="text-xs text-gray-400 ml-1">results</span></span>
@@ -1139,11 +1139,11 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
               <?php
                   $pct = $totalIncomeCount > 0 ? round(($value / $totalIncomeCount) * 100, 1) : 0;
                   $barColor = [
-                      'Below ₱5k/mo' => '#E24B4A',
-                      '₱5k – ₱10k/mo' => '#BA7517',
-                      '₱10k – ₱20k/mo' => '#639922',
-                      '₱20k – ₱40k/mo' => '#1D9E75',
-                      'Above ₱40k/mo' => '#378ADD',
+                      'Below ?5k/mo' => '#E24B4A',
+                      '?5k - ?10k/mo' => '#BA7517',
+                      '?10k - ?20k/mo' => '#639922',
+                      '?20k - ?40k/mo' => '#1D9E75',
+                      'Above ?40k/mo' => '#378ADD',
                   ][$label];
               ?>
               <div class="flex items-center justify-between">
@@ -1165,9 +1165,9 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════
+      <!-- ??????????????????????????????????????????????????????
            ADDITIONAL REPORTS
-      ═══════════════════════════════════════════════════════ -->
+      ??????????????????????????????????????????????????????? -->
       <div class="panel f3">
         <div class="panel-head" style="padding-bottom:10px;">
           <p class="panel-title">Additional Reports</p>
@@ -1182,11 +1182,11 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           <button class="report-tab-btn"        data-tab="accounts"    onclick="switchReportTab('accounts',this)">User / Accounts</button>
         </div>
 
-        <!-- ══ RESIDENT MANAGEMENT ══ -->
+        <!-- ?? RESIDENT MANAGEMENT ?? -->
         <div class="report-pane" id="pane-resident">
 
           <div class="subpanel">
-            <p class="subpanel-title">Population by Purok / Zone <span class="subpanel-note">(derived from the "Street" field — no dedicated purok column exists)</span></p>
+            <p class="subpanel-title">Population by Purok / Zone <span class="subpanel-note">(derived from the "Street" field - no dedicated purok column exists)</span></p>
             <div id="chartPurok" class="w-full h-[280px]"></div>
           </div>
 
@@ -1195,8 +1195,8 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div id="chartAgeBracket" class="w-full h-[220px]"></div>
               <div class="flex flex-col justify-center gap-3 text-sm">
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Minors (0–17)</span><strong id="bkMinors">0</strong></div>
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Working Age (18–59)</span><strong id="bkWorking">0</strong></div>
+                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Minors (0-17)</span><strong id="bkMinors">0</strong></div>
+                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Working Age (18-59)</span><strong id="bkWorking">0</strong></div>
                 <div class="flex justify-between"><span>Seniors (60+)</span><strong id="bkSeniors">0</strong></div>
               </div>
             </div>
@@ -1204,7 +1204,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 
         </div>
 
-        <!-- ══ BENEFICIARY MANAGEMENT ══ -->
+        <!-- ?? BENEFICIARY MANAGEMENT ?? -->
         <div class="report-pane hidden" id="pane-beneficiary">
 
           <div class="subpanel">
@@ -1213,7 +1213,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           </div>
 
           <div class="subpanel">
-            <p class="subpanel-title">Residents NOT Yet Registered as Beneficiaries <span class="subpanel-note">(live database search — outreach list)</span></p>
+            <p class="subpanel-title">Residents NOT Yet Registered as Beneficiaries <span class="subpanel-note">(live database search - outreach list)</span></p>
             <div class="mini-filter-row">
               <div class="mini-search-wrap" style="flex:1;min-width:200px;">
                 <input type="text" id="nonBenSearch" placeholder="Search name or purok..." style="width:100%;" oninput="nonBenTable.debounced()">
@@ -1232,7 +1232,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 
         </div>
 
-        <!-- ══ BUSINESS / APARTMENT MANAGEMENT ══ -->
+        <!-- ?? BUSINESS / APARTMENT MANAGEMENT ?? -->
         <div class="report-pane hidden" id="pane-business">
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1247,7 +1247,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           </div>
 
           <div class="subpanel">
-            <p class="subpanel-title">Owner Directory <span class="subpanel-note">(live database search — who owns what)</span></p>
+            <p class="subpanel-title">Owner Directory <span class="subpanel-note">(live database search - who owns what)</span></p>
             <div class="mini-filter-row">
               <div class="mini-search-wrap" style="flex:1;min-width:200px;">
                 <input type="text" id="ownerSearch" placeholder="Search owner..." style="width:100%;" oninput="ownerTable.debounced()">
@@ -1266,7 +1266,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 
         </div>
 
-        <!-- ══ EQUIPMENT ══ -->
+        <!-- ?? EQUIPMENT ?? -->
         <div class="report-pane hidden" id="pane-equipment">
 
           <div class="subpanel">
@@ -1294,7 +1294,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 
         </div>
 
-        <!-- ══ DOCUMENT REQUESTS ══ -->
+        <!-- ?? DOCUMENT REQUESTS ?? -->
         <div class="report-pane hidden" id="pane-documents">
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1321,7 +1321,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 
         </div>
 
-        <!-- ══ USER / ACCOUNT MANAGEMENT ══ -->
+        <!-- ?? USER / ACCOUNT MANAGEMENT ?? -->
         <div class="report-pane hidden" id="pane-accounts">
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1350,7 +1350,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
 </div>
 
 <script>
-  /* ── Sidebar toggle ── */
+  /* ?? Sidebar toggle ?? */
   const sidebar     = document.getElementById('sidebar');
   const collapseBtn = document.getElementById('collapseBtn');
   const expandBtn   = document.getElementById('expandBtn');
@@ -1384,7 +1384,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     applyState();
   });
 
-  /* ── Button navigation (no hover URL preview) ── */
+  /* ?? Button navigation (no hover URL preview) ?? */
   document.querySelectorAll('[data-nav]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-nav');
@@ -1392,7 +1392,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   });
 
-  /* ── Live clock ── */
+  /* ?? Live clock ?? */
   const manilaTimeFmt = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Manila',
     hour: 'numeric',
@@ -1452,8 +1452,8 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       const code = current.weathercode ?? current.weather_code;
       const label = weatherCodeMap[code] || 'Current weather';
 
-      summaryEl.innerHTML = `<i class="fa-solid fa-cloud-sun text-amber-400"></i> ${label}${typeof humidity === 'number' ? ` • ${humidity}% RH` : ''}`;
-      tempEl.textContent = `${temp}°`;
+      summaryEl.innerHTML = `<i class="fa-solid fa-cloud-sun text-amber-400"></i> ${label}${typeof humidity === 'number' ? ` . ${humidity}% RH` : ''}`;
+      tempEl.textContent = `${temp}�`;
     } catch (_) {
       summaryEl.innerHTML = '<i class="fa-solid fa-cloud-sun text-amber-400"></i> Weather unavailable';
     }
@@ -1464,7 +1464,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
   updateWeather();
   setInterval(updateWeather, 600000);
 
-  /* ── Google Charts ── */
+  /* ?? Google Charts ?? */
   google.charts.load('current', { packages: ['bar', 'corechart'] });
   google.charts.setOnLoadCallback(function () {
     draw();
@@ -1541,10 +1541,10 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   }
 
-  /* ══════════════════════════════════════════
-     ADDITIONAL REPORTS — CHART-ONLY DATA (from PHP)
-     (No search boxes on these — kept server-rendered.)
-  ══════════════════════════════════════════ */
+  /* ??????????????????????????????????????????
+     ADDITIONAL REPORTS - CHART-ONLY DATA (from PHP)
+     (No search boxes on these - kept server-rendered.)
+  ?????????????????????????????????????????? */
   const PUROK_DATA        = <?= json_encode($purokData ?? [], JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>;
   const AGE_BRACKET        = { minors: <?= (int)($bracketMinors ?? 0) ?>, working: <?= (int)($bracketWorkingAge ?? 0) ?>, seniors: <?= (int)($bracketSeniors ?? 0) ?> };
   const GENDER_TOTALS       = { male: <?= (int)($maleTotal ?? 0) ?>, female: <?= (int)($femaleTotal ?? 0) ?> };
@@ -1564,15 +1564,15 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
   function escHtml2(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function fullName(u) { return [u.firstname, u.middlename ? u.middlename+'.' : '', u.lastname, u.suffix].filter(Boolean).join(' '); }
 
-  /* ══════════════════════════════════════════
+  /* ??????????????????????????????????????????
      LIVE AJAX SEARCH TABLES
-     Real fetch() calls to admin/ajax/*.php — the loading
+     Real fetch() calls to admin/ajax/*.php - the loading
      overlay is shown for exactly as long as the network
      request takes (no fake setTimeout delay). Debounced
      300ms after the last keystroke, with AbortController
      so a fast typer never has a slow older request
      overwrite a newer, faster one.
-  ══════════════════════════════════════════ */
+  ?????????????????????????????????????????? */
   function debounce(fn, delay = 300) {
     let t;
     return function (...args) {
@@ -1632,7 +1632,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     return { render, debounced: debounce(render, 300) };
   }
 
-  /* ── RESIDENT: Global List (dynamic filter-driven table) ── */
+  /* ?? RESIDENT: Global List (dynamic filter-driven table) ?? */
   const globalFilterParamMap = {
     gfAccountRole: 'account_role', gfDateFrom: 'date_from', gfDateTo: 'date_to',
     gfSex: 'sex', gfBirthMonth: 'birth_month', gfBirthYear: 'birth_year',
@@ -1706,7 +1706,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
             <tr class="mini-row-fade" style="animation-delay:${i * 15}ms">
               <td>${i + 1}</td>
               <td>${escHtml2(r.name)}</td>
-              ${cols.map(c => `<td>${escHtml2(r[c.key] ?? '—')}</td>`).join('')}
+              ${cols.map(c => `<td>${escHtml2(r[c.key] ?? '-')}</td>`).join('')}
             </tr>`).join('')
         : `<tr><td colspan="${2 + cols.length}"><div class="mini-empty">No residents match the selected conditions</div></td></tr>`;
     } catch (err) {
@@ -1729,7 +1729,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     if (e.key === 'Escape') closeGlobalFilterModal();
   });
 
-  /* ── BENEFICIARY: Not-yet-registered residents ── */
+  /* ?? BENEFICIARY: Not-yet-registered residents ?? */
   const nonBenTable = makeAjaxTable({
     overlayId: 'nonBenLoading', spinnerId: 'nonBenSearchSpinner',
     tbodyId: 'nonBenTableBody', countId: 'nonBenCount',
@@ -1741,13 +1741,13 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     },
     rowTemplate: (u, i) => `
       <tr class="mini-row-fade" style="animation-delay:${i * 20}ms">
-        <td>${escHtml2(fullName(u))}</td><td>${escHtml2(u.street||'—')}</td><td>${escHtml2(u.phone||'—')}</td><td>${escHtml2(u.email||'—')}</td>
+        <td>${escHtml2(fullName(u))}</td><td>${escHtml2(u.street||'-')}</td><td>${escHtml2(u.phone||'-')}</td><td>${escHtml2(u.email||'-')}</td>
       </tr>`,
     emptyMessage: 'Every approved resident is a registered beneficiary',
     colspan: 4,
   });
 
-  /* ── BUSINESS/APARTMENT: Owner Directory ── */
+  /* ?? BUSINESS/APARTMENT: Owner Directory ?? */
   const ownerTable = makeAjaxTable({
     overlayId: 'ownerLoading', spinnerId: 'ownerSearchSpinner',
     tbodyId: 'ownerTableBody', countId: 'ownerCount',
@@ -1765,7 +1765,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     colspan: 4,
   });
 
-  /* ── EQUIPMENT: Currently borrowed / overdue ── */
+  /* ?? EQUIPMENT: Currently borrowed / overdue ?? */
   const borrowedTable = makeAjaxTable({
     overlayId: 'borrowedLoading', spinnerId: 'borrowedSearchSpinner',
     tbodyId: 'borrowedTableBody', countId: 'borrowedCount',
@@ -1776,7 +1776,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       return p;
     },
     rowTemplate: (r, i) => {
-      const dt = r.returnDate ? new Date(r.returnDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      const dt = r.returnDate ? new Date(r.returnDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '-';
       const overdue = r.is_overdue == 1 || r.is_overdue === true;
       const badge = overdue ? '<span class="mini-badge mini-badge-overdue">Overdue</span>' : '<span class="mini-badge mini-badge-ontime">On Time</span>';
       return `<tr class="mini-row-fade" style="animation-delay:${i * 20}ms">
@@ -1786,7 +1786,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     colspan: 5,
   });
 
-  /* ── Tab switching (lazy-loads charts + first AJAX fetch per tab) ── */
+  /* ?? Tab switching (lazy-loads charts + first AJAX fetch per tab) ?? */
   const reportDrawn = {};
   function switchReportTab(tab, btn) {
     document.querySelectorAll('.report-pane').forEach(p => p.classList.add('hidden'));
@@ -1806,7 +1806,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     if (tab === 'accounts')    { drawRoleCountsChart(); drawAccountStatusChart(); drawRegTrendChart(); }
   }
 
-  /* ── RESIDENT MANAGEMENT (chart-only pieces) ── */
+  /* ?? RESIDENT MANAGEMENT (chart-only pieces) ?? */
   function drawPurokChart() {
     if (!PUROK_DATA.length) { document.getElementById('chartPurok').innerHTML = '<div class="mini-empty">No data available</div>'; return; }
     const data = google.visualization.arrayToDataTable([['Purok/Zone','Residents']].concat(PUROK_DATA));
@@ -1837,7 +1837,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     document.getElementById('genderFemaleLbl').textContent = GENDER_TOTALS.female.toLocaleString();
   }
 
-  /* ── BENEFICIARY MANAGEMENT (chart-only piece) ── */
+  /* ?? BENEFICIARY MANAGEMENT (chart-only piece) ?? */
   function drawBenProgramsChart() {
     const rows = Object.entries(PROG_COUNTS).map(([k,v]) => [PROG_LABELS[k] || k, v]);
     const data = google.visualization.arrayToDataTable([['Program','Beneficiaries']].concat(rows));
@@ -1849,7 +1849,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   }
 
-  /* ── BUSINESS / APARTMENT (chart-only pieces) ── */
+  /* ?? BUSINESS / APARTMENT (chart-only pieces) ?? */
   function drawListingTypeChart() {
     const data = google.visualization.arrayToDataTable([
       ['Type','Total'], ['Apartments', LISTING_TYPE_COUNTS.apt], ['Businesses', LISTING_TYPE_COUNTS.biz],
@@ -1869,7 +1869,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   }
 
-  /* ── EQUIPMENT (chart-only piece) ── */
+  /* ?? EQUIPMENT (chart-only piece) ?? */
   function drawMostBorrowedChart() {
     if (!MOST_BORROWED.length) { document.getElementById('chartMostBorrowed').innerHTML = '<div class="mini-empty">No borrow history yet</div>'; return; }
     const rows = MOST_BORROWED.map(r => [r.equipmentName, parseInt(r.times_borrowed)]);
@@ -1882,7 +1882,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   }
 
-  /* ── DOCUMENT REQUESTS ── */
+  /* ?? DOCUMENT REQUESTS ?? */
   function renderDocTypeStatus() {
     const tbody = document.getElementById('docTypeStatusBody');
     if (!DOC_TYPE_STATUS.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="mini-empty">No document requests yet</div></td></tr>`; return; }
@@ -1905,7 +1905,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   }
 
-  /* ── USER / ACCOUNT MANAGEMENT ── */
+  /* ?? USER / ACCOUNT MANAGEMENT ?? */
   function drawRoleCountsChart() {
     if (!ROLE_COUNTS.length) { document.getElementById('chartRoleCounts').innerHTML = '<div class="mini-empty">No data available</div>'; return; }
     const data = google.visualization.arrayToDataTable([['Role','Accounts']].concat(ROLE_COUNTS));
@@ -1953,7 +1953,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     });
   });
 </script>
-<!-- ══════════ GLOBAL LIST — SET CONDITIONS MODAL ══════════ -->
+<!-- ?????????? GLOBAL LIST - SET CONDITIONS MODAL ?????????? -->
 <div class="gf-overlay" id="gfOverlay">
   <div class="gf-modal">
     <div class="gf-modal-header">
@@ -2021,7 +2021,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           <div class="gf-field">
             <label>Age Range</label>
             <div class="gf-range">
-              <input type="number" id="gfAgeMin" min="0" placeholder="Min"><span>–</span><input type="number" id="gfAgeMax" min="0" placeholder="Max">
+              <input type="number" id="gfAgeMin" min="0" placeholder="Min"><span>-</span><input type="number" id="gfAgeMax" min="0" placeholder="Max">
             </div>
           </div>
           <div class="gf-field">
@@ -2085,7 +2085,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           <div class="gf-field gf-span-2">
             <label>Monthly Income Range</label>
             <div class="gf-range">
-              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ₱"><span>–</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ₱">
+              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ?"><span>-</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ?">
             </div>
           </div>
         </div>
@@ -2156,7 +2156,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
           <div class="gf-field"><label>Is Indigenous Person</label><select id="gfIsIndigenous"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
           <div class="gf-field"><label>Is 4Ps Member</label><select id="gfIs4ps"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
           <div class="gf-field"><label>Is Scholarship Recipient</label><select id="gfIsScholarship"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
-          <div class="gf-field"><label>Is Kabataan (15–30)</label><select id="gfIsKabataan"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
+          <div class="gf-field"><label>Is Kabataan (15-30)</label><select id="gfIsKabataan"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
           <div class="gf-field">
             <label>Pension Status</label>
             <select id="gfPensionStatus">
