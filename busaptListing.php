@@ -656,7 +656,7 @@ function getAptTypeLabel(string $type): string {
 
       <div class="card-body">
         <?php if ($isNew): ?>
-          <span style="font-size:0.65rem;font-weight:800;color:var(--site-primary);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;display:block;">? New Listing</span>
+          <span style="font-size:0.65rem;font-weight:800;color:var(--site-primary);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;display:block;">₱ New Listing</span>
         <?php endif; ?>
         <h3 class="font-bold text-gray-800 text-base mb-0.5 leading-snug"><?= htmlspecialchars($l['display_name']) ?></h3>
         <p class="<?= $isApt ? 'text-green-700' : 'text-blue-600' ?> font-semibold text-sm mb-0.5"><?= htmlspecialchars($l['display_price']) ?></p>
@@ -665,7 +665,7 @@ function getAptTypeLabel(string $type): string {
           <i class="fa-solid <?= $icon ?> text-[9px]"></i>
           <?= htmlspecialchars($typeLabel) ?>
           <?php if ($isApt && !empty($l['slotsAvailable']) && $l['slotsAvailable'] > 0): ?>
-            � <?= (int)$l['slotsAvailable'] ?> slot<?= $l['slotsAvailable'] > 1 ? 's' : '' ?> open
+           <?= (int)$l['slotsAvailable'] ?> slot<?= $l['slotsAvailable'] > 1 ? 's' : '' ?> open
           <?php endif; ?>
         </span>
 
@@ -745,7 +745,7 @@ function getAptTypeLabel(string $type): string {
       </div>
     </div>
     <div class="text-center mt-6 text-green-500 text-sm">
-      � 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.
+&copy; 2026 SumEste Portal. All Rights Reserved. Made for <?= e($siteSettings['barangay_name']) ?>.      </div>
     </div>
   </div>
 </footer>

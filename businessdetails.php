@@ -56,8 +56,8 @@ if ($l) {
     $type    = $isApt ? 'apartment' : 'business';
     $status  = $isApt ? ($l['aptStatus'] ?? 'available') : ($l['bussStatus'] ?? 'open');
     $price   = $isApt
-        ? ($l['aptPrice'] ? '?' . number_format((float)$l['aptPrice'], 0) . ' / month' : 'Price on inquiry')
-        : ($l['bussPrice'] ? '?' . $l['bussPrice'] : 'See details');
+        ? ($l['aptPrice'] ? '₱' . number_format((float)$l['aptPrice'], 0) . ' / month' : 'Price on inquiry')
+        : ($l['bussPrice'] ? '₱' . $l['bussPrice'] : 'See details');
     $location  = $isApt ? ($l['aptAddress'] ?? '') : ($l['bussAddress'] ?? '');
     $contact   = $l['contact'] ?? '0999-999-9999';
     $email     = $l['email']   ?? '';
@@ -448,9 +448,9 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
     <a href="busaptListing.php" class="hover:text-[var(--site-primary)] transition font-medium flex items-center gap-1">
       <i class="fa-solid fa-arrow-left text-xs"></i> Back to Directory
     </a>
-    <span>�</span>
+    <span>•</span>
     <span class="text-gray-400"><?= esc($isApt ? 'Apartment' : 'Business') ?></span>
-    <span>�</span>
+    <span>•</span>
     <span class="text-green-700 font-semibold truncate max-w-[160px] sm:max-w-none"><?= esc($name) ?></span>
   </div>
 
@@ -558,10 +558,10 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
       <div class="w-full lg:w-2/5 min-w-0 space-y-4">
 
         <!-- Title card -->
-        <div class="p-5 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm">
+      <div class="p-5 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?= esc($isApt ? 'Apartment / Room' : 'Business') ?></span>
           <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mt-1 leading-tight" style="font-family:'Playfair Display',serif;"><?= esc($name) ?></h2>
-          <p class="text-xs text-gray-400 mt-0.5"><?= esc($isApt ? 'Apartment � ' . labelMap($aptType, $APT_TYPE) : 'Business � ' . labelMap($bussCat, $BIZ_CAT)) ?></p>
+          <p class="text-xs text-gray-400 mt-0.5"><?= esc($isApt ? 'Apartment • ' . labelMap($aptType, $APT_TYPE) : 'Business • ' . labelMap($bussCat, $BIZ_CAT)) ?></p>
           <p class="mt-3 text-xl sm:text-2xl font-bold <?= $isApt ? 'text-green-700' : 'text-blue-700' ?>"><?= esc($price) ?></p>
           <div class="mt-3 flex items-center gap-2 flex-wrap">
             <span class="<?= $statusPillClass ?>">
@@ -626,7 +626,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             </div>
             <?= $isApt ? 'Room Details' : 'Business Info' ?>
           </div>
-          <?php if ($isApt): ?>
+          <?php if ($info-row): ?>
           <div class="info-grid">
             <div class="info-row"><span class="info-label">Room Type</span><span class="info-value <?= $aptType?'':'empty' ?>"><?= $aptType ? esc(labelMap($aptType, $APT_TYPE)) : '-' ?></span></div>
             <div class="info-row"><span class="info-label">Floor / Level</span><span class="info-value <?= $aptFloor?'':'empty' ?>"><?= $aptFloor ? esc($aptFloor) : '-' ?></span></div>
@@ -703,7 +703,8 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">� 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">&copy; 2026 SumEste Portal. All Rights Reserved. Made for <?= e($siteSettings['barangay_name']) ?>.      </div>
+</div>
   </div>
 </footer>
 
