@@ -26,7 +26,7 @@ ob_start();
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 require_once __DIR__ . '/../includes/check_permissions.php';
-require_permission($conn, 'manage_residents'); // swap the key per page — see table above
+require_permission($conn, 'manage_residents'); // swap the key per page â€” see table above
 function fetchGroup($conn, $status) {
     $sql = "SELECT userID,accID,account_role_csv,firstname,lastname,middlename,suffix,
                    family_role,gender,birthday,birthplace,civil_status,citizenship,
@@ -110,7 +110,6 @@ $verificationRate = $verifDecided > 0 ? round(($verifApproved / $verifDecided) *
 
 mysqli_close($conn);
 
-// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildRow($u, $tab) {
     $fullname = trim($u['firstname'].' '.($u['middlename'] ? $u['middlename'].' ' : '').$u['lastname'].($u['suffix'] ? ' '.$u['suffix'] : ''));
     $date = 'â€”';
@@ -180,7 +179,7 @@ function buildRow($u, $tab) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>User Management â€” <?= e($siteSettings['site_title']) ?></title>
+  <title>User Management — <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

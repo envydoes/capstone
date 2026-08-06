@@ -120,7 +120,7 @@ mysqli_close($conn);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Borrowing System â€” <?= e($siteSettings['site_title']) ?></title>
+  <title>Borrowing System - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>

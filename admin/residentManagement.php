@@ -81,7 +81,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resident Management â€” <?= e($siteSettings['site_title']) ?></title>
+  <title>Resident Management - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
