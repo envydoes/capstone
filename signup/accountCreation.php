@@ -294,7 +294,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
     </div>
 
     <div class="text-center mt-5">
-      <a href="/capstone/login.php" class="text-sm text-green-700 hover:underline">
+      <a href="login.php" class="text-sm text-green-700 hover:underline">
         <i class="fa-solid fa-arrow-left mr-1"></i> Already have an account? Log in
       </a>
     </div>
