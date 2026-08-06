@@ -1,3 +1,6 @@
+# Force UTF-8 encoding for all responses
+AddDefaultCharset UTF-8
+
 RewriteEngine On
 RewriteBase /
 
