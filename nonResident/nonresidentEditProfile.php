@@ -386,7 +386,7 @@ $pendingRole = $resident['pending_role'] ?? '';
     <!-- ── HEADER ── -->
     <header class="w-full h-[68px] border-b border-green-100 flex items-center px-6 md:px-8 bg-white shadow-sm sticky top-0 z-50">
         <div class="flex items-center gap-3">
-            <a href="nonResidentLanding.php" class="flex items-center gap-3">
+            <a href="nonresidentLanding.php" class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center shadow overflow-hidden">
                     <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
                 </div>
@@ -397,7 +397,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             </a>
         </div>
         <nav class="ml-auto hidden md:flex items-center gap-4 text-gray-600 text-sm font-medium">
-            <a href="nonResidentLanding.php#announcements" class="nav-link">Announcements</a>
+            <a href="nonresidentLanding.php#announcements" class="nav-link">Announcements</a>
             <a href="../busaptListing.php?type=business" class="nav-link">Business</a>
             <a href="../busaptListing.php?type=apartment" class="nav-link">Apartment</a>
             <?php $roleLower = strtolower($role); ?>
@@ -427,7 +427,7 @@ $pendingRole = $resident['pending_role'] ?? '';
         </div>
         <div class="flex-1 overflow-y-auto py-4">
             <nav class="flex flex-col gap-2 px-4">
-                <a href="nonResidentLanding.php#announcements" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-bullhorn w-4 text-green-500"></i>Announcements</a>
+                <a href="nonresidentLanding.php#announcements" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-bullhorn w-4 text-green-500"></i>Announcements</a>
                 <a href="../busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-store w-4 text-green-500"></i>Business</a>
                 <a href="../busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition"><i class="fa-solid fa-building w-4 text-green-500"></i>Apartment</a>
                 <?php if (str_contains($roleLower, 'non-resident,business/apartment owner') || str_contains($roleLower, 'business') && !str_contains($roleLower, 'resident')): ?>
@@ -484,7 +484,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                     <p class="text-sm text-slate-500 mt-1">Update your information and manage your role</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="nonResidentLanding.php" class="inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">
+                    <a href="nonresidentLanding.php" class="inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">
                         <i class="fas fa-arrow-left"></i> Back to Portal
                     </a>
                     <a href="nonresidentProfile.php" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">

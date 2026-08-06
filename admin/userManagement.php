@@ -12,7 +12,7 @@ if ($role !== 'admin') {
             header('Location: ../resident/residentLanding.php'); break;
         case 'non-resident':
         case 'non-resident,business/apartment owner':
-            header('Location: ../nonresident/nonresidentLanding.php'); break;
+            header('Location: ../nonResident/nonresidentLanding.php'); break;
         default:
             header('Location: ../landing.php');
     }

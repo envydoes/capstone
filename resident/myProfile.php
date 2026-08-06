@@ -16,7 +16,7 @@ if (!str_contains($role, 'resident') || str_contains($role, 'non-resident') || s
             header('Location: ../admin/adminLanding.php');
             break;
         case 'non-resident':
-            header('Location: ../nonresident/nonresidentLanding.php');
+            header('Location: ../nonResident/nonresidentLanding.php');
             break;
         default:
             header('Location: ../landing.php');

@@ -115,7 +115,7 @@ function get_post_login_redirect(mysqli $conn, string $accID, string $accountRol
             return 'resident/residentLanding.php';
         case 'non-resident':
         case 'non-resident,business/apartment owner':
-            return 'nonresident/nonresidentLanding.php';
+            return 'nonResident/nonresidentLanding.php';
         default:
             return 'landing.php';
     }
@@ -168,7 +168,7 @@ function require_permission(mysqli $conn, string $key): void
             break;
         case 'non-resident':
         case 'non-resident,business/apartment owner':
-            header('Location: ../nonresident/nonresidentLanding.php');
+            header('Location: ../nonResident/nonresidentLanding.php');
             break;
         default:
             header('Location: ../landing.php');

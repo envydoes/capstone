@@ -10,7 +10,7 @@ $myPerms = get_my_permissions($conn);
 if ($role !== 'admin' && empty($myPerms)) {
     switch ($role) {
         case 'resident': case 'resident,business/apartment owner': header('Location: ../resident/residentLanding.php'); break;
-        case 'non-resident': case 'non-resident,business/apartment owner': header('Location: ../nonresident/nonresidentLanding.php'); break;
+        case 'non-resident': case 'non-resident,business/apartment owner': header('Location: ../nonResident/nonresidentLanding.php'); break;
         default: header('Location: ../landing.php');
     }
     exit;

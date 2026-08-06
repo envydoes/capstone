@@ -31,7 +31,7 @@ if ($role !== 'admin' && empty($myPerms)) {
             break;
         case 'non-resident':
         case 'non-resident,business/apartment owner':
-            header('Location: ../nonresident/nonresidentLanding.php'); 
+            header('Location: ../nonResident/nonresidentLanding.php'); 
             break;
         default:
             header('Location: ../landing.php');

@@ -487,7 +487,7 @@ function getAptTypeLabel(string $type): string {
       if ($showMyPanel) {
           $annUrl = 'resident/residentLanding.php#announcements';
       } elseif ($logged_in) {
-          $annUrl = 'nonResident/nonResidentLanding.php#announcements';
+          $annUrl = 'nonResident/nonresidentLanding.php#announcements';
       } else {
           $annUrl = 'landing.php#announcements';
       }
