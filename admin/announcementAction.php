@@ -11,9 +11,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
-$conn = mysqli_connect($host, $dbuser, $password, $database);
-if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB error']); exit; }
+require_once __DIR__ . '/../config/db_connection.php';
 
 require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission_ajax($conn, 'manage_announcements');

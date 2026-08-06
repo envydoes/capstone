@@ -22,7 +22,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // Management module Ã¢â‚¬â€ was previously hardcoded to account_role === 'admin'
 // only, which blocked any staff account granted manage_residents from
 // exporting, even though they can otherwise fully manage residents.
-$conn = new mysqli('o7jpqmin0zgconui4xtnfju6', 'root', '', 'sumeste_db');
+require_once __DIR__ . '/../config/db_connection.php';
 $conn->set_charset('utf8mb4');
 
 $role = $_SESSION['account_role'] ?? '';

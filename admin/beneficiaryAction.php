@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$conn = mysqli_connect("o7jpqmin0zgconui4xtnfju6", "root", "''", "sumeste_db");
+require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'DB connection failed']);
     exit;

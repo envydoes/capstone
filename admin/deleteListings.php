@@ -2,9 +2,7 @@
 session_start();
 if (!isset($_SESSION['user_id'])) { http_response_code(403); echo json_encode(['success'=>false,'message'=>'Unauthorized']); exit; }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
-$conn = mysqli_connect($host, $dbuser, $password, $database);
-if (!$conn) { echo json_encode(['success'=>false,'message'=>'DB connection failed']); exit; }
+require_once __DIR__ . '/../config/db_connection.php';
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
 // account granted manage_listings from deleting listings â€” even though

@@ -7,8 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $user = "root"; $password = "''"; $database = "sumeste_db";
-$conn = mysqli_connect($host, $user, $password, $database);
+require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) { echo json_encode(['success' => false, 'message' => 'DB connection failed']); exit; }
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff

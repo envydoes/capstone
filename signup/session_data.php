@@ -1,16 +1,6 @@
 <?php
 session_start();
-$host = "o7jpqmin0zgconui4xtnfju6";
-$dbUser = "root";
-$dbPassword = "''";
-$database = "sumeste_db";
-
-$conn = mysqli_connect($host, $dbUser, $dbPassword, $database);
-if (!$conn) {
-    session_unset();
-    session_destroy();
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once __DIR__ . '/../config/db_connection.php';
 
 // Retrieve account session data
 $email = $_SESSION['email'] ?? '';

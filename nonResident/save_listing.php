@@ -8,15 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Database connection
-$host     = "o7jpqmin0zgconui4xtnfju6";
-$dbuser   = "root";
-$password = "''";
-$database = "sumeste_db";
-
-$conn = mysqli_connect($host, $dbuser, $password, $database);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once __DIR__ . '/../config/db_connection.php';
 
 // Verify user is logged in and has an account ID
 $userId = $_SESSION['acc_id'] ?? '';

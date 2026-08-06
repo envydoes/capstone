@@ -2,15 +2,7 @@
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // db_setup.php  â€” run once to create the table
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$host     = "o7jpqmin0zgconui4xtnfju6";
-$dbuser   = "root";
-$password = "''";
-$database = "sumeste_db";
-
-$conn = mysqli_connect($host, $dbuser, $password, $database);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once __DIR__ . '/config/db_connection.php';
 
 // Drop old table so script is repeatable during development
 mysqli_query($conn, "DROP TABLE IF EXISTS tbl_busaptlisting");

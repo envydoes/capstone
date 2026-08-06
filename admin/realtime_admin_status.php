@@ -10,12 +10,8 @@ if (!isset($_SESSION['user_id']) || (($_SESSION['account_role'] ?? '') !== 'admi
     exit;
 }
 
-$host = 'o7jpqmin0zgconui4xtnfju6';
-$user = 'root';
-$password = '';
-$database = 'sumeste_db';
 
-$conn = mysqli_connect($host, $user, $password, $database);
+require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Database connection failed']);

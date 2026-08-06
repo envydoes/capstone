@@ -26,12 +26,8 @@ if (empty($_SESSION['document_form']) || !is_array($_SESSION['document_form'])) 
 }
 
 // ── Database connection ──────────────────────────────────────────────────────
-$host     = 'o7jpqmin0zgconui4xtnfju6';
-$dbUser   = 'root';
-$dbPass   = '';
-$database = 'sumeste_db';
 
-$conn = mysqli_connect($host, $dbUser, $dbPass, $database);
+require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
     // Clean up any uploaded files on DB failure
     cleanUpFiles($_SESSION['document_form']['uploaded_files'] ?? []);

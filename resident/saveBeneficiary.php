@@ -113,12 +113,8 @@ if (empty($_SESSION['beneficiary_form']) || !is_array($_SESSION['beneficiary_for
 }
 
 // ── Database connection ──────────────────────────────────────────────────────
-$host     = 'o7jpqmin0zgconui4xtnfju6';
-$dbUser   = 'root';
-$dbPass   = '';
-$database = 'sumeste_db';
 
-$conn = mysqli_connect($host, $dbUser, $dbPass, $database);
+require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
     $_SESSION['beneficiary_save_status'] = 'error';
     $_SESSION['beneficiary_save_msg']    = 'DB connection failed: ' . mysqli_connect_error();

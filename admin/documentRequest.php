@@ -3,9 +3,7 @@ session_start();
 if (!isset($_SESSION['user_id'])) { header('Location: ../login.php'); exit; }
 $role = $_SESSION['account_role'] ?? '';
 require_once __DIR__ . '/../includes/check_permissions.php';
-$host="o7jpqmin0zgconui4xtnfju6"; $user="root"; $password="''"; $database="sumeste_db";
-$conn = mysqli_connect($host,$user,$password,$database);
-if (!$conn) { session_unset(); session_destroy(); die("Connection failed: ".mysqli_connect_error()); }
+require_once __DIR__ . '/../config/db_connection.php';
 $myPerms = get_my_permissions($conn);
 if ($role !== 'admin' && empty($myPerms)) {
     switch ($role) {

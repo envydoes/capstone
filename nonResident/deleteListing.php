@@ -6,16 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$host     = "o7jpqmin0zgconui4xtnfju6";
-$dbuser   = "root";
-$password = "''";
-$database = "sumeste_db";
-
-$conn = mysqli_connect($host, $dbuser, $password, $database);
-if (!$conn) {
-    header('Location: manageList.php?error=1');
-    exit;
-}
+require_once __DIR__ . '/../config/db_connection.php';
 
 $accId     = $_SESSION['acc_id'] ?? '';
 $listingId = intval($_GET['id']  ?? 0);

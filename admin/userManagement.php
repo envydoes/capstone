@@ -19,9 +19,7 @@ if ($role !== 'admin') {
     exit;
 }
 
-$host = "o7jpqmin0zgconui4xtnfju6"; $user = "root"; $password = "''"; $database = "sumeste_db";
-$conn = mysqli_connect($host, $user, $password, $database);
-if (!$conn) { session_unset(); session_destroy(); die("Connection failed: " . mysqli_connect_error()); }
+require_once __DIR__ . '/../config/db_connection.php';
 
 ob_start();
 

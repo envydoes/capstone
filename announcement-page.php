@@ -1,7 +1,5 @@
 <?php
-  $host = "o7jpqmin0zgconui4xtnfju6"; $dbuser = "root"; $password = "''"; $database = "sumeste_db";
-  $conn = mysqli_connect($host, $dbuser, $password, $database);
-  if (!$conn) { die("Connection failed: " . mysqli_connect_error()); }
+  require_once __DIR__ . '/config/db_connection.php';
   session_start();
 
   require_once __DIR__ . '/includes/site_config.php';
