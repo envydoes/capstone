@@ -62,9 +62,9 @@ if ($listingsResult) {
         // Category label
         $aptTypeLabels = ['bed-spacer' => 'Bed Spacer', 'studio' => 'Studio', 'solo-room' => 'Solo Room',
             '1br' => '1-Bedroom', '2br' => '2-Bedroom', 'whole-unit' => 'Whole Unit'];
-        $bizCatLabels = ['food' => 'Food', 'water' => 'Water Station', 'sari-sari' => 'Sari-Sari',
+      $bizCatLabels = ['food' => 'Food', 'water' => 'Water Station', 'sari-sari' => 'Sari-Sari',
             'salon' => 'Salon', 'laundry' => 'Laundry', 'pharmacy' => 'Pharmacy',
-            'printing' => 'Printing', 'bakery' => 'Bakery/Caf�', 'hardware' => 'Hardware', 'other' => 'Other'];
+            'printing' => 'Printing', 'bakery' => 'Bakery/Café', 'hardware' => 'Hardware', 'other' => 'Other'];
         $row['category_label'] = $isApt
             ? ($aptTypeLabels[$row['aptType']] ?? 'Apartment')
             : ($bizCatLabels[$row['bussCat']] ?? 'Business');
@@ -1017,14 +1017,12 @@ const APT_TYPE_LABELS = {'bed-spacer':'Bed Spacer','studio':'Studio Type','solo-
 const BATH_LABELS = {'private':'Private Bathroom','shared':'Shared Bathroom'};
 const APT_STATUS_LABELS = {'available':'Available','occupied':'Fully Occupied','inquire':'Inquire First'};
 const BIZ_STATUS_LABELS = {'open':'Open / Operating','new':'Newly Opened','temp-closed':'Temporarily Closed','for-rent':'Space for Rent'};
-const BIZ_CAT_LABELS = {'food':'Food & Dining','water':'Water Station','sari-sari':'Sari-Sari Store','salon':'Salon / Barber','laundry':'Laundry Shop','pharmacy':'Pharmacy','printing':'Printing / Computer Shop','bakery':'Bakery / Caf�','hardware':'Hardware','other':'Other'};
-const INC_LABELS = {'electric':'Electricity','water':'Water','wifi':'WiFi','cable':'Cable TV'};
+const BIZ_CAT_LABELS = {'food':'Food & Dining','water':'Water Station','sari-sari':'Sari-Sari Store','salon':'Salon / Barber','laundry':'Laundry Shop','pharmacy':'Pharmacy','printing':'Printing / Computer Shop','bakery':'Bakery / Café','hardware':'Hardware','other':'Other'};const INC_LABELS = {'electric':'Electricity','water':'Water','wifi':'WiFi','cable':'Cable TV'};
 const AMN_LABELS = {'aircon':'Aircon','fan':'Electric Fan','parking':'Parking','laundry':'Laundry Area','cctv':'CCTV','security':'Security','kitchen':'Shared Kitchen','gate':'Gated Compound'};
 const RULES_LABELS = {'no-smoking':'No Smoking','no-pets':'No Pets','no-visitors':'No Overnight Visitors','curfew':'Curfew Policy','no-cooking':'No Cooking Inside'};
 const FEAT_LABELS = {'delivery':'Delivery','pickup':'Pick-up','dine-in':'Dine-in','parking':'Parking','gcash':'GCash','maya':'Maya','wifi':'Free WiFi','aircon':'Aircon'};
 const DAYS_LABELS = {'mon':'Mon','tue':'Tue','wed':'Wed','thu':'Thu','fri':'Fri','sat':'Sat','sun':'Sun','holiday':'Holidays'};
-const YEARS_LABELS = {'new':'Just opened','1':'1 year','2-5':'2�?"5 years','5-10':'5-10 years','10+':'10+ years'};
-
+const YEARS_LABELS = {'new':'Just opened','1':'1 year','2-5':'2–5 years','5-10':'5-10 years','10+':'10+ years'};s
 function parseArr(v){if(!v)return[];if(Array.isArray(v))return v;try{const p=JSON.parse(v);return Array.isArray(p)?p:[];}catch(e){return[];}}
 
 function tagList(arr, labels) {
@@ -1034,8 +1032,7 @@ function tagList(arr, labels) {
 
 function secRow(label, val) {
   const v = val && String(val).trim() ? String(val) : null;
-  return `<div><p class="sec-label">${escHtml(label)}</p><p class="sec-value">${v ? escHtml(v) : '<span style="color:#d1d5db;">�?"</span>'}</p></div>`;
-}
+return `<div><p class="sec-label">${escHtml(label)}</p><p class="sec-value">${v ? escHtml(v) : '<span style="color:#d1d5db;">—</span>'}</p></div>`;}
 
 let currentDetailIdx = 0;
 let detailPhotoIdx = 0;
@@ -1134,8 +1131,7 @@ function renderDetailContent(l) {
       <p style="font-size:0.78rem;color:#6b7280;margin:0;">Property Owner</p>
     </div>
     <div style="margin-left:auto;text-align:right;">
-      <p style="font-size:0.88rem;font-weight:700;color:#374151;">${escHtml(l.owner_phone || l.contact || '�?"')}</p>
-      <p style="font-size:0.78rem;color:#15803d;">${escHtml(l.owner_email || l.email || '')}</p>
+<p style="font-size:0.88rem;font-weight:700;color:#374151;">${escHtml(l.owner_phone || l.contact || '—')}</p>      <p style="font-size:0.78rem;color:#15803d;">${escHtml(l.owner_email || l.email || '')}</p>
     </div>
   </div>`;
 
@@ -1158,8 +1154,8 @@ function renderDetailContent(l) {
     html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px;">
       ${secRow('Listing Title', l.aptTitle)}
       ${secRow('Room Type', APT_TYPE_LABELS[l.aptType] || l.aptType)}
-      ${secRow('Availability', statusLabel)}
-      ${secRow('Monthly Rent', l.aptPrice ? '? ' + Number(l.aptPrice).toLocaleString() : '')}
+      ${secRow('Availability', statusLabel)}  
+      ${secRow('Monthly Rent', l.aptPrice ? '₱ ' + Number(l.aptPrice).toLocaleString() : '')}
       ${secRow('Floor / Level', l.aptFloor)}
       ${secRow('Rooms', l.aptRooms)}
       ${secRow('Max Occupants', l.aptOccupants)}
@@ -1172,8 +1168,8 @@ function renderDetailContent(l) {
     html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px;">
       ${secRow('Category', BIZ_CAT_LABELS[l.bussCat] || l.bussCat)}
       ${secRow('Status', statusLabel)}
-${secRow('Starting Price', l.bussPrice ? '? ' + l.bussPrice : '')}      ${secRow('Years in Business', YEARS_LABELS[l.bussYears] || l.bussYears)}
-      ${secRow('Opens', l.bussOpen || '')}
+${secRow('Starting Price', l.bussPrice ? '₱ ' + l.bussPrice : '')}      ${secRow('Years in Business', YEARS_LABELS[l.bussYears] || l.bussYears)}      
+${secRow('Opens', l.bussOpen || '')}
       ${secRow('Closes', l.bussClose || '')}
     </div>
     <div style="margin-bottom:12px;"><p class="sec-label" style="margin-bottom:6px;">Days Open</p><div style="display:flex;flex-wrap:wrap;gap:6px;">${tagList(days, DAYS_LABELS)}</div></div>
