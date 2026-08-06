@@ -1034,7 +1034,7 @@ function openModal(row){
   document.getElementById('mHealth').value=u.health_conditions||'';
   document.getElementById('mEmployment').value=u.employment_status||'';
   document.getElementById('mJobTitle').value=u.job_title||'';
-  document.getElementById('mIncome').value=u.monthly_income?'â‚± '+parseFloat(u.monthly_income).toLocaleString('en-PH',{minimumFractionDigits:2}):'';
+  document.getElementById('mIncome').value=u.monthly_income?'\u20B1 '+parseFloat(u.monthly_income).toLocaleString('en-PH',{minimumFractionDigits:2}):'';
   document.getElementById('mYearsResident').value=u.years_resident??'';
   document.getElementById('mResidentBirth').value=parseInt(u.resident_birth)?'Yes':'No';
   document.getElementById('mVoterID').value=u.voter_id||'';
