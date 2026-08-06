@@ -2,7 +2,7 @@
 /**
  * beneficiaryAction.php
  * Approve or reject a beneficiary application.
- * prio_score is already stored in DB �?" no recalculation needed.
+ * prio_score is already stored in DB — no recalculation needed.
  */
 session_start();
 header('Content-Type: application/json');

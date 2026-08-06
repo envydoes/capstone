@@ -32,7 +32,7 @@ if ($role !== 'admin' && empty($myPerms)) {
 }
 require_permission($conn, 'manage_borrowing');
 
-// �"?�"? Fetch Equipment �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ─── Fetch Equipment ───
 $equipmentSQL = "SELECT equipmentId AS equipmentID, equipmentName AS equipment_name, equipmentStock AS quantity_in_storage, equipmentImage AS image_path, description AS description, createdAt AS created_at, updatedAt AS updated_at FROM tbl_equipmentlist ORDER BY createdAt DESC";
 $equipmentResult = mysqli_query($conn, $equipmentSQL);
 $equipmentList = [];
@@ -42,7 +42,7 @@ $totalEquipment = count($equipmentList);
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
-// �"?�"? Fetch Borrow Requests �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ─── Fetch Borrow Requests ───
 $borrowSQL = "
     SELECT br.id AS requestID, br.userId AS user_id, br.equipmentId AS equipment_id,
            br.quantityRequested AS qty_requested, br.status,
@@ -62,7 +62,7 @@ $totalBorrow = count($borrowList);
 
 $today = date('Y-m-d');
 
-// �"?�"? Stat cards: Borrowing Overview �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ─── Stat cards: Borrowing Overview ───
 
 // Borrow Requests This Month
 $borrowThisMonth = (int) mysqli_fetch_assoc(mysqli_query($conn, "
@@ -86,7 +86,7 @@ $avgBorrowHours = ($avgDurRow && $avgDurRow['avg_hours'] !== null)
     : null;
 
 // Return Rate: % returned on time vs late.
-// Needs a due date that survives the actual return �?" i.e. a separate
+// Needs a due date that survives the actual return — i.e. a separate
 // `dueDate` column set once and never overwritten, unlike `returnDate`
 // which gets reused for the actual return timestamp. Reads as N/A until
 // that column exists. See add_due_date.sql.
@@ -135,7 +135,7 @@ mysqli_close($conn);
   --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
   --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
 }      
-    /* �"?�"? Sidebar �"?�"? */
+    /* ─── Sidebar ─── */
     .sidebar { width: 260px; flex-shrink: 0; background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 300; overflow: hidden; transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1); }
     .sidebar.collapsed { width: 0; }
     .sidebar:not(.collapsed) { overflow-y: auto; }
@@ -161,16 +161,16 @@ mysqli_close($conn);
     .sidebar-bottom-links { padding: 0 16px 8px; }
     .sidebar-bottom-links .side-link { display: block; width: 100%; font-size: 0.84rem; padding: 8px 8px; border-radius: 8px; transition: color 0.15s, background 0.15s; text-decoration: none; white-space: nowrap; border: none; background: none; text-align: left; cursor: pointer; }
 
-    /* �"?�"? Layout �"?�"? */
+    /* ─── Layout ─── */
     .main-wrapper { display: flex; min-height: 100vh; }
     .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; width: calc(100% - 260px); margin-left: 260px; transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1); overflow-x: hidden; }
     .main-content.sidebar-collapsed { width: 100%; margin-left: 0; }
 
-    /* �"?�"? Topbar �"?�"? */
+    /* ─── Topbar ─── */
     .topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; }
     .topbar-title-block { transition: margin-left 0.25s ease; }
 
-    /* �"?�"? Stat cards �"?�"? */
+    /* ─── Stat cards ─── */
     .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,0.05); display:flex; flex-direction:column; gap:10px; transition:transform .2s, box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(21,128,61,.1); }
     .stat-label { font-size:.82rem; font-weight:600; color:#6b7280; }
@@ -183,7 +183,7 @@ mysqli_close($conn);
     .stat-trend-down { color:#dc2626; }
     .stat-trend-flat { color:#9ca3af; }
 
-    /* �"?�"? Table �"?�"? */
+    /* ─── Table ─── */
     .tbl-wrap { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(21,128,61,0.05); overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; min-width: 520px; }
     thead th { background: #f9fafb; padding: 11px 16px; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
@@ -268,7 +268,7 @@ mysqli_close($conn);
     .page-btn.active { background: var(--site-primary); border-color: var(--site-primary); color: #fff; }
     .page-btn:disabled { opacity: 0.35; cursor: default; }
 
-    /* �.��.� MODAL �.��.� */
+    /* ═══ MODAL ═══ */
     .modal-overlay { position: fixed; inset: 0; z-index: 800; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 640px; box-shadow: 0 24px 60px rgba(5,46,22,0.22); transform: translateY(16px); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); margin: auto; display: flex; flex-direction: column; }
@@ -451,7 +451,7 @@ mysqli_close($conn);
     </div>
   </aside>
 
-  <!-- �.��.� MAIN �.��.� -->
+  <!-- ═══ MAIN ═══ -->
   <main class="main-content" id="mainContent">
     <header class="topbar">
       <div class="topbar-title-block">
@@ -477,7 +477,7 @@ mysqli_close($conn);
           <p class="stat-label">Average Borrow Duration</p>
           <?php if ($avgBorrowHours !== null): ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-amber-500"></i><span class="stat-num"><?= $avgBorrowHours < 48 ? number_format($avgBorrowHours, 1) . 'h' : number_format($avgBorrowHours / 24, 1) . 'd' ?></span></div>
-            <span class="stat-sub">Requested �?' Returned</span>
+            <span class="stat-sub">Requested → Returned</span>
           <?php else: ?>
             <div class="stat-row"><i class="fa-solid fa-hourglass-half stat-ico text-gray-300"></i><span class="stat-num text-gray-300">N/A</span></div>
             <span class="stat-sub">No returned items yet</span>
@@ -606,7 +606,7 @@ mysqli_close($conn);
                 $chipLabel = ucfirst($status);
 
                 $retDateRaw = $b['return_date'] ?? '';
-                $retDateDisplay = '�?"';
+                $retDateDisplay = '—';
                 $retDateClass   = 'return-date-neutral';
                 $retDateIcon    = '';
                 if (!empty($retDateRaw)) {
@@ -644,13 +644,13 @@ mysqli_close($conn);
               >
                 <td><input type="checkbox" class="row-check-borrow rounded" onchange="updateBulkBar()"></td>
                 <td class="font-semibold"><?= htmlspecialchars($b['equipment_name']) ?> <span class="text-gray-400 font-normal">(<?= (int)($b['qty_requested']??0) ?> pcs)</span></td>
-                <td><?= htmlspecialchars($b['borrower_name'] ?? '�?"') ?></td>
+                <td><?= htmlspecialchars($b['borrower_name'] ?? '—') ?></td>
                 <td><span class="chip <?= $chipCls ?>"><?= $chipLabel ?></span></td>
                 <td class="col-hide-sm">
-                  <?php if ($retDateDisplay !== '�?"'): ?>
+                  <?php if ($retDateDisplay !== '—'): ?>
                     <span class="<?= $retDateClass ?>"><?= $retDateIcon ?><?= htmlspecialchars($retDateDisplay) ?></span>
                   <?php else: ?>
-                    <span class="return-date-neutral">�?"</span>
+                    <span class="return-date-neutral">—</span>
                   <?php endif; ?>
                 </td>
                 <td>
@@ -661,7 +661,7 @@ mysqli_close($conn);
                     <?php elseif ($isBorrowed): ?>
                       <button class="btn-return" onclick="confirmBorrowAction(<?= (int)$b['requestID'] ?>,'return',this.closest('tr'))"><i class="fa-solid fa-rotate-left text-[10px]"></i> Mark Returned</button>
                     <?php else: ?>
-                      <span class="text-xs text-gray-400 italic">�?"</span>
+                      <span class="text-xs text-gray-400 italic">—</span>
                     <?php endif; ?>
                   </div>
                 </td>
@@ -731,7 +731,7 @@ mysqli_close($conn);
   </main>
 </div>
 
-<!-- �.��.� EQUIPMENT MODAL �.��.� -->
+<!-- ═══ EQUIPMENT MODAL ═══ -->
 <div class="modal-overlay" id="equipModalOverlay" onclick="closeEquipModalOnOverlay(event)">
   <div class="modal" id="equipModal">
     <div class="modal-header">
@@ -811,7 +811,7 @@ mysqli_close($conn);
           </div>
           <div>
             <label class="field-label">Description <span style="font-size:0.7rem;color:#9ca3af;font-weight:400;text-transform:none;">· optional</span></label>
-            <textarea id="equipDesc" class="field-input" rows="3" placeholder="Condition, notes, usage instructions�?�" oninput="checkEquipChanges()"></textarea>
+            <textarea id="equipDesc" class="field-input" rows="3" placeholder="Condition, notes, usage instructions…" oninput="checkEquipChanges()"></textarea>
           </div>
         </div>
       </div>
@@ -844,14 +844,14 @@ mysqli_close($conn);
   </div>
 </div>
 
-<!-- �.��.� LIGHTBOX �.��.� -->
+<!-- ═══ LIGHTBOX ═══ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
   <img id="lightboxImg" src="" alt="">
   <span class="lightbox-caption" id="lightboxCaption"></span>
 </div>
 
-<!-- �.��.� CONFIRM DIALOG �.��.� -->
+<!-- ═══ CONFIRM DIALOG ═══ -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body">
@@ -871,7 +871,7 @@ mysqli_close($conn);
 </div>
 
 <script>
-/* �.��.� SIDEBAR �.��.� */
+/* ═══ SIDEBAR ═══ */
 const sidebar=document.getElementById('sidebar'),mainContent=document.getElementById('mainContent'),expandBtn=document.getElementById('expandBtn'),collapseBtn=document.getElementById('collapseBtn'),backdrop=document.getElementById('sidebarBackdrop');
 const isMobile=()=>window.innerWidth<=1024;
 let collapsed=localStorage.getItem('sidebarCollapsed')==='true';
@@ -906,7 +906,7 @@ function hidePageLoader(){
 }
 function triggerRefresh(){showPageLoader('Refreshing borrowing data...');setTimeout(()=>location.reload(),180);}
 
-/* �.��.� TABS �.��.� */
+/* ═══ TABS ═══ */
 let currentTab='borrow';
 function switchTab(tab){
   currentTab=tab;
@@ -951,7 +951,7 @@ function updateStatusPills(){
   });
 }
 
-/* �.��.� SEARCH / FILTER �.��.� */
+/* ═══ SEARCH / FILTER ═══ */
 function toggleFilter(){document.getElementById('filterPanel').classList.toggle('hidden');}
 let searchTimeout;
 let currentFilteredRows=[];
@@ -1007,7 +1007,7 @@ function handleSearch(){
   }, 400);
 }
 
-/* �.��.� STOCK MAP �.��.� */
+/* ═══ STOCK MAP ═══ */
 const stockMap={};
 document.querySelectorAll('#equipmentTable tbody tr[data-id]').forEach(r=>{
   const id=parseInt(r.dataset.id);
@@ -1128,7 +1128,7 @@ function updateEquipRowStatus(equipId){
   if(qtyText) qtyText.textContent=`${stock} pcs in storage`;
 }
 
-/* �.��.� CHECKBOXES �.��.� */
+/* ═══ CHECKBOXES ═══ */
 function toggleAllBorrow(cb){
   const visible=Array.from(document.querySelectorAll('.row-check-borrow'))
     .filter(c=>c.closest('tr').style.display!=='none');
@@ -1169,7 +1169,7 @@ function updateBulkBar(){
   const borrowedRows =checked.filter(r=>r.dataset.status==='borrowed');
   const nonActionable=checked.filter(r=>!['pending','borrowed'].includes(r.dataset.status));
 
-  /* �"?�"? Stock validation for bulk approve �"?�"?
+  /* ─── Stock validation for bulk approve ───
      Group pending checked rows by equipmentId, sort oldest-first,
      greedily allocate stock. Any row that can't be fulfilled disables Approve. */
   let canApproveAll=pendingRows.length>0;
@@ -1224,7 +1224,7 @@ function updateBulkBar(){
   countEl.textContent=`${checked.length} selected${parts.length?' ('+parts.join(', ')+')':''}`;
 }
 
-/* �.��.� PAGINATION �.��.� */
+/* ═══ PAGINATION ═══ */
 const ROWS=10;
 let currentPage=1;
 
@@ -1282,7 +1282,7 @@ function renderPagination(){
   handleSearch();
 })();
 
-/* �.��.� ALERT �.��.� */
+/* ═══ ALERT ═══ */
 let alertT;
 function showToast(type,title,desc){
   const icons={success:'fa-circle-check',error:'fa-circle-xmark',warning:'fa-triangle-exclamation'};
@@ -1297,7 +1297,7 @@ function showToast(type,title,desc){
 }
 function dismissAlert(){document.getElementById('alertBanner').classList.remove('show');}
 
-/* �.��.� CONFIRM DIALOG �.��.� */
+/* ═══ CONFIRM DIALOG ═══ */
 let dialogConfirmFn=null;
 function showDialog({type='approve',title,desc,badge,confirmLabel,confirmClass,iconClass,onConfirm}){
   document.getElementById('dialogTitle').textContent=title||'Confirm';
@@ -1320,7 +1320,7 @@ function showDialog({type='approve',title,desc,badge,confirmLabel,confirmClass,i
 function closeDialog(){document.getElementById('dialogOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('dialogOverlay').addEventListener('click',function(e){if(e.target===this)closeDialog();});
 
-/* �.��.� LIGHTBOX �.��.� */
+/* ═══ LIGHTBOX ═══ */
 function openLightbox(src,caption){
   if(!src)return;
   document.getElementById('lightboxImg').src=src;
@@ -1330,7 +1330,7 @@ function openLightbox(src,caption){
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
 
-/* �.��.� SINGLE BORROW ACTIONS �.��.� */
+/* ═══ SINGLE BORROW ACTIONS ═══ */
 function confirmBorrowAction(requestID,action,row){
   const cfg={
     approve:{type:'approve',title:'Approve Borrow Request',desc:'The item will be marked as borrowed and inventory decremented.',confirmLabel:'Yes, Approve',iconClass:'fa-check',confirmClass:'approve'},
@@ -1387,7 +1387,7 @@ function executeBorrowAction(requestID,action,row){
             if(action==='return') row.classList.add('opacity-60');
           }
           const ac=row.querySelector('td:last-child div');
-          if(ac) ac.innerHTML='<span class="text-xs text-gray-400 italic">�?"</span>';
+          if(ac) ac.innerHTML='<span class="text-xs text-gray-400 italic">—</span>';
 
           const eid=parseInt(row.dataset.equipId);
           const qty=parseInt(row.dataset.qty??1);
@@ -1438,7 +1438,7 @@ function executeBorrowAction(requestID,action,row){
     .catch(()=>{ showToast('error','Network Error','Could not connect to server.'); });
 }
 
-/* �.��.� BULK ACTIONS �.��.� */
+/* ═══ BULK ACTIONS ═══ */
 function executeBulkAction(action){
   const checked=getCheckedBorrowRows();
   const targetRows=checked.filter(r=>{
@@ -1550,7 +1550,7 @@ function _runBulkRequests(rows,action){
         }
 
         const ac=row.querySelector('td:last-child div');
-        if(ac) ac.innerHTML='<span class="text-xs text-gray-400 italic">�?"</span>';
+        if(ac) ac.innerHTML='<span class="text-xs text-gray-400 italic">—</span>';
 
         const eid=parseInt(row.dataset.equipId);
         const qty=parseInt(row.dataset.qty??1);
@@ -1616,7 +1616,7 @@ function _runBulkRequests(rows,action){
   });
 }
 
-/* �.��.� EQUIPMENT MODAL �.��.� */
+/* ═══ EQUIPMENT MODAL ═══ */
 let equipOriginal={};
 let equipNewFile=null;
 let equipImgRemoved=false;
@@ -1755,7 +1755,7 @@ function openEditModal(row){
   const qty=parseInt(e.quantity_in_storage)||0;
   document.getElementById('equipStatusDisplay').value=qty>0?'Available':'Unavailable';
   document.getElementById('equipIDDisplay').value='#'+(e.equipmentID||'');
-  let created='�?"';
+  let created='—';
   if(e.created_at){const d=new Date(e.created_at);if(!isNaN(d))created=d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}
   document.getElementById('equipCreatedAt').value=created;
   document.getElementById('equipMetaCard').style.display='';
@@ -1786,7 +1786,7 @@ function saveEquipment(){
   if(!name){showToast('error','Validation Error','Item name is required.');document.getElementById('equipName').focus();document.getElementById('equipName').classList.add('changed');return;}
   const btn=document.getElementById('equipSaveBtn');
   btn.disabled=true;
-  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin text-sm"></i> Saving�?�';
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin text-sm"></i> Saving…';
   const fd=new FormData();
   fd.append('action',id?'update':'add');
   if(id)fd.append('equipmentID',id);
