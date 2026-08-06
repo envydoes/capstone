@@ -428,15 +428,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
                             <h4 class="font-bold text-gray-900 mb-3">Password Requirements:</h4>
                             <ul class="space-y-2 text-gray-900">
                                 <li class="flex items-center">
-                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
+                                    <span class="mr-3">&bull;</span>
                                     <span>Minimum 8 characters</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
+                                    <span class="mr-3">&bull;</span>
                                     <span>At least one uppercase letter</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <span class="mr-3">Ã¢â‚¬Â¢</span>
+                                    <span class="mr-3">&bull;</span>
                                     <span>At least one number</span>
                                 </li>
                             </ul>
