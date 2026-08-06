@@ -9,7 +9,7 @@
 session_start();
 require_once __DIR__ . '/../config/db_connection.php';
 
-/* ?? Auth guard ?? */
+/* ─── Auth guard ─── */
 if (!isset($_SESSION['user_id'], $_SESSION['acc_id'])) {
     header('Location: ../login.php');
     exit;
@@ -92,7 +92,7 @@ if (!in_array($selectedRole, $allowedRoles, true)) {
     redirect('error', 'Invalid role selection: "' . htmlspecialchars($selectedRole) . '"');
 }
 
-/* ?? Determine primary role ?? */
+/* ─── Determine primary role ─── */
 $requestedParts    = array_map('trim', explode(',', $selectedRole));
 $requestIsResident = in_array('resident', $requestedParts, true);
 $isRoleChange      = ($selectedRole !== $currentRoleCsv);
@@ -100,7 +100,7 @@ $isRoleChange      = ($selectedRole !== $currentRoleCsv);
 // Debug: Log role change detection
 error_log("Role Change Debug: Current='$currentRoleCsv' | Selected='$selectedRole' | IsChange=" . ($isRoleChange ? 'true' : 'false'));
 
-/* ?? Always-present fields ?? */
+/* ─── Always-present fields ─── */
 $familyRole  = sanitizeText($_POST['family_role']  ?? '', 50);
 $civilStatus = sanitizeText($_POST['civil_status'] ?? '', 50);
 $religion    = sanitizeText($_POST['religion']     ?? '', 100);
@@ -112,7 +112,7 @@ $emRelationship = sanitizeText($_POST['emergency_contact_relationship'] ?? '', 1
 $emPhone        = sanitizeText($_POST['emergency_phone']               ?? '', 30);
 $healthCond     = sanitizeText($_POST['health_conditions']             ?? '', 1000);
 
-/* ?? Resident-specific fields (always save so data isn't lost) ?? */
+/* ─── Resident-specific fields (always save so data isn't lost) ─── */
 $street         = sanitizeText($_POST['street']            ?? '', 255);
 $barangay       = sanitizeText($_POST['barangay']          ?? '', 100);
 $city           = sanitizeText($_POST['city']              ?? '', 100);
@@ -130,14 +130,14 @@ $residentBirth  = isset($_POST['resident_birth']) ? '1' : '0';
    VALIDATION
    ============================================================ */
 
-/* ?? Always required ?? */
+/* ─── Always required ─── */
 if (empty($familyRole))  redirect('error', 'Family role is required.');
 if (empty($civilStatus)) redirect('error', 'Civil status is required.');
 if (!isValidEmail($email)) redirect('error', 'A valid email address is required.');
 if (!empty($phone)   && !isValidPHPhoneLoose($phone))   redirect('error', 'Phone must be a valid PH number (e.g. 09XXXXXXXXX).');
 if (!empty($emPhone) && !isValidPHPhoneLoose($emPhone)) redirect('error', 'Emergency phone must be a valid PH number.');
 
-/* ?? Resident-specific required fields ?? */
+/* ─── Resident-specific required fields ─── */
 if ($requestIsResident) {
     if (empty($street))   redirect('error', 'Street address is required for Resident role.');
     if (empty($barangay)) redirect('error', 'Barangay is required for Resident role.');
@@ -253,7 +253,7 @@ if ($isRoleChange) {
     }
 }
 
-/* ?? Build parameterized UPDATE for tbl_userinfo ?? */
+/* ─── Build parameterized UPDATE for tbl_userinfo ─── */
 $setClauses = implode(' = ?, ', array_keys($fields)) . ' = ?';
 $values     = array_values($fields);
 $types      = str_repeat('s', count($values)) . 's'; // +1 for accID WHERE clause

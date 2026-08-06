@@ -16,7 +16,7 @@ if (empty($accId) || !$listingId) {
     exit;
 }
 
-// â�?��,�â�?��,� Fetch listing to verify ownership and get photo paths â�?��,�â�?��,�
+// ─── Fetch listing to verify ownership and get photo paths ───
 $stmt = $conn->prepare("SELECT id, photos FROM tbl_busaptlisting WHERE id = ? AND userId = ? LIMIT 1");
 if (!$stmt) {
     header('Location: manageList.php?error=1');
@@ -33,7 +33,7 @@ if (!$row) {
     exit;
 }
 
-// â�?��,�â�?��,� Delete uploaded photos from disk â�?��,�â�?��,�
+// ─── Delete uploaded photos from disk ───
 $photos = json_decode($row['photos'] ?? '[]', true);
 if (is_array($photos)) {
     $resolvedUploadDir = realpath(dirname(__FILE__) . '/../uploads/listings');
@@ -47,7 +47,7 @@ if (is_array($photos)) {
     }
 }
 
-// â�?��,�â�?��,� Delete the database record â�?��,�â�?��,�
+// ─── Delete the database record ───
 $del = $conn->prepare("DELETE FROM tbl_busaptlisting WHERE id = ? AND userId = ?");
 if (!$del) {
     header('Location: manageList.php?error=1');

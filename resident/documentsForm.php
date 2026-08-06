@@ -52,7 +52,7 @@ if (!$canAccessServices) {
     exit;
 }
 
-// �"?�"? Document �?' required supporting docs map �"?�"?
+// ─── Document — required supporting docs map ───
 $docRequirements = [
     'barangay_clearance'       => 'Valid Government-Issued ID',
     'certificate_indigency'    => 'Valid Government-Issued ID, Proof of Residency',
@@ -65,7 +65,7 @@ $docRequirements = [
     'first_time_jobseeker'     => 'Valid Government-Issued ID, Proof of Unemployment',
 ];
 
-// �"?�"? Handle POST �"?�"?
+// ─── Handle POST ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Determine upload directory (relative to project root)
@@ -391,7 +391,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   </nav>
 </header>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� MOBILE SIDEBAR �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── MOBILE SIDEBAR ──────────── -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -485,7 +485,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
     <form method="POST" action="" id="documentForm" enctype="multipart/form-data" novalidate>
 
-      <!-- �"?�"? DOC TYPE + COPIES �"?�"? -->
+      <!-- ──────────── DOC TYPE + COPIES ──────────── -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
 
         <div>
@@ -522,7 +522,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
       </div>
 
-      <!-- �"?�"? PURPOSE �"?�"? -->
+      <!-- ──────────── PURPOSE ──────────── -->
       <div class="mb-6">
         <label class="field-label" for="purpose">Purpose / Reason <span class="req">*</span></label>
         <select class="form-select" id="purpose" name="purpose" required>
@@ -541,7 +541,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         <p class="error-msg" id="err_purpose">Please select a purpose.</p>
       </div>
 
-      <!-- �"?�"? UPLOAD SUPPORTING DOCUMENTS �"?�"? -->
+      <!-- ──────────── UPLOAD SUPPORTING DOCUMENTS ──────────── -->
       <div class="mb-6">
         <p class="field-label">Upload Supporting Document</p>
 
@@ -564,7 +564,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         <p class="error-msg" id="err_files"></p>
       </div>
 
-      <!-- �"?�"? ADDITIONAL NOTES �"?�"? -->
+      <!-- ──────────── ADDITIONAL NOTES ──────────── -->
       <div class="mb-8">
         <label class="field-label" for="notes">Additional Notes / Special Instructions:</label>
         <textarea
@@ -625,7 +625,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 </footer>
 
 <script>
-  // �"?�"? Document type �?' required supporting docs �"?�"?
+  // ─── Document type — required supporting docs ───
   const docReqs = <?= json_encode($docRequirements) ?>;
 
   function updateRequirements() {
@@ -641,7 +641,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
   window.addEventListener('DOMContentLoaded', updateRequirements);
 
-  // �"?�"? Number spinner �"?�"?
+  // ─── Number spinner ───
   function spinCopies(dir) {
     const inp = document.getElementById('num_copies');
     let val = parseInt(inp.value) || 1;
@@ -649,7 +649,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     inp.value = val;
   }
 
-  // �"?�"? File handling �"?�"?
+  // ─── File handling ───
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   const ALLOWED_EXTS  = ['jpg', 'jpeg', 'png', 'pdf'];
   let selectedFiles   = [];
@@ -745,7 +745,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // �"?�"? Form Validation + Submit �"?�"?
+  // ─── Form Validation + Submit ───
   document.getElementById('documentForm').addEventListener('submit', function (e) {
     let valid = true;
 
@@ -798,7 +798,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Submitting...';
   });
 
-  // �"?�"? Profile dropdown �"?�"?
+  // ─── Profile dropdown ───
   function toggleProfileMenu() {
     const dropdown = document.getElementById('profile-dropdown');
     const btn      = document.getElementById('profile-btn');
@@ -821,7 +821,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     if (e.key === 'Escape') document.getElementById('profile-dropdown')?.classList.add('hidden');
   });
 
-  /* �"?�"? Mobile sidebar �"?�"? */
+  /* ─── Mobile sidebar ─── */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

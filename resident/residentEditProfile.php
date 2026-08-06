@@ -235,7 +235,7 @@ if ($accId) {
             box-shadow: inset 0 0 0 1px #cbd5e1;
         }
 
-        /* ?? Role cards ?? */
+        /* ─── Role cards ─── */
         .role-card {
             transition: all 0.25s ease;
             background-color: #ffffff;
@@ -248,10 +248,10 @@ if ($accId) {
         .role-card.locked { opacity: 0.55; pointer-events: none; cursor: not-allowed; }
         .role-check { display: none; }
 
-        /* ?? Sections ?? */
+        /* ─── Sections ─── */
         .role-section { display: none; }
 
-        /* ?? Upload zone ?? */
+        /* ─── Upload zone ─── */
         .upload-zone {
             border: 2px dashed color-mix(in srgb, var(--site-primary-light) 70%, white);
             border-radius: 14px;
@@ -279,7 +279,7 @@ if ($accId) {
         }
         .btn-remove:hover { background: #fecaca; }
 
-        /* ?? pending badge ?? */
+        /* ─── pending badge ─── */
         .badge-pending {
             display: inline-flex; align-items: center; gap: 5px;
             background: #fef3c7; color: #92400e; border: 1px solid #fde68a;
@@ -287,7 +287,7 @@ if ($accId) {
             border-radius: 999px; text-transform: uppercase; letter-spacing: .05em;
         }
 
-        /* ?? Submit button states ?? */
+        /* ─── Submit button states ─── */
         #submitBtn:disabled {
             opacity: 0.45;
             cursor: not-allowed;
@@ -298,7 +298,7 @@ if ($accId) {
             background-color: var(--site-primary);
         }
 
-        /* ?? Toast ?? */
+        /* ─── Toast ─── */
         #toast-container {
             position: fixed;
             top: 80px;
@@ -344,7 +344,7 @@ if ($accId) {
             to   { opacity: 0; transform: translateX(40px) scale(0.9); }
         }
 
-        /* ?? Required field indicator ?? */
+        /* ─── Required field indicator ─── */
         .required-field-indicator {
             border-color: #f87171 !important;
             box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important;

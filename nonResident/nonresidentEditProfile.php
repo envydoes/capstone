@@ -67,7 +67,7 @@ if (in_array('admin', $roleParts, true)) {
     exit;
 }
 
-// ?? Handle redirect status messages ??
+// ─── Handle redirect status messages ───
 $success_message = '';
 $status = $_GET['status'] ?? '';
 if ($status === 'profile_saved') {
@@ -220,7 +220,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             box-shadow: inset 0 0 0 1px #cbd5e1;
         }
 
-        /* ?? Role cards ?? */
+        /* ─── Role cards ─── */
         .role-card {
             transition: all 0.25s ease;
             background-color: #ffffff;
@@ -233,10 +233,10 @@ $pendingRole = $resident['pending_role'] ?? '';
         .role-card.locked { opacity: 0.55; pointer-events: none; cursor: not-allowed; }
         .role-check { display: none; }
 
-        /* ?? Sections ?? */
+        /* ─── Sections ─── */
         .role-section { display: none; }
 
-        /* ?? Upload zone ?? */
+        /* ─── Upload zone ─── */
         .upload-zone {
             border: 2px dashed color-mix(in srgb, var(--site-primary-light) 70%, white);
             border-radius: 14px;
@@ -264,7 +264,7 @@ $pendingRole = $resident['pending_role'] ?? '';
         }
         .btn-remove:hover { background: #fecaca; }
 
-        /* ?? pending badge ?? */
+        /* ─── pending badge ─── */
         .badge-pending {
             display: inline-flex; align-items: center; gap: 5px;
             background: #fef3c7; color: #92400e; border: 1px solid #fde68a;
@@ -272,7 +272,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             border-radius: 999px; text-transform: uppercase; letter-spacing: .05em;
         }
 
-        /* ?? Submit button states ?? */
+        /* ─── Submit button states ─── */
         #submitBtn:disabled {
             opacity: 0.45;
             cursor: not-allowed;
@@ -283,7 +283,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             background-color: var(--site-primary);
         }
 
-        /* ?? Toast ?? */
+        /* ─── Toast ─── */
         #toast-container {
             position: fixed;
             top: 80px;
@@ -329,7 +329,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             to   { opacity: 0; transform: translateX(40px) scale(0.9); }
         }
 
-        /* ?? Required field indicator ?? */
+        /* ─── Required field indicator ─── */
         .required-field-indicator {
             border-color: #f87171 !important;
             box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important;
@@ -378,12 +378,12 @@ $pendingRole = $resident['pending_role'] ?? '';
 </head>
 <body class="page-bg text-slate-800">
 
-<!-- ?? TOAST CONTAINER ?? -->
+<!-- ─── TOAST CONTAINER ─── -->
 <div id="toast-container"></div>
 
 <div class="min-h-screen">
 
-    <!-- ?? HEADER ?? -->
+    <!-- ─── HEADER ─── -->
     <header class="w-full h-[68px] border-b border-green-100 flex items-center px-6 md:px-8 bg-white shadow-sm sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <a href="nonresidentLanding.php" class="flex items-center gap-3">
@@ -443,7 +443,7 @@ $pendingRole = $resident['pending_role'] ?? '';
 
     <main class="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10 space-y-8">
 
-        <!-- ?? STATUS MESSAGES (fallback for non-JS) ?? -->
+        <!-- ─── STATUS MESSAGES (fallback for non-JS) ─── -->
         <?php if ($success_message === 'profile_saved'): ?>
             <div class="rounded-lg bg-emerald-100 border border-emerald-200 text-emerald-800 p-4">
                 <p class="font-medium">? Profile updated successfully.</p>
@@ -459,7 +459,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             </div>
         <?php endif; ?>
 
-        <!-- ?? PENDING NOTICE (already pending) ?? -->
+        <!-- ─── PENDING NOTICE (already pending) ─── -->
         <?php if ($isPending && $pendingRole): ?>
             <div class="rounded-lg bg-amber-50 border-2 border-amber-300 p-5 shadow-sm">
                 <div class="flex items-start gap-4">
@@ -476,7 +476,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             </div>
         <?php endif; ?>
 
-        <!-- ?? PAGE HEADER ?? -->
+        <!-- ─── PAGE HEADER ─── -->
         <section class="rounded-2xl border border-green-100 bg-white p-6 md:p-8 shadow-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
@@ -494,7 +494,7 @@ $pendingRole = $resident['pending_role'] ?? '';
             </div>
         </section>
 
-        <!-- ?? TABS ?? -->
+        <!-- ─── TABS ─── -->
         <div class="w-full mx-auto">
             <div class="rounded-2xl flex w-full gap-3 mb-6 bg-white py-4 p-6 md:p-8">
                 <a href="nonresidentEditProfile.php" class="flex-1 text-center px-5 py-2 bg-emerald-600 text-white font-semibold rounded-lg inline-flex items-center justify-center gap-2 shadow-sm hover:bg-emerald-700 transition">
@@ -505,9 +505,9 @@ $pendingRole = $resident['pending_role'] ?? '';
                 </a>
             </div>
 
-            <!-- ??????????????????????????????????
+            <!-- ════════════════════════════════════════════
                  ROLE SELECTOR
-            ?????????????????????????????????? -->
+            ════════════════════════════════════════════ -->
             <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm mb-6">
                 <div class="flex items-center justify-between mb-1">
                     <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -589,9 +589,9 @@ $pendingRole = $resident['pending_role'] ?? '';
                 <input type="hidden" name="selectedRole" id="selectedRoleHidden" value="<?php echo htmlspecialchars($currentRoleCsv); ?>">
             </div>
 
-            <!-- ??????????????????????????????????
+            <!-- ════════════════════════════════════════════
                  MAIN GRID (sidebar + form)
-            ?????????????????????????????????? -->
+            ════════════════════════════════════════════ -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
                 <!-- Sidebar -->
@@ -631,7 +631,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                 <section class="lg:col-span-3 space-y-6">
                     <form method="POST" action="nonresidentRoleChangeAction.php" enctype="multipart/form-data" id="profileForm">
 
-                        <!-- ?? PERSONAL INFORMATION ?? -->
+                        <!-- ─── PERSONAL INFORMATION ─── -->
                         <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="text-2xl font-bold text-slate-900"><i class="fas fa-id-card text-emerald-500 mr-2"></i> Personal Information</h2>
@@ -726,7 +726,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                             </div>
                         </div>
 
-                        <!-- ?? ADDRESS (resident only) ?? -->
+                        <!-- ─── ADDRESS (resident only) ─── -->
                         <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm role-section" id="address-section">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="text-2xl font-bold text-slate-900"><i class="fas fa-map-marker-alt text-emerald-500 mr-2"></i> Address Information</h2>
@@ -758,7 +758,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                             </div>
                         </div>
 
-                        <!-- ?? EMERGENCY CONTACT (always visible) ?? -->
+                        <!-- ─── EMERGENCY CONTACT (always visible) ─── -->
                         <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="text-2xl font-bold text-slate-900"><i class="fas fa-phone-alt text-emerald-500 mr-2"></i> Emergency Contact &amp; Health</h2>
@@ -784,7 +784,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                             </div>
                         </div>
 
-                        <!-- ?? EMPLOYMENT (resident only) ?? -->
+                        <!-- ─── EMPLOYMENT (resident only) ─── -->
                         <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm role-section resident-only" id="employment-section">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="text-2xl font-bold text-slate-900"><i class="fas fa-briefcase text-emerald-500 mr-2"></i> Employment &amp; Voter Information</h2>
@@ -833,7 +833,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                             </div>
                         </div>
 
-                        <!-- ?? ID VERIFICATION (resident only) ?? -->
+                        <!-- ─── ID VERIFICATION (resident only) ─── -->
                         <div class="bg-white border border-green-100 rounded-2xl p-6 shadow-sm role-section resident-only" id="id-verification-section">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="text-2xl font-bold text-slate-900"><i class="fas fa-id-card text-emerald-500 mr-2"></i> ID Verification</h2>
@@ -923,7 +923,7 @@ $pendingRole = $resident['pending_role'] ?? '';
                             </div>
                         </div>
 
-                        <!-- ?? ACTIONS ?? -->
+                        <!-- ─── ACTIONS ─── -->
                         <div class="flex flex-col sm:flex-row gap-3 justify-end pt-2">
                             <a href="nonresidentProfile.php" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                                 <i class="fas fa-chevron-left mr-2"></i> Cancel
@@ -942,9 +942,9 @@ $pendingRole = $resident['pending_role'] ?? '';
 </div>
 
 <script>
-/* ??????????????????????????????????????????
+/* ════════════════════════════════════════════
    TOAST SYSTEM
-?????????????????????????????????????????? */
+════════════════════════════════════════════ */
 function showToast(type, title, msg, duration = 5000) {
     const container = document.getElementById('toast-container');
     const id = 'toast-' + Date.now();
@@ -979,7 +979,7 @@ function dismissToast(id) {
     setTimeout(() => el.remove(), 320);
 }
 
-/* ?? Show PHP-generated toasts on load ?? */
+/* ─── Show PHP-generated toasts on load ─── */
 <?php if ($success_message === 'profile_saved'): ?>
 window.addEventListener('DOMContentLoaded', () => showToast('success', 'Profile Saved', 'Your profile information has been updated successfully.'));
 <?php elseif ($success_message === 'pending_submitted'): ?>
@@ -988,9 +988,9 @@ window.addEventListener('DOMContentLoaded', () => showToast('info', 'Role Change
 window.addEventListener('DOMContentLoaded', () => showToast('error', 'Error', <?php echo json_encode(substr($success_message, 6)); ?>));
 <?php endif; ?>
 
-/* ??????????????????????????????????????????
+/* ════════════════════════════════════════════
    MOBILE MENU
-?????????????????????????????????????????? */
+════════════════════════════════════════════ */
 const mobileMenuBtn        = document.getElementById('mobile-menu-btn');
 const mobileSidebar        = document.getElementById('mobile-sidebar');
 const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
@@ -1014,10 +1014,10 @@ mobileMenuBtn?.addEventListener('click', openMobileMenu);
 mobileMenuClose?.addEventListener('click', closeMobileMenu);
 mobileSidebarOverlay?.addEventListener('click', closeMobileMenu);
 
-/* ??????????????????????????????????????????
+/* ════════════════════════════════════════════
    CHANGE DETECTION - enable Save only when
    something actually changed
-?????????????????????????????????????????? */
+════════════════════════════════════════════ */
 const isPending     = <?php echo json_encode($isPending); ?>;
 const currentRole   = <?php echo json_encode($currentRoleCsv); ?>;
 const selectedRoles = new Set(<?php echo json_encode($defaultSelected); ?>);
@@ -1068,9 +1068,9 @@ document.querySelectorAll('.tracked-field, .tracked-checkbox').forEach(el => {
     el.addEventListener('change', checkForChanges);
 });
 
-/* ??????????????????????????????????????????
+/* ════════════════════════════════════════════
    ROLE SELECTION LOGIC
-?????????????????????????????????????????? */
+════════════════════════════════════════════ */
 function toggleRole(role) {
     if (role === 'resident') {
         if (selectedRoles.has('resident')) {
@@ -1158,12 +1158,12 @@ function updateFormState() {
     if (isResident) loadExistingIdFiles();
 }
 
-// ?? Initial render ??
+// ─── Initial render ───
 renderRoleCards();
 updateFormState();
 checkForChanges();
 
-/* ?? Sync hidden input on submit ?? */
+/* ─── Sync hidden input on submit ─── */
 document.getElementById('profileForm').addEventListener('submit', function (e) {
     document.getElementById('selectedRoleHidden').value = buildRoleString();
 
@@ -1214,9 +1214,9 @@ document.getElementById('profileForm').addEventListener('submit', function (e) {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving.';
 });
 
-/* ??????????????????????????????????????????
+/* ════════════════════════════════════════════
    ID FILE UPLOAD HANDLING
-?????????????????????????????????????????? */
+════════════════════════════════════════════ */
 function loadExistingIdFiles() {
     const frontFile = document.getElementById('frontFile');
     const backFile  = document.getElementById('backFile');

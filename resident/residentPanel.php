@@ -157,15 +157,15 @@ if ($userId > 0) {
     }
 }
 
-// �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ────────────────────────────────────────────────────────────────────────────
 // ELIGIBILITY ENGINE
-// �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ────────────────────────────────────────────────────────────────────────────
 function getEligiblePrograms(array $row): array {
     $age = (int)($row['_age'] ?? 0);
     $score = (int)($row['prio_score'] ?? 0);
     $eligible = [];
 
-    // �"?�"? 4Ps: specific housing, utility, pregnant, income conditions
+    // ─── 4Ps: specific housing, utility, pregnant, income conditions
     $bad_house   = in_array(strtolower($row['housing_status'] ?? ''), ['informal_settler', 'shared', 'government_housing']);
     $bad_mat     = in_array(strtolower($row['house_material'] ?? ''), ['light_materials', 'makeshift', 'wood']);
     $bad_elec    = in_array(strtolower($row['electricity'] ?? ''), ['shared', 'no_electricity']);
@@ -178,12 +178,12 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = '4ps';
     }
 
-    // �"?�"? Senior Citizen: age >= 60
+    // ─── Senior Citizen: age >= 60
     if ($age >= 60) {
         $eligible[] = 'senior';
     }
 
-    // �"?�"? Scholarship: not empty school, have year level, gpa 1.00 - 1.75
+    // ─── Scholarship: not empty school, have year level, gpa 1.00 - 1.75
     $school = trim($row['school_name'] ?? '');
     $yrLvl = trim($row['year_level'] ?? '');
     $gwaStr = trim($row['gwa_gpa'] ?? '');
@@ -193,17 +193,17 @@ function getEligiblePrograms(array $row): array {
         $eligible[] = 'scholarship';
     }
 
-    // �"?�"? PWD: is_pwd = 1 AND has valid ID number
+    // ─── PWD: is_pwd = 1 AND has valid ID number
     if (!empty($row['is_pwd']) && $row['is_pwd'] == 1 && !empty($row['pwd_id_number'])) {
         $eligible[] = 'pwd';
     }
 
-    // �"?�"? Kabataan/SK: age 15�?"30
+    // ─── Kabataan/SK: age 15–30
     if ($age >= 15 && $age <= 30) {
         $eligible[] = 'kabataan';
     }
 
-    // �"?�"? Registered Voters: age >= 18
+    // ─── Registered Voters: age >= 18
     if ($age >= 18) {
         $eligible[] = 'voters';
     }
@@ -254,7 +254,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { color: var(--site-primary-dark); }
 
-    /* Navbar & Footer �?" dynamic theme color overrides (scoped so the rest of the page keeps its fixed accent colors) */
+    /* Navbar & Footer — dynamic theme color overrides (scoped so the rest of the page keeps its fixed accent colors) */
     :root {
       --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
       --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
@@ -383,7 +383,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .alert-close { background: none; border: none; color: white; cursor: pointer; padding: 4px; opacity: 0.8; transition: opacity 0.2s; flex-shrink: 0; }
     .alert-close:hover { opacity: 1; }
 
-    /* �"?�"? Application Details Modal �"?�"? */
+    /* ─── Application Details Modal ─── */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 500;
       background: rgba(5,46,22,0.5); backdrop-filter: blur(4px);
@@ -490,7 +490,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
   </nav>
 </header>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� MOBILE SIDEBAR �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── MOBILE SIDEBAR ──────────── -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -538,7 +538,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
 
 <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
 
-  <!-- �"?�"? SERVICES �"?�"? -->
+  <!-- ──────────── SERVICES ──────────── -->
   <div class="f1">
     <h1 class="text-3xl font-bold text-center mb-8" style="font-family:'Playfair Display',serif;color:var(--site-primary-dark)">Services</h1>
 
@@ -549,7 +549,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       // Default: 3 columns
       $gridClass = "sm:grid-cols-3";
 
-      // If role matches �?' use 4 columns
+      // If role matches — use 4 columns
       if (str_contains($roleLower, 'resident,business/apartment owner')) {
           $gridClass = "sm:grid-cols-4";
       }
@@ -595,7 +595,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     </div>
   </div>
 
-  <!-- �"?�"? MY REQUESTS �"?�"? -->
+  <!-- ──────────── MY REQUESTS ──────────── -->
   <div class="f2">
     <h2 class="text-2xl font-bold text-center mb-6" style="font-family:'Playfair Display',serif;color:var(--site-primary-dark)">My Requests</h2>
 
@@ -1115,7 +1115,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     }
   }
 
-  /* �"?�"? Tab switching �"?�"? */
+  /* ─── Tab switching ─── */
   function switchTab(btn, id) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1123,7 +1123,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     document.getElementById('tab-' + id).classList.remove('hidden');
   }
 
-  /* �"?�"? Modal �"?�"? */
+  /* ─── Modal ─── */
   function openModal(data) {
     // Name + updated
     document.getElementById('mName').textContent    = data.name    || '�?"';
@@ -1160,7 +1160,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       const age = parseInt(data.eligibility._age || 0);
       const score = parseInt(data.eligibility.prio_score || 0);
       
-      // �"?�"? 4Ps: specific housing, utility, pregnant, income conditions
+      // ─── 4Ps: specific housing, utility, pregnant, income conditions
       const bad_house = ['informal_settler', 'shared', 'government_housing'].includes((data.eligibility.housing_status || '').toLowerCase());
       const bad_mat = ['light_materials', 'makeshift', 'wood'].includes((data.eligibility.house_material || '').toLowerCase());
       const bad_elec = ['shared', 'no_electricity'].includes((data.eligibility.electricity || '').toLowerCase());
@@ -1173,12 +1173,12 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
           eligiblePrograms.push({ name: "4P's", eligible: true });
       }
       
-      // �"?�"? Senior Citizen: age >= 60
+      // ─── Senior Citizen: age >= 60
       if (age >= 60) {
           eligiblePrograms.push({ name: "Senior Citizen", eligible: true });
       }
       
-      // �"?�"? Scholarship: not empty school, have year level, gpa 1.00 - 1.75
+      // ─── Scholarship: not empty school, have year level, gpa 1.00 - 1.75
       const school = (data.eligibility.school_name || '').trim();
       const yrLvl = (data.eligibility.year_level || '').trim();
       const gwaStr = (data.eligibility.gwa_gpa || '').trim();
@@ -1188,17 +1188,17 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
           eligiblePrograms.push({ name: "Scholarship", eligible: true });
       }
       
-      // �"?�"? PWD: is_pwd = 1 AND has valid ID number
+      // ─── PWD: is_pwd = 1 AND has valid ID number
       if (data.eligibility.is_pwd == 1 && data.eligibility.pwd_id_number) {
           eligiblePrograms.push({ name: "PWD Program", eligible: true });
       }
       
-      // �"?�"? Kabataan/SK: age 15�?"30
+      // ─── Kabataan/SK: age 15–30
       if (age >= 15 && age <= 30) {
           eligiblePrograms.push({ name: "Kabataan/SK", eligible: true });
       }
       
-      // �"?�"? Registered Voters: age >= 18
+      // ─── Registered Voters: age >= 18
       if (age >= 18) {
           eligiblePrograms.push({ name: "Registered Voters", eligible: true });
       }
@@ -1271,7 +1271,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
   });
 
   
-  /* �"?�"? Mobile sidebar �"?�"? */
+  /* ─── Mobile sidebar ─── */
   const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
   const mobileSidebar = document.getElementById('mobile-sidebar');
   const mobileOpenBtn = document.getElementById('mobile-menu-btn');

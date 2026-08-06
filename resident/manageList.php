@@ -81,7 +81,7 @@ $roleBadgeClass = match($role) {
 };
 $initials = strtoupper(substr($userName, 0, 2));
 
-// �"?�"? Fetch listings for this user from tbl_busaptlisting �"?�"?
+// ─── Fetch listings for this user from tbl_busaptlisting ───
 $apartmentListings = [];
 $businessListings  = [];
 
@@ -465,7 +465,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </nav>
 </header>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� MOBILE SIDEBAR �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── MOBILE SIDEBAR ──────────── -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -854,9 +854,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
 </main>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-     VIEW MODAL
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── VIEW MODAL ──────────── -->
 <div class="modal-overlay" id="viewModalOverlay" onclick="closeViewModalOnOverlay(event)">
   <div class="modal" id="viewModal" style="max-width:640px;">
     <div class="modal-header">
@@ -879,9 +877,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </div>
 </div>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-     EDIT MODAL
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── EDIT MODAL ──────────── -->
 <div class="modal-overlay" id="editModalOverlay" onclick="closeEditModalOnOverlay(event)">
   <div class="modal" id="editModal" style="max-width:640px;">
     <div class="modal-header">
@@ -912,9 +908,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </div>
 </div>
 
-<!-- �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-     CONFIRM DIALOG
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� -->
+<!-- ──────────── CONFIRM DIALOG ──────────── -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body-inner">
@@ -986,9 +980,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </footer>
 
 <script>
-/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
-   TOAST SYSTEM
-�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+/* ─── TOAST SYSTEM ─── */
 function showToast(type, title, desc) {
   const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
   const container = document.getElementById('toastContainer');
@@ -1015,7 +1007,7 @@ function escHtml(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* �"?�"? Active listings tab �"?�"? */
+/* ─── Active listings tab ─── */
 function switchTab(t) {
   ['apartment','business'].forEach(x => {
     document.getElementById('tab-'+x).classList.toggle('active', x===t);
@@ -1023,7 +1015,7 @@ function switchTab(t) {
   });
 }
 
-/* �"?�"? Type chooser �"?�"? */
+/* ─── Type chooser ─── */
 let curType = '';
 function chooseType(t) {
   curType = t;
@@ -1037,17 +1029,17 @@ function chooseType(t) {
   document.getElementById('err-type').classList.remove('on');
 }
 
-/* �"?�"? Radio pills �"?�"? */
+/* ─── Radio pills ─── */
 function pickRadio(radio, errId) {
   document.querySelectorAll(`[name="${radio.name}"]`).forEach(r => r.closest('.po').classList.toggle('sel', r.checked));
   document.getElementById('fld_subtype').value = radio.value;
   document.getElementById(errId).classList.remove('on');
 }
 
-/* �"?�"? Checkbox pills �"?�"? */
+/* ─── Checkbox pills ─── */
 function toggleCb(cb) { cb.closest('.po').classList.toggle('sel', cb.checked); }
 
-/* �"?�"? Slots �"?�"? */
+/* ─── Slots ─── */
 let aptKey = 0;
 function updateSlotKey(value) {
   const n = parseInt(value, 10);
@@ -1063,7 +1055,7 @@ function updateSlotKey(value) {
   document.getElementById('err-apt-key').classList.remove('on');
 }
 
-/* �"?�"? Char counter �"?�"? */
+/* ─── Char counter ─── */
 function charCount(el, cId, max) {
   const n = el.value.length;
   const d = document.getElementById(cId);
@@ -1156,7 +1148,7 @@ document.getElementById('listingForm').addEventListener('submit', function(e) {
   document.getElementById('photoInput').files = dt.files;
 });
 
-/* �"?�"? Validation �"?�"? */
+/* ─── Validation ─── */
 function validateForm() {
   let ok = true;
   if (!curType) { document.getElementById('err-type').classList.add('on'); ok = false; }
@@ -1235,9 +1227,7 @@ function fmt12(t) {
   return `${hr}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   VIEW MODAL
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ─── VIEW MODAL ─── */
 let currentViewListing = null;
 
 function openViewModal(row) {
@@ -1271,7 +1261,7 @@ function openViewModal(row) {
 
   let html = '';
 
-  /* �"?�"?�"? PHOTOS �"?�"?�"? */
+  /* ─── PHOTOS ─── */
   if (photos.length) {
     html += `<div class="section-card">
       <div class="sc-title"><div class="sc-icon"><i class="fa-solid fa-camera text-green-700 text-xs"></i></div>Photos <span style="font-weight:400;font-size:0.68rem;color:#9ca3af;text-transform:none;letter-spacing:0;">(click to zoom)</span></div>
@@ -1285,7 +1275,7 @@ function openViewModal(row) {
     html += `</div></div>`;
   }
 
-  /* �"?�"?�"? APARTMENT VIEW �"?�"?�"? */
+  /* ─── APARTMENT VIEW ─── */
   if (isApt) {
     html += `
     <div class="section-card">
@@ -1319,7 +1309,7 @@ function openViewModal(row) {
       <p style="font-size:0.875rem;color:#374151;line-height:1.7;white-space:pre-wrap;margin:0;">${l.aptDesc ? escHtml(l.aptDesc) : '<span style="color:#9ca3af;font-style:italic;">No description provided.</span>'}</p>
     </div>`;
 
-  /* �"?�"?�"? BUSINESS VIEW �"?�"?�"? */
+  /* ─── BUSINESS VIEW ─── */
   } else {
     html += `
     <div class="section-card">
@@ -1402,9 +1392,7 @@ function switchViewToEdit() {
   }
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   EDIT MODAL HELPERS
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ─── EDIT MODAL HELPERS ─── */
 let currentEditListing = null;
 let editRemovedPhotos  = [];
 let editNewFiles       = [];
@@ -1435,7 +1423,7 @@ function editToggleCb(cb) {
   checkEditChanges();
 }
 
-/* �"?�"?�"? APARTMENT EDIT FIELDS �"?�"?�"? */
+/* ─── APARTMENT EDIT FIELDS ─── */
 function buildAptEditFields(l) {
   const inc   = parseArr(l.aptIncluded);
   const amn   = parseArr(l.aptAmenities);
@@ -1511,7 +1499,7 @@ function buildAptEditFields(l) {
   </div>`;
 }
 
-/* �"?�"?�"? BUSINESS EDIT FIELDS �"?�"?�"? */
+/* ─── BUSINESS EDIT FIELDS ─── */
 function buildBizEditFields(l) {
   const feat = parseArr(l.bussFeatures);
   const days = parseArr(l.bussDays);
@@ -1574,7 +1562,7 @@ function buildBizEditFields(l) {
   </div>`;
 }
 
-/* �"?�"?�"? SHARED EDIT FIELDS �"?�"?�"? */
+/* ─── SHARED EDIT FIELDS ─── */
 function buildEditSharedFields(l) {
   const isApt  = (l.listingType === 'apt' || l.listingType === 'apartment');
   const addr   = isApt ? (l.aptAddress  || '') : (l.bussAddress  || '');
@@ -1643,7 +1631,7 @@ function buildEditSharedFields(l) {
   </div>`;
 }
 
-/* �"?�"?�"? Photo management in edit modal �"?�"?�"? */
+/* ─── Photo management in edit modal ─── */
 function removeExistingPhoto(idx, url) {
   const cell = document.getElementById('editcp_' + idx);
   if (cell) cell.remove();
@@ -1691,9 +1679,7 @@ function editRemoveNewPh(i) {
   checkEditChanges();
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   OPEN / CLOSE EDIT MODAL
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ─── OPEN / CLOSE EDIT MODAL ─── */
 function openEditModal(row) {
   const raw = row.getAttribute('data-listing');
   if (!raw) return;
@@ -1771,9 +1757,7 @@ function closeEditModalOnOverlay(e) {
   if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   SAVE EDIT
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ─── SAVE EDIT ─── */
 function handleEditSave() {
   if (!currentEditListing) return;
   const listingId   = document.getElementById('edit_listing_id')?.value || '';
@@ -1852,9 +1836,7 @@ function handleEditSave() {
   });
 }
 
-/* �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
-   CONFIRM DIALOG
-�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.� */
+/* ─── CONFIRM DIALOG ─── */
 let dialogCallback = null;
 
 function showDialog(title, desc, nameBadge, confirmLabel, confirmIcon, isDanger, onConfirm) {
@@ -1907,7 +1889,7 @@ function confirmDelete(id, name) {
   );
 }
 
-/* �"?�"? Lightbox �"?�"? */
+/* ─── Lightbox ─── */
 function openLightbox(src) {
   if (!src) return;
   document.getElementById('lightboxImg').src = src;
@@ -1918,7 +1900,7 @@ function closeLightbox() {
   document.getElementById('lightboxImg').src = '';
 }
 
-/* �"?�"? Profile dropdown �"?�"? */
+/* ─── Profile dropdown ─── */
 function toggleProfileMenu() {
   const dd = document.getElementById('profile-dropdown');
   const ch = document.getElementById('profile-chevron');
@@ -1943,7 +1925,7 @@ if (aptSlotsEl) {
   });
 }
 
-/* �"?�"? Mobile sidebar �"?�"? */
+/* ─── Mobile sidebar ─── */
 const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
 const mobileSidebar = document.getElementById('mobile-sidebar');
 const mobileOpenBtn = document.getElementById('mobile-menu-btn');

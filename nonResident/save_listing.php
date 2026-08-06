@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit_listing'])) {
     exit;
 }
 
-// �"?�"? Listing Type �"?�"?
+// ─── Listing Type ───
 $listingType = trim($_POST['listing_type'] ?? '');
 
 // Normalise legacy shorthand values from the hidden field
@@ -38,7 +38,7 @@ if (!in_array($listingType, ['apartment', 'business'], true)) {
     exit;
 }
 
-// �"?�"? Shared / contact fields �"?�"?
+// ─── Shared / contact fields ───
 $contact  = trim($_POST['contact']   ?? '');
 $email    = trim($_POST['email']     ?? '');
 $houseNum = trim($_POST['house_num'] ?? '');
@@ -47,7 +47,7 @@ $barangay = 'Sumacab Este';    // fixed �?" disabled fields won't appear in PO
 $city     = 'Cabanatuan City'; // fixed
 $mapsLink = trim($_POST['maps_link'] ?? '');
 
-// �"?�"? Initialise all column variables to safe defaults �"?�"?
+// ─── Initialise all column variables to safe defaults ───
 $slotsAvailable = 0;
 // Apartment columns
 $aptType      = null;
@@ -78,7 +78,7 @@ $bussDesc     = null;
 $bussAddress  = null;
 $bussMapsLink = null;
 
-// �"?�"? Type-specific field population �"?�"?
+// ─── Type-specific field population ───
 if ($listingType === 'apartment') {
     $aptType        = trim($_POST['apt_type']    ?? '');
     $aptTitle       = trim($_POST['apt_title']   ?? '');
@@ -117,7 +117,7 @@ if ($listingType === 'apartment') {
     $slotsAvailable = 0; // businesses don't use slots
 }
 
-// �"?�"? Handle photo uploads �"?�"?
+// ─── Handle photo uploads ───
 $photoPaths = [];
 
 if (isset($_FILES['photos']) && !empty($_FILES['photos']['name'][0])) {
@@ -178,7 +178,7 @@ if (isset($_FILES['photos']) && !empty($_FILES['photos']['name'][0])) {
 
 $photosJson = json_encode($photoPaths);
 
-// �"?�"? INSERT �"?�"?
+// ─── INSERT ───
 $sql = "
     INSERT INTO tbl_busaptlisting (
         userId, listingType, slotsAvailable,
