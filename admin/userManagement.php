@@ -426,7 +426,6 @@ function buildRow($u, $tab) {
 
 <div class="main-wrapper">
 
-  <!-- â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â• -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">

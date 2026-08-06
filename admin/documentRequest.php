@@ -44,7 +44,6 @@ $count_result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_requestdo
 $count_row = mysqli_fetch_assoc($count_result);
 $total_pending = $count_row['total'] ?? 0;
 
-// â”€â”€ Stat cards: Document Requests Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Requests This Month, plus Today as a sub-stat
 $reqCountRow = mysqli_fetch_assoc(mysqli_query($conn, "

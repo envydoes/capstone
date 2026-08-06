@@ -393,7 +393,6 @@ mysqli_close($conn);
 
 <div class="main-wrapper">
 
-  <!-- â•â• SIDEBAR â•â• -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">

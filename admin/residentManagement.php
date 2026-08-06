@@ -529,7 +529,6 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
 
 <div class="main-wrapper">
 
-  <!-- â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â• -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">
