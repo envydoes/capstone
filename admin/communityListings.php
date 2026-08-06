@@ -1022,7 +1022,7 @@ const AMN_LABELS = {'aircon':'Aircon','fan':'Electric Fan','parking':'Parking','
 const RULES_LABELS = {'no-smoking':'No Smoking','no-pets':'No Pets','no-visitors':'No Overnight Visitors','curfew':'Curfew Policy','no-cooking':'No Cooking Inside'};
 const FEAT_LABELS = {'delivery':'Delivery','pickup':'Pick-up','dine-in':'Dine-in','parking':'Parking','gcash':'GCash','maya':'Maya','wifi':'Free WiFi','aircon':'Aircon'};
 const DAYS_LABELS = {'mon':'Mon','tue':'Tue','wed':'Wed','thu':'Thu','fri':'Fri','sat':'Sat','sun':'Sun','holiday':'Holidays'};
-const YEARS_LABELS = {'new':'Just opened','1':'1 year','2-5':'2–5 years','5-10':'5-10 years','10+':'10+ years'};s
+const YEARS_LABELS = {'new':'Just opened','1':'1 year','2-5':'2–5 years','5-10':'5-10 years','10+':'10+ years'};
 function parseArr(v){if(!v)return[];if(Array.isArray(v))return v;try{const p=JSON.parse(v);return Array.isArray(p)?p:[];}catch(e){return[];}}
 
 function tagList(arr, labels) {
