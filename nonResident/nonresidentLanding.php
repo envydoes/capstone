@@ -798,7 +798,7 @@ function tagColor(string $tag): array {
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        � 2026 SumEste Portal. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.
+        &copy; 2026 SumEste Portal. All Rights Reserved. Made with &hearts; for <?= e($siteSettings['barangay_name']) ?>.
       </div>
     </div>
   </footer>
