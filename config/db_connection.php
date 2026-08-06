@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -16,3 +16,5 @@ if (!$conn) {
     session_destroy();
     die("Connection failed: " . mysqli_connect_error());
 }
+
+mysqli_set_charset($conn, "utf8mb4");

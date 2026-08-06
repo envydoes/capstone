@@ -26,8 +26,7 @@ ob_start();
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 require_once __DIR__ . '/../includes/check_permissions.php';
-require_permission($conn, 'manage_residents'); // swap the key per page â€” see table above
-// â”€â”€ Fetch all three groups â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+require_permission($conn, 'manage_residents'); // swap the key per page — see table above
 function fetchGroup($conn, $status) {
     $sql = "SELECT userID,accID,account_role_csv,firstname,lastname,middlename,suffix,
                    family_role,gender,birthday,birthplace,civil_status,citizenship,
