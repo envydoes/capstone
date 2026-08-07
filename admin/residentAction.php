@@ -7,24 +7,24 @@
 session_start();
 header('Content-Type: application/json');
 
-// f¢â₱â?s¬f¢â₱â?s¬ Auth guard f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Auth guard ====
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
 
-// f¢â₱â?s¬f¢â₱â?s¬ DB connection f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== DB connection ====
 require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
     exit;
 }
 
-// f¢â₱â?s¬f¢â₱â?s¬ Permission check f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Permission check ====
 require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission_ajax($conn, 'manage_residents');
 
-// f¢â₱â?s¬f¢â₱â?s¬ Read & validate POST f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Read & validate POST ====
 $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
 $action = trim($_POST['action'] ?? '');
 
@@ -38,11 +38,11 @@ if (!in_array($action, ['archive', 'unarchive'], true)) {
     exit;
 }
 
-// f¢â₱â?s¬f¢â₱â?s¬ Map action f¢â₱ â₱" new status f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Map action  ->  new status ====
 $newStatus     = $action === 'archive' ? 'archived' : 'approved';
 $currentStatus = $action === 'archive' ? 'approved'  : 'archived';
 
-// f¢â₱â?s¬f¢â₱â?s¬ Prepared UPDATE f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Prepared UPDATE ====
 $sql  = "UPDATE tbl_userinfo SET userStatus = ? WHERE userID = ? AND userStatus = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
@@ -74,7 +74,7 @@ if ($affected === 0) {
     exit;
 }
 
-// f¢â₱â?s¬f¢â₱â?s¬ Log action to session f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬f¢â₱â?s¬
+// ==== Log action to session ====
 if (!isset($_SESSION['resident_actions'])) {
     $_SESSION['resident_actions'] = [];
 }
