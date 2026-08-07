@@ -8,7 +8,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 // Mail settings for Brevo API (replaces PHPMailer/SMTP)
 define('BREVO_API_KEY', getenv('BREVO_API_KEY') ?: '');
-const MAIL_FROM_EMAIL = 'noreply@sum-este-portal.digital';s
+const MAIL_FROM_EMAIL = 'noreply@sum-este-portal.digital';
 const MAIL_FROM_NAME  = 'SumEste Portal';
 
 function resolveBaseUrl(): string {
