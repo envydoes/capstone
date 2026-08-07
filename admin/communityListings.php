@@ -22,7 +22,7 @@ if ($role !== 'admin' && empty($myPerms)) {
 }
 require_permission($conn, 'manage_listings');
 
-// �"?�"? Fetch all listings from tbl_busaptlisting �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ==== Fetch all listings from tbl_busaptlisting ====
 $listingsSQL = "
     SELECT
         l.id, l.userId, l.listingType, l.slotsAvailable,
@@ -75,7 +75,7 @@ if ($listingsResult) {
 }
 $totalListings = count($listings);
 
-// �"?�"? Stat cards: Listings Overview �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ==== Stat cards: Listings Overview ====
 
 // New Listings This Month, vs Last Month
 $listTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
@@ -95,7 +95,7 @@ if ($listLastMonth > 0) {
 $listTrendDir = $listThisMonth > $listLastMonth ? 'up' : ($listThisMonth < $listLastMonth ? 'down' : 'flat');
 
 // Average Listing Age: how long since a listing was last touched.
-// tbl_busaptlisting only has `createdAt` �?" there's no `updatedAt` column,
+// tbl_busaptlisting only has `createdAt`  –  there's no `updatedAt` column,
 // so today this can only measure time since the listing was first posted,
 // not since it was last edited. It auto-detects an `updatedAt` column if
 // you add one (see add_listing_updated_at.sql) and switches over.
@@ -169,7 +169,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
   --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
   --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
 }
-    /* �"?�"? Sidebar �"?�"? */
+    /* ==== Sidebar ==== */
     .sidebar { width: 260px; flex-shrink: 0; background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 300; overflow: hidden; transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1); }
     .sidebar.collapsed { width: 0; }
     .sidebar:not(.collapsed) { overflow-y: auto; }
@@ -195,15 +195,15 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .sidebar-bottom-links { padding: 0 16px 8px; }
     .sidebar-bottom-links .side-link { display: block; width: 100%; font-size: 0.84rem; padding: 8px 8px; border-radius: 8px; transition: color 0.15s, background 0.15s; text-decoration: none; white-space: nowrap; border: none; background: none; text-align: left; cursor: pointer; }
 
-    /* �"?�"? Layout �"?�"? */
+    /* ==== Layout ==== */
     .main-wrapper { display: flex; min-height: 100vh; }
     .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; margin-left: 260px; transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1); overflow-x: hidden; }
     .main-content.sidebar-collapsed { margin-left: 0; }
 
-    /* �"?�"? Topbar �"?�"? */
+    /* ==== Topbar ==== */
     .topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; }
 
-    /* �"?�"? Stat cards �"?�"? */
+    /* ==== Stat cards ==== */
     .stat-card { background:#fff; border-radius:14px; padding:20px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(21,128,61,0.05); display:flex; flex-direction:column; gap:10px; transition:transform .2s, box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(21,128,61,.1); }
     .stat-label { font-size:.82rem; font-weight:600; color:#6b7280; }
@@ -216,10 +216,10 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .stat-trend-down { color:#dc2626; }
     .stat-trend-flat { color:#9ca3af; }
 
-    /* �"?�"? Card Grid �"?�"? */
+    /* ==== Card Grid ==== */
     .listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
-    /* �"?�"? Listing Card �"?�"? */
+    /* ==== Listing Card ==== */
     .listing-card { background: #fff; border-radius: 16px; border: 2px solid #e5e7eb; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); position: relative; }
     .listing-card:hover { box-shadow: 0 8px 24px rgba(21,128,61,0.1); transform: translateY(-2px); }
     .listing-card.selected { border-color: #15803d; border-width: 2px; box-shadow: 0 0 0 3px rgba(21,128,61,0.1), 0 8px 24px rgba(21,128,61,0.15); transform: scale(1.01); background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); }
@@ -253,7 +253,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .card-delete-link { font-size: 0.78rem; font-weight: 700; color: #dc2626; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; transition: color 0.15s; }
     .card-delete-link:hover { color: #b91c1c; }
 
-    /* �"?�"? Toolbar �"?�"? */
+    /* ==== Toolbar ==== */
     .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; transition: all 0.2s ease; }
     .toolbar-check-all { width: 24px; height: 24px; border-radius: 6px; border: 2px solid #d1d5db; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
     .toolbar-check-all:hover { transform: scale(1.1); }
@@ -265,7 +265,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .toolbar-btn:hover { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
     .toolbar-btn.refresh:hover { border-color:var(--site-primary); background: #f0fdf4; color:var(--site-primary); }
 
-    /* �"?�"? Buttons �"?�"? */
+    /* ==== Buttons ==== */
     .btn-filter { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 9px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 0.83rem; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
     .btn-filter:hover { border-color: var(--site-primary); color: var(--site-primary); }
     .btn-filter.active { border-color: var(--site-primary); color: var(--site-primary); background: #f0fdf4; }
@@ -277,13 +277,13 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .search-box:focus-within { border-color: var(--site-primary); }
     .search-box input { border: none; outline: none; font-size: 0.83rem; color: #374151; font-family: inherit; width: 100%; background: transparent; min-width: 120px; }
 
-    /* �"?�"? Pagination �"?�"? */
+    /* ==== Pagination ==== */
     .page-btn { width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 0.82rem; font-weight: 600; color: #374151; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
     .page-btn:hover { border-color: var(--site-primary); color: var(--site-primary); }
     .page-btn.active { background: var(--site-primary); border-color: var(--site-primary); color: #fff; }
     .page-btn:disabled { opacity: 0.35; cursor: default; }
 
-    /* �"?�"? Detail View �"?�"? */
+    /* ==== Detail View ==== */
     .detail-view { background: #fff; border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     .detail-photos { display: grid; grid-template-columns: 1fr 180px; gap: 8px; }
     .detail-photos .main-photo { border-radius: 12px; overflow: hidden; border: 1.5px solid #e5e7eb; height: 280px; background: #f3f4f6; }
@@ -309,7 +309,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     /* Map embed */
     .map-embed { border-radius: 12px; overflow: hidden; border: 1.5px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-    /* �"?�"? Confirm Dialog �"?�"? */
+    /* ==== Confirm Dialog ==== */
     .dialog-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(5,46,22,0.45); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .dialog-overlay.open { opacity: 1; pointer-events: auto; }
     .dialog-box { background: #fff; border-radius: 20px; width: 100%; max-width: 460px; box-shadow: 0 24px 64px rgba(5,46,22,0.3); transform: scale(0.94) translateY(12px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; opacity: 0; overflow: hidden; }
@@ -324,17 +324,17 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .dialog-btn-delete { background: #ef4444; color: #fff; border-radius: 0 0 20px 0; }
     .dialog-btn-delete:hover { background: #dc2626; }
 
-    /* �"?�"? Lightbox �"?�"? */
+    /* ==== Lightbox ==== */
     .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.88); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 20px; }
     .lightbox.open { opacity: 1; pointer-events: auto; }
     .lightbox img { max-width: 90vw; max-height: 88vh; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); object-fit: contain; }
     .lightbox-close { position: absolute; top: 18px; right: 22px; background: rgba(255,255,255,0.14); border: none; color: #fff; font-size: 1.1rem; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
     .lightbox-close:hover { background: rgba(255,255,255,0.28); }
 
-    /* �"?�"? Filter Panel �"?�"? */
+    /* ==== Filter Panel ==== */
     .filter-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
 
-    /* �"?�"? Toast �"?�"? */
+    /* ==== Toast ==== */
     .toast-container { position: relative; top: auto; bottom: auto; right: auto; left: auto; z-index: 1; display: flex; flex-direction: column; gap: 10px; pointer-events: auto; margin-bottom: 10px; }
     .toast-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1.5px solid transparent; box-shadow: 0 8px 24px rgba(0,0,0,0.12); pointer-events: auto; animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both; width: 100%; }
     .toast-item.toast-success { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
@@ -361,7 +361,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     .sec-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 4px; }
     .sec-value { font-size: 0.875rem; color: #1f2937; font-weight: 500; }
 
-    /* �"?�"? Loading Overlay �"?�"? */
+    /* ==== Loading Overlay ==== */
     .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
     .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #16a34a; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -391,7 +391,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
 
 <div class="main-wrapper">
 
-  <!-- �.��.� SIDEBAR �.��.� -->
+  <!-- .. SIDEBAR .. -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-logo">
@@ -453,7 +453,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
     </div>
   </aside>
 
-  <!-- �.��.� MAIN �.��.� -->
+  <!-- .. MAIN .. -->
   <main class="main-content" id="mainContent">
 
     <!-- Topbar -->
@@ -506,7 +506,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
         </div>
       </div>
 
-      <!-- �"?�"? LISTINGS VIEW �"?�"? -->
+      <!-- ==== LISTINGS VIEW ==== -->
       <div id="listingsView">
 
         <!-- Divider -->
@@ -660,7 +660,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
 
       </div><!-- /listingsView -->
 
-      <!-- �"?�"? DETAIL VIEW �"?�"? -->
+      <!-- ==== DETAIL VIEW ==== -->
       <div id="detailView" style="display:none;">
         <a href="#" onclick="closeDetailView();return false;" style="display:inline-flex;align-items:center;gap:6px;color:#6b7280;font-size:0.84rem;font-weight:600;text-decoration:none;transition:color 0.15s;margin-bottom:16px;" onmouseover="this.style.color='#15803d'" onmouseout="this.style.color='#6b7280'">
           <i class="fa-solid fa-arrow-left" style="font-size:0.72rem;"></i> Back to Listings
@@ -677,7 +677,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
   </main>
 </div>
 
-<!-- �.��.� CONFIRM DIALOG �.��.� -->
+<!-- .. CONFIRM DIALOG .. -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body">
@@ -694,17 +694,17 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
   </div>
 </div>
 
-<!-- �.��.� LIGHTBOX �.��.� -->
+<!-- .. LIGHTBOX .. -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
   <img id="lightboxImg" src="" alt="">
 </div>
 
 <script>
-/* �.��.� All listings data from PHP �.��.� */
+/* .. All listings data from PHP .. */
 const ALL_LISTINGS = <?= json_encode($listings, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
-/* �.��.� SIDEBAR �.��.� */
+/* .. SIDEBAR .. */
 const sidebar=document.getElementById('sidebar'),mainContent=document.getElementById('mainContent'),expandBtn=document.getElementById('expandBtn'),collapseBtn=document.getElementById('collapseBtn'),backdrop=document.getElementById('sidebarBackdrop');
 const isMobile=()=>window.innerWidth<=1024;
 let collapsed=localStorage.getItem('sidebarCollapsed')==='true';
@@ -761,7 +761,7 @@ function triggerRefresh(triggerBtn = null) {
   setTimeout(() => location.reload(), 180);
 }
 
-/* �.��.� TOAST �.��.� */
+/* .. TOAST .. */
 function showToast(type, msg) {
   const icons = {success:'fa-circle-check',warning:'fa-triangle-exclamation',error:'fa-circle-xmark'};
   const c = document.getElementById('toastContainer');
@@ -776,7 +776,7 @@ setTimeout(()=>{const t=document.getElementById('php-toast');if(t)dismissToast(t
 
 function escHtml(str){return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-/* �.��.� SELECTION �.��.� */
+/* .. SELECTION .. */
 const selectedIds = new Set();
 
 function toggleCard(checkEl) {
@@ -832,7 +832,7 @@ function getVisibleCards() {
   return Array.from(document.querySelectorAll('.listing-card')).filter(c => c.style.display !== 'none');
 }
 
-/* �.��.� FILTER / SEARCH �.��.� */
+/* .. FILTER / SEARCH .. */
 function toggleFilter() {
   const p = document.getElementById('filterPanel');
   const btn = document.getElementById('filterToggleBtn');
@@ -896,7 +896,7 @@ function handleSearch() {
   }, 400);
 }
 
-/* �.��.� PAGINATION �.��.� */
+/* .. PAGINATION .. */
 const ROWS_PER_PAGE = 9;
 let currentPage = 1;
 
@@ -949,7 +949,7 @@ function renderPagination() {
 /* Init pagination */
 (function() { renderPagination(); })();
 
-/* �.��.� CONFIRM DIALOG �.��.� */
+/* .. CONFIRM DIALOG .. */
 let dialogCallback = null;
 function openDialog(title, desc, onConfirm) {
   document.getElementById('dialogTitle').textContent = title;
@@ -965,7 +965,7 @@ function closeDialog() {
 }
 document.getElementById('dialogOverlay').addEventListener('click', function(e) { if (e.target === this) closeDialog(); });
 
-/* �.��.� SINGLE DELETE �.��.� */
+/* .. SINGLE DELETE .. */
 function confirmSingleDelete(id, name, triggerBtn = null) {
   openDialog(
     'Are You Sure?',
@@ -974,7 +974,7 @@ function confirmSingleDelete(id, name, triggerBtn = null) {
   );
 }
 
-/* �.��.� BULK DELETE �.��.� */
+/* .. BULK DELETE .. */
 function confirmBulkDelete(triggerBtn = null) {
   if (selectedIds.size === 0) return;
   const count = selectedIds.size;
@@ -1012,7 +1012,7 @@ function deleteListing(ids, triggerBtn = null) {
   });
 }
 
-/* �.��.� DETAIL VIEW �.��.� */
+/* .. DETAIL VIEW .. */
 const APT_TYPE_LABELS = {'bed-spacer':'Bed Spacer','studio':'Studio Type','solo-room':'Solo Room','1br':'1-Bedroom','2br':'2-Bedroom','whole-unit':'Whole Unit'};
 const BATH_LABELS = {'private':'Private Bathroom','shared':'Shared Bathroom'};
 const APT_STATUS_LABELS = {'available':'Available','occupied':'Fully Occupied','inquire':'Inquire First'};
@@ -1194,7 +1194,7 @@ function navDetailPhoto(dir) {
   renderDetailContent(l);
 }
 
-/* �.��.� LIGHTBOX �.��.� */
+/* .. LIGHTBOX .. */
 function openLightbox(src) {
   if (!src) return;
   document.getElementById('lightboxImg').src = src;

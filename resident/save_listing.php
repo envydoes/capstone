@@ -223,7 +223,7 @@ $types .= 'ssss';    // bussOpen, bussClose, bussDays, bussFeatures
 $types .= 'sss';     // bussDesc, bussAddress, bussMapsLink
 $types .= 'ssssss';  // contact, email, houseNum, street, barangay, city
 $types .= 's';       // photos
-// Total: 3+5+3+3+3+5+4+3+6+1 = 36 �o"
+// Total: 3+5+3+3+3+5+4+3+6+1 = 36 o"
 
 $params = [
     $userId, $listingType, $slotsAvailable,

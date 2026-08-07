@@ -602,7 +602,7 @@ function tagColor(string $tag): array {
         <div class="mt-6 flex gap-6">
           <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['puroks_covered']) ?></p><p class="text-xs text-green-400 uppercase tracking-wider">Puroks Covered</p></div>
           <div class="w-px bg-green-700"></div>
-          <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km�</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>
+          <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km²</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>
         </div>
       </div>
     <div class="flex-1 w-full flex justify-center" data-aos="fade-left">

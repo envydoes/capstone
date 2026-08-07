@@ -108,7 +108,7 @@ if ($listStmt) {
         $lr['listingSubtype'] = $isApartment ? $lr['aptStatus'] : $lr['bussStatus'];
         $displayName = $isApartment ? ($lr['aptTitle'] ?: 'Apartment Listing') : ($lr['bussName'] ?: 'Business Listing');
         $lr['display_name'] = $displayName;
-        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : '�?"';
+        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : ' – ';
         if ($isApartment) {
             $apartmentListings[] = $lr;
         } else {
@@ -653,7 +653,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
           <input type="hidden" name="slots_available" id="fld_key"     value="">
 
           <!-- STEP 1: TYPE -->
-          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1 �?" What are you listing?</span></div>
+          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1  –  What are you listing?</span></div>
           <div style="display:flex;gap:12px;">
             <div class="type-card" id="tc-apt" onclick="chooseType('apt')">
               <span class="tc-icon"><i class="fa-solid fa-building"></i></span>
@@ -698,7 +698,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               </div>
             </div>
             <div class="g2 fg">
-              <div><label class="fl"><span class="req">*</span>Monthly Rent:</label><div class="price-wrap"><span class="price-pfx">�,�</span><input type="text" name="apt_price" class="price-in" placeholder="e.g. 3,500"></div></div>
+              <div><label class="fl"><span class="req">*</span>Monthly Rent:</label><div class="price-wrap"><span class="price-pfx">₱</span><input type="text" name="apt_price" class="price-in" placeholder="e.g. 3,500"></div></div>
               <div><label class="fl">Floor / Level: <span class="hint">(optional)</span></label><input type="text" name="apt_floor" class="fi" placeholder="e.g. 2nd Floor"></div>
             </div>
             <div class="sdiv"><span><i class="fa-solid fa-bed"></i> Room Specifications</span></div>
@@ -751,7 +751,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
             </div></div>
             <div class="fg">
               <label class="fl">Description: <span class="hint">(optional)</span></label>
-              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit �?" surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
+              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit  –  surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
               <div class="cc" id="cc-apt-d">0 / 500</div>
             </div>
           </div><!-- /panel-apt -->
@@ -789,14 +789,14 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               </div>
             </div>
             <div class="g2 fg">
-              <div><label class="fl">Starting Price / Rate: <span class="hint">(optional)</span></label><div class="price-wrap"><span class="price-pfx">�,�</span><input type="text" name="buss_price" class="price-in" placeholder="e.g. 30 per load"></div></div>
+              <div><label class="fl">Starting Price / Rate: <span class="hint">(optional)</span></label><div class="price-wrap"><span class="price-pfx">₱</span><input type="text" name="buss_price" class="price-in" placeholder="e.g. 30 per load"></div></div>
               <div><label class="fl">Years in Business: <span class="hint">(optional)</span></label>
                 <select name="buss_years" class="fs">
                   <option value="">-- Select --</option>
                   <option value="new">Just opened</option>
                   <option value="1">1 year</option>
-                  <option value="2-5">2�?"5 years</option>
-                  <option value="5-10">5�?"10 years</option>
+                  <option value="2-5">2 – 5 years</option>
+                  <option value="5-10">5 – 10 years</option>
                   <option value="10+">10+ years</option>
                 </select>
               </div>
@@ -876,7 +876,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               <input type="file" id="photoInput" name="photos[]" multiple accept="image/*" class="hidden" onchange="addPh(this)">
               <div class="pgrid4" id="pgrid" style="display:none;"></div>
               <p style="font-size:0.72rem;color:#9ca3af;margin-top:6px;display:none;" id="phlabel"></p>
-              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos �?" extra files were skipped.</p>
+              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos  –  extra files were skipped.</p>
             </div>
             <div style="display:flex;justify-content:flex-end;margin-top:28px;">
               <button type="submit" class="submit-btn" onclick="return validateForm()" <?php if (!$canAccessServices) echo 'disabled style="background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%); cursor: not-allowed; opacity: 0.6;"'; ?>>
@@ -1237,7 +1237,7 @@ const AMN_LABELS   = { 'aircon': 'Aircon', 'fan': 'Electric Fan', 'parking': 'Pa
 const RULES_LABELS = { 'no-smoking': 'No Smoking', 'no-pets': 'No Pets', 'no-visitors': 'No Overnight Visitors', 'curfew': 'Curfew Policy', 'no-cooking': 'No Cooking Inside' };
 const FEAT_LABELS  = { 'delivery': 'Delivery', 'pickup': 'Pick-up', 'dine-in': 'Dine-in', 'parking': 'Parking', 'gcash': 'GCash', 'maya': 'Maya', 'wifi': 'Free WiFi', 'aircon': 'Aircon' };
 const DAYS_LABELS  = { 'mon': 'Mon', 'tue': 'Tue', 'wed': 'Wed', 'thu': 'Thu', 'fri': 'Fri', 'sat': 'Sat', 'sun': 'Sun', 'holiday': 'Holidays' };
-const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2�?"5 years', '5-10': '5�?"10 years', '10+': '10+ years' };
+const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2 – 5 years', '5-10': '5 – 10 years', '10+': '10+ years' };
 
 function tagList(arr, labelObj) {
   if (!arr || !arr.length) return '<span style="color:#9ca3af;font-style:italic;font-size:0.82rem;">None specified</span>';
@@ -1246,7 +1246,7 @@ function tagList(arr, labelObj) {
 
 function vrow(label, val) {
   const v = (val && String(val).trim()) ? String(val) : null;
-  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : '�?"'}</span></div>`;
+  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : ' – '}</span></div>`;
 }
 
 function fmt12(t) {
@@ -1279,7 +1279,7 @@ function openViewModal(row) {
   const photos = l.photos_arr || [];
 
   const title = isApt
-    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + ' �?" ' : '') + (l.aptAddress || 'Apartment Listing'))
+    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + '  –  ' : '') + (l.aptAddress || 'Apartment Listing'))
     : (l.bussName || 'Business Listing');
 
   document.getElementById('viewModalTitle').textContent = title;
@@ -1315,7 +1315,7 @@ function openViewModal(row) {
         ${vrow('Listing Title', l.aptTitle || '')}
         ${vrow('Room Type', APT_TYPE_LABELS[l.aptType] || l.aptType || '')}
         ${vrow('Availability', STATUS_LABELS_APT[l.aptStatus] || l.aptStatus || '')}
-        ${vrow('Monthly Rent', l.aptPrice ? '�,� ' + Number(l.aptPrice).toLocaleString() : '')}
+        ${vrow('Monthly Rent', l.aptPrice ? '₱ ' + Number(l.aptPrice).toLocaleString() : '')}
         ${vrow('Floor / Level', l.aptFloor || '')}
         ${vrow('No. of Rooms', l.aptRooms || '')}
         ${vrow('Max Occupants', l.aptOccupants || '')}
@@ -1347,7 +1347,7 @@ function openViewModal(row) {
         ${vrow('Business Name', l.bussName)}
         ${vrow('Category', BUSS_CAT_LABELS[l.bussCat] || l.bussCat || '')}
         ${vrow('Status', STATUS_LABELS_BIZ[l.bussStatus] || l.bussStatus || '')}
-        ${vrow('Starting Price', l.bussPrice ? '�,� ' + l.bussPrice : '')}
+        ${vrow('Starting Price', l.bussPrice ? '₱ ' + l.bussPrice : '')}
         ${vrow('Years in Business', YEARS_LABELS[l.bussYears] || l.bussYears || '')}
       </div>
     </div>`;
@@ -1475,7 +1475,7 @@ function buildAptEditFields(l) {
         ${buildSelect('edit_aptStatus', [['','-- Select --'],['available','Available'],['occupied','Fully Occupied'],['inquire','Inquire First']], l.aptStatus || '')}
       </div>
       <div>
-        <label class="field-label">Monthly Rent (�,�)</label>
+        <label class="field-label">Monthly Rent (₱)</label>
         <input type="number" id="edit_aptPrice" class="field-input" value="${escHtml(String(l.aptPrice || ''))}" placeholder="e.g. 3500" data-orig="${escHtml(String(l.aptPrice || ''))}" oninput="checkEditChanges()">
       </div>
       <div>
@@ -1539,12 +1539,12 @@ function buildBizEditFields(l) {
         ${buildSelect('edit_bussStatus', [['','-- Select --'],['open','Open / Operating'],['new','Newly Opened'],['temp-closed','Temporarily Closed'],['for-rent','Space for Rent']], l.bussStatus || '')}
       </div>
       <div>
-        <label class="field-label">Starting Price / Rate (�,�)</label>
+        <label class="field-label">Starting Price / Rate (₱)</label>
         <input type="text" id="edit_bussPrice" class="field-input" value="${escHtml(l.bussPrice || '')}" placeholder="e.g. 30 per load" data-orig="${escHtml(l.bussPrice || '')}" oninput="checkEditChanges()">
       </div>
       <div>
         <label class="field-label">Years in Business</label>
-        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2�?"5 years'],['5-10','5�?"10 years'],['10+','10+ years']], l.bussYears || '')}
+        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2 – 5 years'],['5-10','5 – 10 years'],['10+','10+ years']], l.bussYears || '')}
       </div>
     </div>
   </div>
@@ -1634,7 +1634,7 @@ function buildEditSharedFields(l) {
     </div>
     <input type="file" id="editPhotoInput" multiple accept="image/*" class="hidden" onchange="editAddPh(this)">
     <div class="edit-pgrid" id="edit_new_pgrid" style="display:none;margin-top:8px;"></div>
-    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total �?" extra files skipped.</p>
+    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total  –  extra files skipped.</p>
     <input type="hidden" id="edit_removed_photos" value="[]">
   </div>`;
 }

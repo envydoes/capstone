@@ -11,7 +11,7 @@ require_once __DIR__ . '/../config/db_connection.php';
 if (!$conn) { echo json_encode(['success' => false, 'message' => 'DB connection failed']); exit; }
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
-// account granted manage_borrowing from adding/editing/deleting equipment �?"
+// account granted manage_borrowing from adding/editing/deleting equipment  – 
 // even though the Borrowing System page itself already shows them the
 // "Manage Equipment" tab and "Add New Equipment" button based on that same
 // permission. Now this endpoint checks the same permission consistently.
@@ -20,7 +20,7 @@ require_permission_ajax($conn, 'manage_borrowing');
 
 $action = $_POST['action'] ?? '';
 
-// �"?�"? Upload helper �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+// ==== Upload helper ====
 function uploadImages(): string {
     $fileKey = 'images';
     if (!isset($_FILES[$fileKey]) || empty($_FILES[$fileKey]['name'][0])) {

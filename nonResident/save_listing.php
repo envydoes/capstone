@@ -43,7 +43,7 @@ $contact  = trim($_POST['contact']   ?? '');
 $email    = trim($_POST['email']     ?? '');
 $houseNum = trim($_POST['house_num'] ?? '');
 $street   = trim($_POST['street']    ?? '');
-$barangay = 'Sumacab Este';    // fixed �?" disabled fields won't appear in POST
+$barangay = 'Sumacab Este';    // fixed  –  disabled fields won't appear in POST
 $city     = 'Cabanatuan City'; // fixed
 $mapsLink = trim($_POST['maps_link'] ?? '');
 
@@ -89,7 +89,7 @@ if ($listingType === 'apartment') {
     $aptOccupants   = intval($_POST['apt_occupants'] ?? 0) ?: null;
     $aptBath        = trim($_POST['apt_bath']    ?? '');
     $slotsAvailable = intval($_POST['apt_slots'] ?? $_POST['slots_available'] ?? 0);
-    // JSON-encode checkbox arrays �?" default to empty array if nothing ticked
+    // JSON-encode checkbox arrays  –  default to empty array if nothing ticked
     $aptIncluded    = json_encode(array_values(array_filter((array)($_POST['apt_inc']   ?? []))));
     $aptAmenities   = json_encode(array_values(array_filter((array)($_POST['apt_amn']   ?? []))));
     $aptRules       = json_encode(array_values(array_filter((array)($_POST['apt_rules'] ?? []))));
@@ -103,7 +103,7 @@ if ($listingType === 'apartment') {
     $bussStatus   = trim($_POST['buss_status'] ?? '');
     $bussPrice    = trim($_POST['buss_price']  ?? '');
     $bussYears    = trim($_POST['buss_years']  ?? '');
-    // TIME values �?" store NULL if empty
+    // TIME values  –  store NULL if empty
     $rawOpen      = trim($_POST['buss_open']  ?? '');
     $rawClose     = trim($_POST['buss_close'] ?? '');
     $bussOpen     = $rawOpen  !== '' ? $rawOpen  : null;
@@ -212,7 +212,7 @@ if (!$stmt) {
     exit;
 }
 
-// Build type string �?" 36 params total
+// Build type string  –  36 params total
 $types  = 'ssi';     // userId, listingType, slotsAvailable
 $types .= 'sssds';   // aptType, aptTitle, aptStatus, aptPrice, aptFloor
 $types .= 'iis';     // aptRooms, aptOccupants, aptBath
@@ -223,7 +223,7 @@ $types .= 'ssss';    // bussOpen, bussClose, bussDays, bussFeatures
 $types .= 'sss';     // bussDesc, bussAddress, bussMapsLink
 $types .= 'ssssss';  // contact, email, houseNum, street, barangay, city
 $types .= 's';       // photos
-// Total: 3+5+3+3+3+5+4+3+6+1 = 36 �o"
+// Total: 3+5+3+3+3+5+4+3+6+1 = 36 o"
 
 $params = [
     $userId, $listingType, $slotsAvailable,

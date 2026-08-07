@@ -42,7 +42,7 @@ function labelMap(string $key, array $map): string {
 $APT_TYPE  = ['bed-spacer'=>'Bed Spacer','studio'=>'Studio Type','solo-room'=>'Solo Room','1br'=>'1-Bedroom','2br'=>'2-Bedroom','whole-unit'=>'Whole Unit'];
 $APT_STAT  = ['available'=>'Available','occupied'=>'Fully Occupied','inquire'=>'Inquire First'];
 $BIZ_STAT  = ['open'=>'Open / Operating','new'=>'Newly Opened','temp-closed'=>'Temporarily Closed','for-rent'=>'Space for Rent'];
-$BIZ_CAT   = ['food'=>'Food & Dining','water'=>'Water Station','sari-sari'=>'Sari-Sari Store','salon'=>'Salon / Barber','laundry'=>'Laundry Shop','pharmacy'=>'Pharmacy','printing'=>'Printing / Computer Shop','bakery'=>'Bakery / Caf�','hardware'=>'Hardware','other'=>'Other'];
+$BIZ_CAT   = ['food'=>'Food & Dining','water'=>'Water Station','sari-sari'=>'Sari-Sari Store','salon'=>'Salon / Barber','laundry'=>'Laundry Shop','pharmacy'=>'Pharmacy','printing'=>'Printing / Computer Shop','bakery'=>'Bakery / Café','hardware'=>'Hardware','other'=>'Other'];
 $INC_LBL   = ['electric'=>'Electricity','water'=>'Water','wifi'=>'WiFi','cable'=>'Cable TV'];
 $AMN_LBL   = ['aircon'=>'Aircon','fan'=>'Electric Fan','parking'=>'Parking','laundry'=>'Laundry Area','cctv'=>'CCTV','security'=>'Security','kitchen'=>'Shared Kitchen','gate'=>'Gated Compound'];
 $RULES_LBL = ['no-smoking'=>'No Smoking','no-pets'=>'No Pets','no-visitors'=>'No Overnight Visitors','curfew'=>'Curfew Policy','no-cooking'=>'No Cooking Inside'];

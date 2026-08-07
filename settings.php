@@ -468,7 +468,7 @@ $heroImageMax  = 5;
                   </div>
                 </div>
                 <input type="file" id="heroFileInput" accept="image/jpeg,image/png" style="display:none;" onchange="handleHeroUpload(this)">
-                <span class="hero-hint-text">Accepted files: JPG, PNG &nbsp;|&nbsp; 1920�1080 &nbsp;|&nbsp; Click a tile's � to remove, or the + tile to add</span>
+                <span class="hero-hint-text">Accepted files: JPG, PNG &nbsp;|&nbsp; 1920×1080 &nbsp;|&nbsp; Click a tile's × to remove, or the + tile to add</span>
 
                 <hr class="section-divider">
 
@@ -484,7 +484,7 @@ $heroImageMax  = 5;
                     <label class="field-label">Area Served</label>
                     <div class="relative">
                       <input type="number" step="0.01" class="field-input" name="area_served" data-section-field="landing" disabled min="0" style="padding-right:44px;" value="<?= e($siteSettings['area_served']) ?>">
-                      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:#9ca3af;">km�</span>
+                      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:#9ca3af;">km²</span>
                     </div>
                   </div>
                 </div>

@@ -238,7 +238,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Services �?" <?php echo htmlspecialchars($siteSettings['site_title']); ?></title>
+  <title>Services  –  <?php echo htmlspecialchars($siteSettings['site_title']); ?></title>
   <link rel="icon" href="<?php echo htmlspecialchars(site_config_logo_url($siteSettings, '../')); ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -784,7 +784,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
               <tr>
                 <td><?php echo htmlspecialchars($request['equipment_name']); ?></td>
                 <td><?php echo htmlspecialchars($request['quantityRequested']); ?></td>
-                <td><?php echo $request['returnDate'] ? htmlspecialchars(date('m/d/Y', strtotime($request['returnDate']))) : '�?"'; ?></td>
+                <td><?php echo $request['returnDate'] ? htmlspecialchars(date('m/d/Y', strtotime($request['returnDate']))) : ' – '; ?></td>
                 <td><?php echo htmlspecialchars(date('m/d/Y', strtotime($request['submitted_at']))); ?></td>
                 <td>
                   <?php
@@ -871,7 +871,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
                   echo htmlspecialchars(trim($description));
                   ?>
                 </td>
-                <td><?php echo htmlspecialchars($request['prio_score'] ?? '�?"'); ?></td>
+                <td><?php echo htmlspecialchars($request['prio_score'] ?? ' – '); ?></td>
                 <td><?php echo htmlspecialchars(date('m/d/Y', strtotime($request['submitted_at']))); ?></td>
                 <td>
                   <?php
@@ -962,24 +962,24 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       <div class="flex flex-wrap justify-between gap-2 pb-4 mb-4 border-b border-gray-100">
         <div class="detail-row mb-0">
           <span class="detail-label">Applicant Name</span>
-          <span class="detail-val font-bold text-gray-900" id="mName">�?"</span>
+          <span class="detail-val font-bold text-gray-900" id="mName"> – </span>
         </div>
         <div class="detail-row mb-0 text-right">
           <span class="detail-label">Last Updated</span>
-          <span class="detail-val text-gray-500" id="mUpdated">�?"</span>
+          <span class="detail-val text-gray-500" id="mUpdated"> – </span>
         </div>
       </div>
 
       <!-- Application type -->
       <div class="detail-row">
         <span class="detail-label">Application Type</span>
-        <span class="detail-val" id="mType">�?"</span>
+        <span class="detail-val" id="mType"> – </span>
       </div>
 
       <!-- Purpose -->
       <div class="detail-row">
         <span class="detail-label">Purpose of Application</span>
-        <span class="detail-val" id="mPurpose">�?"</span>
+        <span class="detail-val" id="mPurpose"> – </span>
       </div>
 
       <!-- Submitted requirements -->
@@ -1003,7 +1003,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       <!-- Remark box -->
       <div class="app-remark mt-2" id="mRemark">
         <i class="fa-solid fa-circle-info text-green-600 flex-shrink-0 mt-0.5"></i>
-        <p class="leading-relaxed text-green-800 text-xs italic" id="mRemarkText">�?"</p>
+        <p class="leading-relaxed text-green-800 text-xs italic" id="mRemarkText"> – </p>
       </div>
 
     </div>
@@ -1051,7 +1051,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?php echo htmlspecialchars($siteSettings['site_title']); ?>. All Rights Reserved. Made with �YO� for <?php echo htmlspecialchars($siteSettings['barangay_name']); ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?php echo htmlspecialchars($siteSettings['site_title']); ?>. All Rights Reserved. Made with ❤️ for <?php echo htmlspecialchars($siteSettings['barangay_name']); ?>.</div>
   </div>
 </footer>
 
@@ -1126,10 +1126,10 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
   /* ─── Modal ─── */
   function openModal(data) {
     // Name + updated
-    document.getElementById('mName').textContent    = data.name    || '�?"';
-    document.getElementById('mUpdated').textContent = data.updated || '�?"';
-    document.getElementById('mType').textContent    = data.type    || '�?"';
-    document.getElementById('mPurpose').textContent = data.purpose || '�?"';
+    document.getElementById('mName').textContent    = data.name    || ' – ';
+    document.getElementById('mUpdated').textContent = data.updated || ' – ';
+    document.getElementById('mType').textContent    = data.type    || ' – ';
+    document.getElementById('mPurpose').textContent = data.purpose || ' – ';
 
     // Requirements list
     const ul = document.getElementById('mRequirements');
@@ -1147,7 +1147,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
       active:    { cls: 'badge-active',   icon: 'fa-circle-dot',      label: 'Active'      },
       cancelled: { cls: 'badge-cancelled',icon: 'fa-circle-xmark',    label: 'Cancelled'   },
     };
-    const s = statusMap[data.status] || { cls: 'badge-na', icon: 'fa-circle', label: data.status || '�?"' };
+    const s = statusMap[data.status] || { cls: 'badge-na', icon: 'fa-circle', label: data.status || ' – ' };
     document.getElementById('mStatus').innerHTML =
       `<span class="badge ${s.cls}"><i class="fa-solid ${s.icon} text-[10px]"></i> ${s.label}</span>`;
 

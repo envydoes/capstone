@@ -94,7 +94,7 @@ if ($existingApplication) {
     }
 }
 
-// Handle form submission �?" save all fields to session
+// Handle form submission  –  save all fields to session
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if user can submit application
     if (!$canSubmitApplication) {
@@ -251,7 +251,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Beneficiary Form �?" <?= e($siteSettings['site_title']) ?></title>
+  <title>Beneficiary Form  –  <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -913,9 +913,9 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
           <label class="field-label" for="year_level">Year Level:</label>
           <select class="form-select" id="year_level" name="year_level">
             <option value="" <?= empty($saved['year_level']) ? 'selected' : '' ?>>-- Select --</option>
-            <option value="grade_1_6" <?= ($saved['year_level'] ?? '') === 'grade_1_6' ? 'selected' : '' ?>>Grade 1�?"6 (Elementary)</option>
-            <option value="grade_7_10" <?= ($saved['year_level'] ?? '') === 'grade_7_10' ? 'selected' : '' ?>>Grade 7�?"10 (Junior High)</option>
-            <option value="grade_11_12" <?= ($saved['year_level'] ?? '') === 'grade_11_12' ? 'selected' : '' ?>>Grade 11�?"12 (Senior High)</option>
+            <option value="grade_1_6" <?= ($saved['year_level'] ?? '') === 'grade_1_6' ? 'selected' : '' ?>>Grade 1 – 6 (Elementary)</option>
+            <option value="grade_7_10" <?= ($saved['year_level'] ?? '') === 'grade_7_10' ? 'selected' : '' ?>>Grade 7 – 10 (Junior High)</option>
+            <option value="grade_11_12" <?= ($saved['year_level'] ?? '') === 'grade_11_12' ? 'selected' : '' ?>>Grade 11 – 12 (Senior High)</option>
             <option value="1st_year" <?= ($saved['year_level'] ?? '') === '1st_year' ? 'selected' : '' ?>>1st Year (College)</option>
             <option value="2nd_year" <?= ($saved['year_level'] ?? '') === '2nd_year' ? 'selected' : '' ?>>2nd Year</option>
             <option value="3rd_year" <?= ($saved['year_level'] ?? '') === '3rd_year' ? 'selected' : '' ?>>3rd Year</option>
@@ -982,7 +982,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with �YO� for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ❤️ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 

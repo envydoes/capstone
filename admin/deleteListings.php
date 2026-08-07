@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) { http_response_code(403); echo json_encode(['
 require_once __DIR__ . '/../config/db_connection.php';
 
 // Was hardcoded to account_role === 'admin' only, which blocked any staff
-// account granted manage_listings from deleting listings �?" even though
+// account granted manage_listings from deleting listings  –  even though
 // communityListings.php already shows them the delete buttons based on
 // that same permission. Now this endpoint checks the same permission.
 require_once __DIR__ . '/../includes/check_permissions.php';

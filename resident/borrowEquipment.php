@@ -173,7 +173,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Borrow Equipment �?" <?= e($siteSettings['site_title']) ?></title>
+  <title>Borrow Equipment  –  <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -623,7 +623,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
           <div class="flex justify-end mt-auto pt-2 border-t border-gray-50">
             <div class="qty-wrap">
-              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>�^'</button>
+              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>^'</button>
               <div class="qty-val" id="qty_<?= $eq['id'] ?>">0</div>
               <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, 1)"  id="btn_plus_<?= $eq['id'] ?>"  <?= !$available ? 'disabled' : '' ?>>+</button>
             </div>
@@ -643,7 +643,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     </div>
   </div>
 
-  <!-- �"?�"? BORROW BUTTON (inline, below grid) �"?�"? -->
+  <!-- ==== BORROW BUTTON (inline, below grid) ==== -->
   <div class="f4">
     <button class="borrow-btn" id="borrowBtn" onclick="openBorrowModal()" disabled>
       <i class="fa-solid fa-basket-shopping text-sm"></i>
@@ -743,7 +743,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with �YO� for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ❤️ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
@@ -803,7 +803,7 @@ $initials = strtoupper(substr($userName, 0, 2));
       if (qty > 0) {
         hasItems = true;
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${qty}�-</strong> ${card.dataset.name}`;
+        li.innerHTML = `<strong>${qty}-</strong> ${card.dataset.name}`;
         ul.appendChild(li);
       }
     });

@@ -180,7 +180,7 @@ $initials = strtoupper(substr($userName, 0, 2));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Document Request �?" <?= e($siteSettings['site_title']) ?></title>
+  <title>Document Request  –  <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -513,11 +513,11 @@ $initials = strtoupper(substr($userName, 0, 2));
               required
             >
             <div class="spinner-btns">
-              <button type="button" class="spin-btn" onclick="spinCopies(1)">�-�</button>
-              <button type="button" class="spin-btn" onclick="spinCopies(-1)">�-�</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(1)">-</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(-1)">-</button>
             </div>
           </div>
-          <p class="error-msg" id="err_num_copies">Please enter a valid number of copies (1�?"10).</p>
+          <p class="error-msg" id="err_num_copies">Please enter a valid number of copies (1 – 10).</p>
         </div>
 
       </div>
@@ -620,7 +620,7 @@ $initials = strtoupper(substr($userName, 0, 2));
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with �YO� for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ❤️ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
@@ -770,7 +770,7 @@ $initials = strtoupper(substr($userName, 0, 2));
     const copies = parseInt(document.getElementById('num_copies').value);
     if (!copies || copies < 1 || copies > 10) {
       document.getElementById('num_copies').classList.add('field-error');
-      showErr('err_num_copies', 'Please enter a valid number of copies (1�?"10).');
+      showErr('err_num_copies', 'Please enter a valid number of copies (1 – 10).');
     } else {
       document.getElementById('num_copies').classList.remove('field-error');
       clearErr('err_num_copies');

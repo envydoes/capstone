@@ -129,7 +129,7 @@ if ($isApt) {
     //  4 aptPrice       d    8 aptBath         s   12 aptAmenities   s   16 contact   s   20 accId      s
     //
     // Type string (20 chars): s s s d s i i s i s s s s s s s s s i s
-    // Verified: 'sssdsiisisssssssssis' length=20 â�"�?o
+    // Verified: 'sssdsiisisssssssssis' length=20 â====
 
     $aptTitle       = trim($data['aptTitle']       ?? '');
     $aptType        = trim($data['aptType']        ?? '');
@@ -175,7 +175,7 @@ if ($isApt) {
     }
 
     $stmt->bind_param(
-        'sssdsiisisssssssssis',   // â�?� 20 chars, verified â�"�?o
+        'sssdsiisisssssssssis',   // â? 20 chars, verified â====
         $aptTitle,        //  1 s
         $aptType,         //  2 s
         $aptStatus,       //  3 s
@@ -201,8 +201,8 @@ if ($isApt) {
 } else {
     // ─── BUSINESS UPDATE (17 params) ───
     // All string fields, then listingId (int), then accId (string)
-    // Type string (17 chars): 15�f�?"s + i + s
-    // Verified: 'sssssssssssssssis' length=17 â�"�?o
+    // Type string (17 chars): 15f – s + i + s
+    // Verified: 'sssssssssssssssis' length=17 â====
 
     $bussName     = trim($data['bussName']   ?? '');
     $bussCat      = trim($data['bussCat']    ?? '');
@@ -244,7 +244,7 @@ if ($isApt) {
     }
 
     $stmt->bind_param(
-        'sssssssssssssssis',   // â�?� 17 chars, verified â�"�?o
+        'sssssssssssssssis',   // â? 17 chars, verified â====
         $bussName,      //  1 s
         $bussCat,       //  2 s
         $bussStatus,    //  3 s
