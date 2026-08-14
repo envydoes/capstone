@@ -79,6 +79,10 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.25s; }
 
+  /* Password requirements tooltip */
+  #pwInfoTooltip { pointer-events: none; }
+  #pwInfoTooltip:not(.hidden) { pointer-events: auto; }
+
   /* Tailwind-green ? theme color overrides (same pattern as login.php) */
   .bg-green-700 { background-color: var(--site-primary) !important; }
   .bg-green-600 { background-color: var(--site-primary) !important; }
@@ -189,8 +193,25 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
 
         <!-- PASSWORD -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2" for="password">
-            <i class="fa-solid fa-lock text-green-600 mr-1"></i> Password
+          <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5" for="password">
+            <span><i class="fa-solid fa-lock text-green-600 mr-1"></i> Password</span>
+            <span class="relative inline-flex">
+              <button type="button" id="pwInfoBtn" class="text-gray-400 hover:text-green-600 transition leading-none" aria-label="Show password requirements" aria-describedby="pwInfoTooltip">
+                <i class="fa-solid fa-circle-info text-xs"></i>
+              </button>
+              <div id="pwInfoTooltip" role="tooltip" class="hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-20">
+                <p class="font-semibold mb-1">Password must include:</p>
+                <ul class="space-y-0.5 list-disc list-inside">
+                  <li>At least 8 characters (max 128)</li>
+                  <li>1 uppercase letter (A&ndash;Z)</li>
+                  <li>1 lowercase letter (a&ndash;z)</li>
+                  <li>1 number (0&ndash;9)</li>
+                  <li>1 special character (e.g. ! @ # $ % ^ &amp; *)</li>
+                </ul>
+                <p class="mt-1.5 text-gray-300">Must not contain your email, and can't be a commonly used password (e.g. "password1234").</p>
+                <div class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-900 rotate-45 -mt-1"></div>
+              </div>
+            </span>
           </label>
           <div class="relative">
             <input
@@ -211,7 +232,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
             <div class="seg" id="seg4"></div>
           </div>
           <p id="strength-label" class="text-xs mt-1 text-gray-400"></p>
-          <p id="password-hint" class="text-gray-400 text-xs mt-1">Min 8 characters with uppercase, lowercase, and a number. Must not match your email.</p>
+          <p id="password-hint" class="text-gray-400 text-xs mt-1">Min 8 characters with uppercase, lowercase, a number, and a special character. Must not contain your email or be a commonly used password.</p>
           <p id="password-error" class="text-red-500 text-xs mt-1.5 <?php echo $serverErrorField === 'password' ? '' : 'hidden'; ?>" role="alert">
             <?php echo $serverErrorField === 'password' ? htmlspecialchars($serverErrorMessage) : ''; ?>
           </p>
@@ -315,7 +336,31 @@ function validatePassword(pw) {
   if (!/[A-Z]/.test(pw)) e.push('an uppercase letter');
   if (!/[a-z]/.test(pw)) e.push('a lowercase letter');
   if (!/[0-9]/.test(pw)) e.push('a number');
+  if (!/[^A-Za-z0-9]/.test(pw)) e.push('a special character (e.g. !@#$%^&*)');
   return e;
+}
+
+/* Commonly used / frequently-breached passwords - rejected outright regardless of
+   whether they technically satisfy the character-class rules above (e.g. "Password1!"). */
+const COMMON_PASSWORDS = new Set([
+  'password','12345678','123456789','1234567890','qwerty','qwerty123','qwertyuiop',
+  'abc123','abc12345','password1','password12','password123','password1234',
+  'letmein','letmein123','welcome','welcome123','admin','admin123','root','toor',
+  'iloveyou','monkey','dragon','football','football1','baseball','basketball',
+  'starwars','superman','master','sunshine','princess','shadow','freedom','trustno1',
+  'whatever','solo','passw0rd','p@ssw0rd','1q2w3e4r','zxcvbnm','asdfghjkl',
+  '123123','111111','000000','666666','696969','654321','987654321',
+  'changeme','mypassword','loveme','ashley','jennifer','jessica','michael',
+  'jordan','hunter2','access','yankees','mustang','ninja','azerty'
+]);
+
+function isCommonPassword(pw) {
+  const lower = pw.toLowerCase();
+  if (COMMON_PASSWORDS.has(lower)) return true;
+  // Catch variants like "Password1234!" by stripping leading/trailing digits & symbols
+  const stripped = lower.replace(/^[^a-z]+/, '').replace(/[^a-z]+$/, '');
+  if (stripped.length >= 4 && COMMON_PASSWORDS.has(stripped)) return true;
+  return false;
 }
 
 function passwordStrengthScore(pw) {
@@ -380,6 +425,23 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
     icon.classList.toggle('fa-eye-slash');
   });
 });
+
+/* ?? PASSWORD REQUIREMENTS TOOLTIP ???????????????????????????????????????? */
+(function() {
+  const btn = document.getElementById('pwInfoBtn');
+  const tip = document.getElementById('pwInfoTooltip');
+  if (!btn || !tip) return;
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    tip.classList.toggle('hidden');
+  });
+  document.addEventListener('click', function(e) {
+    if (!tip.contains(e.target) && e.target !== btn) tip.classList.add('hidden');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') tip.classList.add('hidden');
+  });
+})();
 
 /* ?? ROLE CARD HIGHLIGHT ?????????????????????????????????????????????????? */
 const roleMap = [
@@ -526,11 +588,17 @@ document.getElementById('registrationForm').addEventListener('submit', function(
   } else if (password.toLowerCase() === rawEmail.toLowerCase()) {
     /* ?? Password must not equal the email ?? */
     showError('password-error','Your password must not be the same as your email address.'); setInputState('password','error'); valid = false;
+  } else if (isCommonPassword(password)) {
+    /* ?? Reject commonly used / breached passwords, even if they pass complexity rules ?? */
+    showError('password-error','This password is too common and not allowed (e.g. "password1234"). Please choose something more unique.'); setInputState('password','error'); valid = false;
   } else {
-    /* Also warn if password contains the local part of the email (before @) */
-    const localPart = rawEmail.split('@')[0].toLowerCase();
+    /* Also warn if password contains the local part or domain of the email (PII leakage) */
+    const localPart  = rawEmail.split('@')[0].toLowerCase();
+    const domainPart = (rawEmail.split('@')[1] || '').split('.')[0].toLowerCase();
     if (localPart.length >= 4 && password.toLowerCase().includes(localPart)) {
       showError('password-error','Your password is too similar to your email. Please choose a different one.'); setInputState('password','error'); valid = false;
+    } else if (domainPart.length >= 4 && password.toLowerCase().includes(domainPart)) {
+      showError('password-error','Your password should not contain parts of your email address.'); setInputState('password','error'); valid = false;
     } else {
       clearError('password-error'); setInputState('password','valid');
     }
@@ -584,10 +652,15 @@ document.getElementById('password').addEventListener('blur', function() {
     showError('password-error','Must include: ' + errs.join(', ') + '.'); setInputState('password','error');
   } else if (this.value.toLowerCase() === rawEmail.toLowerCase()) {
     showError('password-error','Your password must not be the same as your email address.'); setInputState('password','error');
+  } else if (isCommonPassword(this.value)) {
+    showError('password-error','This password is too common and not allowed. Please choose something more unique.'); setInputState('password','error');
   } else {
-    const localPart = rawEmail.split('@')[0].toLowerCase();
+    const localPart  = rawEmail.split('@')[0].toLowerCase();
+    const domainPart = (rawEmail.split('@')[1] || '').split('.')[0].toLowerCase();
     if (localPart.length >= 4 && this.value.toLowerCase().includes(localPart)) {
       showError('password-error','Your password is too similar to your email.'); setInputState('password','error');
+    } else if (domainPart.length >= 4 && this.value.toLowerCase().includes(domainPart)) {
+      showError('password-error','Your password should not contain parts of your email address.'); setInputState('password','error');
     } else {
       clearError('password-error'); setInputState('password','valid');
     }
