@@ -82,6 +82,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   /* Password requirements tooltip */
   #pwInfoTooltip { pointer-events: none; }
   #pwInfoTooltip:not(.hidden) { pointer-events: auto; }
+  #pwChecklist li { transition: color 0.15s; }
 
   /* Tailwind-green ? theme color overrides (same pattern as login.php) */
   .bg-green-700 { background-color: var(--site-primary) !important; }
@@ -196,19 +197,14 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
           <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5" for="password">
             <span><i class="fa-solid fa-lock text-green-600 mr-1"></i> Password</span>
             <span class="relative inline-flex">
-              <button type="button" id="pwInfoBtn" class="text-gray-400 hover:text-green-600 transition leading-none" aria-label="Show password requirements" aria-describedby="pwInfoTooltip">
-                <i class="fa-solid fa-circle-info text-xs"></i>
+              <button type="button" id="pwInfoBtn" class="text-gray-400 transition leading-none" aria-label="Show password requirements" aria-describedby="pwInfoTooltip">
+                <i id="pwInfoIconGlyph" class="fa-solid fa-circle-info text-xs"></i>
               </button>
-              <div id="pwInfoTooltip" role="tooltip" class="hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-20">
-                <p class="font-semibold mb-1">Password must include:</p>
-                <ul class="space-y-0.5 list-disc list-inside">
-                  <li>At least 8 characters (max 128)</li>
-                  <li>1 uppercase letter (A&ndash;Z)</li>
-                  <li>1 lowercase letter (a&ndash;z)</li>
-                  <li>1 number (0&ndash;9)</li>
-                  <li>1 special character (e.g. ! @ # $ % ^ &amp; *)</li>
+              <div id="pwInfoTooltip" role="tooltip" class="hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-20">
+                <p class="font-semibold mb-1.5">Password requirements:</p>
+                <ul id="pwChecklist" class="space-y-1">
+                  <!-- populated live by JS as the user types -->
                 </ul>
-                <p class="mt-1.5 text-gray-300">Must not contain your email, and can't be a commonly used password (e.g. "password1234").</p>
                 <div class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-900 rotate-45 -mt-1"></div>
               </div>
             </span>
@@ -233,10 +229,10 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
           </div>
           <p id="strength-label" class="text-xs mt-1 text-gray-400"></p>
           <p id="password-hint" class="text-gray-400 text-xs mt-1">Min 8 characters with uppercase, lowercase, a number, and a special character. Must not contain your email or be a commonly used password.</p>
-         <p id="password-error" class="text-red-500 text-xs mt-1.5 flex items-start gap-1.5 <?php echo $serverErrorField === 'password' ? '' : 'hidden'; ?>" role="alert">
-  <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
-  <span><?php echo $serverErrorField === 'password' ? htmlspecialchars($serverErrorMessage) : ''; ?></span>
-</p>
+          <p id="password-error" class="text-red-500 text-xs mt-1.5 flex items-start gap-1.5 <?php echo $serverErrorField === 'password' ? '' : 'hidden'; ?>" role="alert">
+            <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
+            <span><?php echo $serverErrorField === 'password' ? htmlspecialchars($serverErrorMessage) : ''; ?></span>
+          </p>
         </div>
 
         <!-- CONFIRM PASSWORD -->
@@ -255,8 +251,9 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
               <i class="fa fa-eye"></i>
             </button>
           </div>
-          <p id="confirm-error" class="text-red-500 text-xs mt-1.5 <?php echo $serverErrorField === 'confirm_password' ? '' : 'hidden'; ?>" role="alert">
-            <?php echo $serverErrorField === 'confirm_password' ? htmlspecialchars($serverErrorMessage) : ''; ?>
+          <p id="confirm-error" class="text-red-500 text-xs mt-1.5 flex items-start gap-1.5 <?php echo $serverErrorField === 'confirm_password' ? '' : 'hidden'; ?>" role="alert">
+            <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
+            <span><?php echo $serverErrorField === 'confirm_password' ? htmlspecialchars($serverErrorMessage) : ''; ?></span>
           </p>
         </div>
 
@@ -364,6 +361,18 @@ function isCommonPassword(pw) {
   return false;
 }
 
+/* Does the password leak the email address (local part or domain)? */
+function passwordLeaksEmail(pw) {
+  const rawEmail = document.getElementById('email').value.trim();
+  if (!pw || !rawEmail) return false;
+  if (pw.toLowerCase() === rawEmail.toLowerCase()) return true;
+  const localPart  = rawEmail.split('@')[0].toLowerCase();
+  const domainPart = (rawEmail.split('@')[1] || '').split('.')[0].toLowerCase();
+  if (localPart.length >= 4 && pw.toLowerCase().includes(localPart)) return true;
+  if (domainPart.length >= 4 && pw.toLowerCase().includes(domainPart)) return true;
+  return false;
+}
+
 function passwordStrengthScore(pw) {
   let s = 0;
   if (pw.length >= 8)  s++;
@@ -371,6 +380,77 @@ function passwordStrengthScore(pw) {
   if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
   if (/[0-9]/.test(pw)) s++;
   return Math.min(s, 4);
+}
+
+/* ?? LIVE PASSWORD CHECKLIST (tied to the (i) icon beside the Password label) ??? */
+const PW_RULES = [
+  { label: '8-128 characters',                     test: pw => pw.length >= 8 && pw.length <= 128 },
+  { label: 'One uppercase letter (A-Z)',            test: pw => /[A-Z]/.test(pw) },
+  { label: 'One lowercase letter (a-z)',            test: pw => /[a-z]/.test(pw) },
+  { label: 'One number (0-9)',                      test: pw => /[0-9]/.test(pw) },
+  { label: 'One special character (!@#$%^&*)',      test: pw => /[^A-Za-z0-9]/.test(pw) },
+  { label: "Doesn't contain your email",            test: pw => !passwordLeaksEmail(pw) },
+  { label: 'Not a commonly used password',          test: pw => pw.length === 0 || !isCommonPassword(pw) },
+];
+
+function renderPwChecklist(pw) {
+  const list = document.getElementById('pwChecklist');
+  if (!list) return true;
+
+  let allValid = true;
+  list.innerHTML = PW_RULES.map(rule => {
+    const passed = rule.test(pw);
+    if (!passed) allValid = false;
+
+    let iconClass, textClass;
+    if (pw.length === 0) {
+      iconClass = 'fa-circle text-gray-500';
+      textClass = 'text-gray-300';
+    } else if (passed) {
+      iconClass = 'fa-circle-check text-lime-400';
+      textClass = 'text-gray-300';
+    } else {
+      iconClass = 'fa-circle-xmark text-red-400';
+      textClass = 'text-white';
+    }
+
+    return `<li class="flex items-center gap-1.5 ${textClass}">
+              <i class="fa-solid ${iconClass} text-[10px] flex-shrink-0"></i>
+              <span>${rule.label}</span>
+            </li>`;
+  }).join('');
+
+  return allValid;
+}
+
+/* Turns the (i) icon into a live status indicator: gray (empty) -> red (invalid) -> green (valid) */
+function updatePwInfoIcon(pw) {
+  const icon = document.getElementById('pwInfoIconGlyph');
+  const btn  = document.getElementById('pwInfoBtn');
+  if (!icon || !btn) return;
+
+  btn.classList.remove('text-gray-400', 'text-red-500', 'text-green-600');
+
+  if (pw.length === 0) {
+    icon.className = 'fa-solid fa-circle-info text-xs';
+    btn.classList.add('text-gray-400');
+    return;
+  }
+
+  const allValid = PW_RULES.every(rule => rule.test(pw));
+  if (allValid) {
+    icon.className = 'fa-solid fa-circle-check text-xs';
+    btn.classList.add('text-green-600');
+  } else {
+    icon.className = 'fa-solid fa-circle-exclamation text-xs';
+    btn.classList.add('text-red-500');
+  }
+}
+
+function refreshPwLiveValidation() {
+  const pw = document.getElementById('password').value;
+  renderPwChecklist(pw);
+  updatePwInfoIcon(pw);
 }
 
 /* ?? ERROR HELPERS ???????????????????????????????????????????????????????? */
@@ -408,7 +488,10 @@ const segColors   = [
 ];
 const strengthTexts = ['Weak','Fair','Good','Strong'];
 
-document.getElementById('password').addEventListener('input', function() {
+const passwordInput = document.getElementById('password');
+const pwInfoTooltip = document.getElementById('pwInfoTooltip');
+
+passwordInput.addEventListener('input', function() {
   const score  = passwordStrengthScore(this.value);
   const idx    = Math.max(0, score - 1);
   const colors = this.value.length ? segColors[idx] : Array(4).fill('bg-gray-200');
@@ -416,6 +499,20 @@ document.getElementById('password').addEventListener('input', function() {
   const lbl = document.getElementById('strength-label');
   lbl.textContent  = this.value.length ? strengthTexts[idx] : '';
   lbl.className    = 'text-xs mt-1 ' + ['text-red-500','text-orange-500','text-yellow-600','text-lime-600'][idx];
+
+  // Live-update the requirements checklist + icon as the user types
+  refreshPwLiveValidation();
+});
+
+/* Auto-show the checklist tooltip while the user is actively typing the password */
+passwordInput.addEventListener('focus', function() {
+  refreshPwLiveValidation();
+  pwInfoTooltip.classList.remove('hidden');
+});
+passwordInput.addEventListener('blur', function() {
+  setTimeout(() => {
+    if (!pwInfoTooltip.matches(':hover')) pwInfoTooltip.classList.add('hidden');
+  }, 120);
 });
 
 /* ?? TOGGLE PASSWORD VISIBILITY ??????????????????????????????????????????? */
@@ -429,17 +526,20 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
   });
 });
 
-/* ?? PASSWORD REQUIREMENTS TOOLTIP ???????????????????????????????????????? */
+/* ?? PASSWORD REQUIREMENTS TOOLTIP (manual toggle via the (i) icon) ??????????? */
 (function() {
   const btn = document.getElementById('pwInfoBtn');
   const tip = document.getElementById('pwInfoTooltip');
   if (!btn || !tip) return;
   btn.addEventListener('click', function(e) {
     e.stopPropagation();
+    refreshPwLiveValidation();
     tip.classList.toggle('hidden');
   });
   document.addEventListener('click', function(e) {
-    if (!tip.contains(e.target) && e.target !== btn) tip.classList.add('hidden');
+    if (!tip.contains(e.target) && e.target !== btn && document.activeElement !== passwordInput) {
+      tip.classList.add('hidden');
+    }
   });
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') tip.classList.add('hidden');
@@ -510,6 +610,9 @@ emailInput.addEventListener('input', function() {
   setInputState('email', '');
   setEmailStatus('');
   emailAvailable = true;
+
+  // Email affects the "doesn't contain your email" password rule - keep checklist in sync
+  refreshPwLiveValidation();
 
   if (!val || !isValidEmail(val)) return;
 
