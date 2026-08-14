@@ -602,8 +602,7 @@ function tagColor(string $tag): array {
         <div class="mt-6 flex gap-6">
           <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['puroks_covered']) ?></p><p class="text-xs text-green-400 uppercase tracking-wider">Puroks Covered</p></div>
           <div class="w-px bg-green-700"></div>
-          <div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km²</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>
-        </div>
+<div><p class="text-2xl font-bold text-green-300"><?= e($siteSettings['area_served']) ?>km²</p><p class="text-xs text-green-400 uppercase tracking-wider">Area Served</p></div>        </div>
       </div>
     <div class="flex-1 w-full flex justify-center" data-aos="fade-left">
         <div class="w-full max-w-xl rounded-3xl border border-green-700 shadow-2xl overflow-hidden bg-white">
@@ -733,7 +732,7 @@ function tagColor(string $tag): array {
                 <span><i class="fa-solid fa-flag mr-1 text-green-500"></i>Starts: <?php echo $startDate; ?></span>
               <?php endif; ?>
               <a href="<?php echo $detailUrl; ?>" class="text-green-600 font-semibold ml-auto hover:underline">
-                Read more ?
+                Read more →
               </a>
             </div>
           </div>
@@ -798,8 +797,7 @@ function tagColor(string $tag): array {
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        &copy; 2026 SumEste Portal. All Rights Reserved. Made with &hearts; for <?= e($siteSettings['barangay_name']) ?>.
-      </div>
+&copy; 2026 SumEste Portal. All Rights Reserved. Made for Sumacab Este <?= e($siteSettings['barangay_name']) ?>.      </div>  
     </div>
   </footer>
 

@@ -233,9 +233,10 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
           </div>
           <p id="strength-label" class="text-xs mt-1 text-gray-400"></p>
           <p id="password-hint" class="text-gray-400 text-xs mt-1">Min 8 characters with uppercase, lowercase, a number, and a special character. Must not contain your email or be a commonly used password.</p>
-          <p id="password-error" class="text-red-500 text-xs mt-1.5 <?php echo $serverErrorField === 'password' ? '' : 'hidden'; ?>" role="alert">
-            <?php echo $serverErrorField === 'password' ? htmlspecialchars($serverErrorMessage) : ''; ?>
-          </p>
+         <p id="password-error" class="text-red-500 text-xs mt-1.5 flex items-start gap-1.5 <?php echo $serverErrorField === 'password' ? '' : 'hidden'; ?>" role="alert">
+  <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
+  <span><?php echo $serverErrorField === 'password' ? htmlspecialchars($serverErrorMessage) : ''; ?></span>
+</p>
         </div>
 
         <!-- CONFIRM PASSWORD -->
@@ -375,12 +376,14 @@ function passwordStrengthScore(pw) {
 /* ?? ERROR HELPERS ???????????????????????????????????????????????????????? */
 function showError(id, msg) {
   const el = document.getElementById(id);
-  el.textContent = msg;
+  const textEl = el.querySelector('span') || el;
+  textEl.textContent = msg;
   el.classList.remove('hidden');
 }
 function clearError(id) {
   const el = document.getElementById(id);
-  el.textContent = '';
+  const textEl = el.querySelector('span') || el;
+  textEl.textContent = '';
   el.classList.add('hidden');
 }
 function setInputState(id, state) {
