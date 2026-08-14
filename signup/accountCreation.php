@@ -196,18 +196,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
         <div>
           <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5" for="password">
             <span><i class="fa-solid fa-lock text-green-600 mr-1"></i> Password</span>
-            <span class="relative inline-flex">
-              <button type="button" id="pwInfoBtn" class="text-gray-400 transition leading-none" aria-label="Show password requirements" aria-describedby="pwInfoTooltip">
-                <i id="pwInfoIconGlyph" class="fa-solid fa-circle-info text-xs"></i>
-              </button>
-              <div id="pwInfoTooltip" role="tooltip" class="hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-20">
-                <p class="font-semibold mb-1.5">Password requirements:</p>
-                <ul id="pwChecklist" class="space-y-1">
-                  <!-- populated live by JS as the user types -->
-                </ul>
-                <div class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-900 rotate-45 -mt-1"></div>
-              </div>
-            </span>
+            <i id="pwInfoIconGlyph" class="fa-solid fa-circle-info text-xs text-gray-400" aria-hidden="true"></i>
           </label>
           <div class="relative">
             <input
