@@ -724,7 +724,7 @@ function tagColor(string $tag): array {
                 <span><i class="fa-solid fa-flag mr-1 text-green-500"></i>Starts: <?php echo $startDate; ?></span>
               <?php endif; ?>
               <a href="<?php echo $detailUrl; ?>" class="text-green-600 font-semibold ml-auto hover:underline">
-                Read more ?
+                Read more →
               </a>
             </div>
           </div>

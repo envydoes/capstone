@@ -27,7 +27,14 @@ if (!function_exists('print_report_start')) {
      */
     function print_report_start(array $siteSettings, string $reportTitle, array $metaLines = [], string $orientation = 'portrait'): void
     {
-        $pageSize = $orientation === 'landscape' ? 'legal landscape' : 'legal';
+        // NOTE: intentionally using the standard CSS `legal` keyword rather
+        // than a hand-specified dimension (e.g. `8.5in 13in`). A custom
+        // two-value size isn't one of the recognized paper presets that
+        // Chromium's print pipeline / "Microsoft Print to PDF" expects, and
+        // that mismatch caused content to paginate incorrectly (splitting
+        // a short table across 2 mostly-blank pages instead of 1). `legal`
+        // (8.5in x 14in) is the size actually confirmed working end-to-end.
+        $pageSize = $orientation === 'portrait' ? 'legal portrait' : 'legal';
         $logoUrl = site_config_logo_url($siteSettings, '../');
         $barangayUrl = site_config_barangay_logo_url($siteSettings, '../');
         $municipalUrl = site_config_municipality_logo_url($siteSettings, '../');

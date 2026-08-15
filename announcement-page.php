@@ -207,7 +207,7 @@ $roleBadgeClass = match($role) {
       <?php if ($showMyPanel): ?>
         <a href="resident/residentPanel.php" class="nav-link">My Panel</a>
       <?php endif; ?>
-      <?php if ($roleLower === 'admin'): ?>
+      <?php if ($roleLower === 'admin' | $role === 'staff'): ?>
         <a href="admin/adminDashboard.php" class="nav-link">Dashboard</a>
       <?php endif; ?>
       <a href="landing.php#announcements" class="nav-link">Announcements</a>
@@ -245,17 +245,19 @@ $roleBadgeClass = match($role) {
                 <?php       
                   // Check non-resident first because it contains the word "resident"
                   if (str_contains($roleLower, 'non-resident')) {
-                      $profileUrl = '../nonResident/nonResidentProfile';
+                      $profileUrl = '../nonResident/nonresidentProfile';
                   } elseif (str_contains($roleLower, 'resident')) {
                       $profileUrl = '../resident/myProfile';
                   }
                 ?>
+                <?php if ($logged_in): ?>
                 <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
                   <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
                 </a>
+                <?php endif; ?>
               <?php endif; ?>
-              <?php if ($roleLower === 'admin'): ?>
-              <a href="admin/announcements.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition"><i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> Admin Panel</a>
+              <?php if ($roleLower === 'admin' | $role === 'staff'): ?>
+              <a href="admin/adminDashboard.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition"><i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> Admin Panel</a>
               <?php endif; ?>
             </div>
             <div class="border-t border-gray-100 py-1">
