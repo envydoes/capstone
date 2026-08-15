@@ -7,12 +7,31 @@ if (!isset($_SESSION['start_time'])) {
     $_SESSION['start_time'] = time();
 }
 
+// ?? Helper: rebuild the combined role list from the radio + checkbox fields ????
+// accountCreation.php now submits residency_type (radio: resident/non-resident)
+// and is_owner (checkbox) instead of the old account_role[] checkbox array.
+// This is the single source of truth for both failBack() and the main flow
+// below, so the two can never drift out of sync.
+function buildAccountRoles(): array {
+    $residencyType = trim($_POST['residency_type'] ?? '');
+    $isOwner       = isset($_POST['is_owner']) && $_POST['is_owner'] === 'business/apartment owner';
+
+    $roles = [];
+    if (in_array($residencyType, ['resident', 'non-resident'], true)) {
+        $roles[] = $residencyType;
+    }
+    if ($isOwner) {
+        $roles[] = 'business/apartment owner';
+    }
+    return $roles;
+}
+
 // ?? Helper: redirect back with error ?????????????????????????????????????????
 function failBack(string $field, string $message): never {
     $_SESSION['reg_error_field']   = $field;
     $_SESSION['reg_error_message'] = $message;
     $_SESSION['reg_old_email']     = trim($_POST['email'] ?? '');
-    $_SESSION['reg_old_role']      = $_POST['account_role'] ?? [];
+    $_SESSION['reg_old_role']      = buildAccountRoles();
     header('Location: accountCreation.php');
     exit;
 }
@@ -55,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ?? 2. Collect inputs ?????????????????????????????????????????????????????????
-$rawEmail    = trim($_POST['email']           ?? '');
-$rawPassword = $_POST['password']             ?? '';   // spaces valid in passwords
-$rawConfirm  = $_POST['confirm_password']     ?? '';
-$rawRoles    = (array)($_POST['account_role'] ?? []);
+$rawEmail    = trim($_POST['email']       ?? '');
+$rawPassword = $_POST['password']         ?? '';   // spaces valid in passwords
+$rawConfirm  = $_POST['confirm_password'] ?? '';
+$rawRoles    = buildAccountRoles();
 
 // ?? 3. Email validation ???????????????????????????????????????????????????????
 if (empty($rawEmail))

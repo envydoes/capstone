@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Select whitelists
     if ($data['family_role'] === '') $errors['family_role'] = 'Family role is required.';
-    if ($data['gender']      === '') $errors['gender']      = 'Gender is required.';
+    if ($data['gender']      === '') $errors['gender']      = 'Sex is required.';
     if ($data['civil_status']=== '') $errors['civil_status']= 'Civil status is required.';
 
     // Birthday
@@ -530,10 +530,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <!-- Gender -->
           <div>
-            <label class="field-label" for="gender">Gender <span class="required-star">*</span></label>
+            <label class="field-label" for="gender">Sex <span class="required-star">*</span></label>
             <select id="gender" name="gender" required
                     class="field-input <?php echo isset($errors['gender']) ? 'error' : ''; ?>">
-              <option value="">Select Gender</option>
+              <option value="">Select Sex</option>
               <?php
               $genders = ['male' => 'Male', 'female' => 'Female', 'other' => 'Other'];
               foreach ($genders as $val => $label):
