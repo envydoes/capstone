@@ -513,8 +513,8 @@ $initials = strtoupper(substr($userName, 0, 2));
               required
             >
             <div class="spinner-btns">
-              <button type="button" class="spin-btn" onclick="spinCopies(1)">-</button>
-              <button type="button" class="spin-btn" onclick="spinCopies(-1)">-</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(1)">▲</button>
+              <button type="button" class="spin-btn" onclick="spinCopies(-1)">▼</button>
             </div>
           </div>
           <p class="error-msg" id="err_num_copies">Please enter a valid number of copies (1 – 10).</p>

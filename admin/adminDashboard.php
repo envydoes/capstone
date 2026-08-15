@@ -299,7 +299,7 @@ $incomeCounts = [
 $totalIncomeCount = array_sum($incomeCounts);
 
 $incomeAgeChartData = [
-    ['Age Group', 'Below ?5k', '?5k-?10k', '?10k-?20k', '?20k-?40k', 'Above ?40k'],
+    ['Age Group', 'Below ₱5k', '₱5k-₱10k', '₱10k-₱20k', '₱20k-₱40k', 'Above ₱40k'],
     ['0-17',
         (int) ($incomeAgeStats['age0_17_below5k'] ?? 0),
         (int) ($incomeAgeStats['age0_17_5k10k'] ?? 0),
@@ -882,6 +882,11 @@ $sidebarSections = [
     }
     .btn-print-report:hover { background: var(--site-primary-dark); }
     .btn-print-report:active { transform: scale(0.97); }
+    .btn-print-list:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
 
     /* ?? Analytics report modal (checkbox picker) ?? */
     .ar-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
@@ -1130,7 +1135,7 @@ $sidebarSections = [
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="mini-stat-inline"><span class="num" id="globalCount">0</span><span class="text-xs text-gray-400 ml-1">results</span></span>
-            <button type="button" class="btn-print-list" onclick="printGlobalList()">
+            <button type="button" id="printGlobalListBtn" class="btn-print-list" onclick="printGlobalList()">
               <i class="fa-solid fa-print"></i> Print This List
             </button>
             <button type="button" class="btn-set-conditions" onclick="openGlobalFilterModal()">
@@ -1253,11 +1258,11 @@ $sidebarSections = [
               <?php
                   $pct = $totalIncomeCount > 0 ? round(($value / $totalIncomeCount) * 100, 1) : 0;
                   $barColor = [
-                      'Below ₱5k/mo' => '#E24B4A',
-                      '₱5k - ₱10k/mo' => '#BA7517',
-                      '₱10k - ₱20k/mo' => '#639922',
-                      '₱20k - ₱40k/mo' => '#1D9E75',
-                      'Above ₱40k/mo' => '#378ADD',
+                      'Below ?5k/mo' => '#E24B4A',
+                      '?5k - ?10k/mo' => '#BA7517',
+                      '?10k - ?20k/mo' => '#639922',
+                      '?20k - ?40k/mo' => '#1D9E75',
+                      'Above ?40k/mo' => '#378ADD',
                   ][$label];
               ?>
               <div class="flex items-center justify-between">
@@ -1871,6 +1876,11 @@ $sidebarSections = [
       const cols = json.columns || [];
       countEl.textContent = json.count ?? json.data.length;
 
+      const printBtn = document.getElementById('printGlobalListBtn');
+      if (printBtn) {
+        printBtn.disabled = (json.data.length === 0);
+      }
+
       thead.innerHTML = '<th>#</th><th>Name</th>' + cols.map(c => `<th>${escHtml2(c.label)}</th>`).join('');
 
       tbody.innerHTML = json.data.length
@@ -1884,6 +1894,10 @@ $sidebarSections = [
     } catch (err) {
       thead.innerHTML = '<th>#</th><th>Name</th>';
       tbody.innerHTML = `<tr><td colspan="2"><div class="mini-empty">Could not load data. Please try again.</div></td></tr>`;
+    
+      const printBtn = document.getElementById('printGlobalListBtn');
+      if (printBtn) printBtn.disabled = true;
+    
     } finally {
       overlay.classList.remove('show');
     }
@@ -2411,7 +2425,7 @@ $sidebarSections = [
           <div class="gf-field gf-span-2">
             <label>Monthly Income Range</label>
             <div class="gf-range">
-              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ₱"><span>-</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ₱">
+              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ?"><span>-</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ?">
             </div>
           </div>
         </div>
