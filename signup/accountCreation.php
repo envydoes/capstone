@@ -218,6 +218,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
             <p id="req-number" class="pw-req-item text-gray-400"><i class="fa-solid fa-circle"></i> At least one number (0–9)</p>
             <p id="req-special" class="pw-req-item text-gray-400"><i class="fa-solid fa-circle"></i> At least one special character (!@#$%^&*)</p>
             <p id="req-common" class="pw-req-item text-gray-400"><i class="fa-solid fa-circle"></i> Not a commonly used password</p>
+            <p id="req-pwned" class="pw-req-item text-gray-400"><i class="fa-solid fa-circle"></i> Not found in known data breaches</p>
             <p id="req-pii" class="pw-req-item text-gray-400"><i class="fa-solid fa-circle"></i> Doesn't contain your email address</p>
           </div>
 
@@ -386,6 +387,30 @@ function containsEmailPII(pw, email) {
   return false;
 }
 
+/* ── Live breach-database check (Have I Been Pwned, k-anonymity) ──
+   Only the first 5 hex chars of the SHA-1 hash are ever sent — never the
+   password, never the full hash. Fails open (doesn't block) on any error;
+   the server always re-checks this regardless of what the client found. */
+async function sha1Hex(str) {
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-1', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+async function isPwnedPasswordJS(pw) {
+  if (!pw) return false;
+  try {
+    const hash   = await sha1Hex(pw);
+    const prefix = hash.slice(0, 5);
+    const suffix = hash.slice(5);
+    const res    = await fetch('https://api.pwnedpasswords.com/range/' + prefix);
+    if (!res.ok) return false;
+    const text = await res.text();
+    return text.split('\r\n').some(line => line.split(':')[0] === suffix);
+  } catch {
+    return false;
+  }
+}
+
 function isValidEmail(e) {
   if (e.length > 254) return false;
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(e);
@@ -407,6 +432,8 @@ document.getElementById('csrf_token').value = (() => {
 const pwInfoBtn      = document.getElementById('pwInfoBtn');
 const pwRequirements = document.getElementById('pwRequirements');
 const passwordInput  = document.getElementById('password');
+let pwnedCheckTimer  = null;
+let passwordPwned    = false; // fail-open default; server always re-checks on submit
 
 pwInfoBtn.addEventListener('click', function() {
   const isOpen = !pwRequirements.classList.contains('hidden');
@@ -482,6 +509,22 @@ document.getElementById('password').addEventListener('input', function() {
   const lbl = document.getElementById('strength-label');
   lbl.textContent  = this.value.length ? strengthTexts[idx] : '';
   lbl.className    = 'text-xs mt-1 ' + ['text-red-500','text-orange-500','text-yellow-600','text-lime-600'][idx];
+
+  // Debounced breach-database lookup
+  clearTimeout(pwnedCheckTimer);
+  const pw = this.value;
+  if (!pw) { setReqState('req-pwned', 'neutral'); passwordPwned = false; return; }
+  setReqState('req-pwned', 'neutral');
+  pwnedCheckTimer = setTimeout(async () => {
+    const pwned = await isPwnedPasswordJS(passwordInput.value);
+    if (passwordInput.value !== pw) return; // password changed since the check started
+    passwordPwned = pwned;
+    setReqState('req-pwned', pwned ? 'invalid' : 'valid');
+    if (pwned) {
+      showError('password-error', 'This password has appeared in known data breaches. Please choose a different password.');
+      setInputState('password', 'error');
+    }
+  }, 600);
 });
 
 document.querySelectorAll('.toggle-pw').forEach(btn => {
@@ -620,6 +663,9 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     pwRequirements.classList.remove('hidden');
   } else if (!has.common) {
     showError('password-error','This password is too common and not allowed (e.g. "password1234"). Please choose something more unique.'); setInputState('password','error'); valid = false;
+    pwRequirements.classList.remove('hidden');
+  } else if (passwordPwned) {
+    showError('password-error','This password has appeared in known data breaches. Please choose a different password.'); setInputState('password','error'); valid = false;
     pwRequirements.classList.remove('hidden');
   } else if (!has.pii) {
     showError('password-error','Your password must not contain your email address or parts of it.'); setInputState('password','error'); valid = false;

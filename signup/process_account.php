@@ -21,16 +21,25 @@ function failBack(string $field, string $message): never {
 // Kept in sync with the COMMON_PASSWORDS set in accountCreation.php's client-side JS.
 // This is the check that actually matters, since the JS one can be bypassed.
 function isCommonPassword(string $pw): bool {
+    // Kept byte-for-byte in sync with COMMON_PASSWORDS in accountCreation.php's
+    // client-side JS — same list, same order, so client and server never disagree.
     static $commonPasswords = [
-        'password','12345678','123456789','1234567890','qwerty','qwerty123','qwertyuiop',
-        'abc123','abc12345','password1','password12','password123','password1234',
-        'letmein','letmein123','welcome','welcome123','admin','admin123','root','toor',
-        'iloveyou','monkey','dragon','football','football1','baseball','basketball',
+        'password','12345678','123456789','1234567890','123456','1234567','12345',
+        'qwerty','qwerty123','qwertyuiop','qazwsx','1q2w3e4r','1qaz2wsx','zxcvbnm','zxcvbn',
+        'abc123','abc12345','password1','password12','password123','password1234','passw0rd','p@ssw0rd',
+        'letmein','letmein123','welcome','welcome1','welcome123',
+        'admin','admin123','admin1234','root','toor','login','default','changeme','changeme123',
+        'iloveyou','iloveyou1','monkey','dragon','dragon123',
+        'football','football1','football123','baseball','baseball1','basketball','soccer','hockey',
         'starwars','superman','master','sunshine','princess','shadow','freedom','trustno1',
-        'whatever','solo','passw0rd','p@ssw0rd','1q2w3e4r','zxcvbnm','asdfghjkl',
-        '123123','111111','000000','666666','696969','654321','987654321',
-        'changeme','mypassword','loveme','ashley','jennifer','jessica','michael',
+        'whatever','solo','1q2w3e4r5t','asdf1234','asdfghjkl',
+        '123123','111111','000000','666666','696969','654321','987654321','121212','112233',
+        '11111111','00000000','87654321','12341234','1122334455','aaaaaaaa','abcdefgh','abcd1234',
+        'mypassword','loveme','ashley','jennifer','jessica','michael','michelle','charlie','donald',
         'jordan','hunter2','access','yankees','mustang','ninja','azerty',
+        'test1234','temp1234','tinkerbell','liverpool','chelsea','arsenal','flower','hottie','biteme',
+        'q1w2e3r4','1q2w3e4r5t6y','google','facebook','instagram','snapchat','tinder',
+        '123qwe','000000000','111111111',
     ];
 
     $lower = strtolower($pw);
@@ -44,6 +53,41 @@ function isCommonPassword(string $pw): bool {
         return true;
     }
 
+    return false;
+}
+
+// ?? Helper: check password against Have I Been Pwned's breached-password DB ????
+// Uses k-anonymity: only the first 5 hex chars of the SHA-1 hash are ever sent
+// over the network, never the password itself and never the full hash.
+// Fails OPEN (returns false / "not flagged") if the API can't be reached, so an
+// outage on HIBP's end never blocks someone from registering. The local
+// isCommonPassword() list above still applies regardless of this check.
+function isPwnedPassword(string $pw): bool {
+    $sha1   = strtoupper(sha1($pw));
+    $prefix = substr($sha1, 0, 5);
+    $suffix = substr($sha1, 5);
+
+    $ch = curl_init("https://api.pwnedpasswords.com/range/{$prefix}");
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 3,
+        CURLOPT_CONNECTTIMEOUT => 2,
+        CURLOPT_HTTPHEADER     => ['User-Agent: BarangayApp-PasswordCheck'],
+    ]);
+    $response = curl_exec($ch);
+    $hadError = curl_errno($ch) !== 0;
+    curl_close($ch);
+
+    if ($hadError || $response === false || $response === '') {
+        return false; // API unreachable — don't block registration on this check
+    }
+
+    foreach (explode("\r\n", trim($response)) as $line) {
+        $parts = explode(':', $line);
+        if (isset($parts[0]) && $parts[0] === $suffix) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -88,6 +132,10 @@ if (!preg_match('/[^A-Za-z0-9]/', $rawPassword))
 // Enforced here (not just client-side) since the JS check is trivially bypassed.
 if (isCommonPassword($rawPassword))
     failBack('password', 'This password is too common and not allowed (e.g. "password1234"). Please choose something more unique.');
+
+// ?? 5b. Reject passwords found in known data breaches (Have I Been Pwned) ??????
+if (isPwnedPassword($rawPassword))
+    failBack('password', 'This password has appeared in known data breaches. Please choose a different password.');
 
 // ?? 6. Password must not match or leak the email (PII) 
 if (strtolower($rawPassword) === strtolower($rawEmail))
