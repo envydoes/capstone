@@ -703,6 +703,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="hidden" name="religion" id="religion" value="<?php echo e($religionOld); ?>">
           </div>
 
+          <script>
+          /* ============================================================
+             Self-contained "Other, please specify" logic for Citizenship
+             and Religion. Deliberately kept separate from the big script
+             block at the bottom of the page: if anything down there fails
+             to parse, this still runs, so the hidden #citizenship /
+             #religion inputs (the fields actually submitted) never go
+             out of sync with what's visibly selected.
+             ============================================================ */
+          (function () {
+            function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
+              var otherInput  = document.getElementById(otherInputId);
+              var hiddenInput = document.getElementById(hiddenInputId);
+              if (!otherInput || !hiddenInput) return;
+              if (selectEl.value === 'Other') {
+                otherInput.classList.remove('hidden');
+                hiddenInput.value = otherInput.value;
+              } else {
+                otherInput.classList.add('hidden');
+                hiddenInput.value = selectEl.value;
+              }
+            }
+            function syncOtherField(otherInputId, hiddenInputId) {
+              var otherEl  = document.getElementById(otherInputId);
+              var hiddenEl = document.getElementById(hiddenInputId);
+              if (otherEl && hiddenEl) hiddenEl.value = otherEl.value;
+            }
+            // Expose globally so the inline onchange/oninput attributes keep working.
+            window.toggleOtherField = toggleOtherField;
+            window.syncOtherField = syncOtherField;
+
+            function wire(selectId, otherId, hiddenId) {
+              var sel = document.getElementById(selectId);
+              var other = document.getElementById(otherId);
+              if (!sel) return;
+              sel.addEventListener('change', function () {
+                toggleOtherField(sel, otherId, hiddenId);
+              });
+              if (other) {
+                other.addEventListener('input', function () {
+                  syncOtherField(otherId, hiddenId);
+                });
+              }
+              // Run once immediately so the hidden field always reflects
+              // reality, even before the user touches the dropdown.
+              toggleOtherField(sel, otherId, hiddenId);
+            }
+            wire('citizenship_select', 'citizenship_other', 'citizenship');
+            wire('religion_select', 'religion_other', 'religion');
+
+            // Belt-and-suspenders: if the big script's submit handler at the
+            // bottom of the page never attaches (e.g. it throws), this still
+            // catches a bad submit and re-syncs both hidden fields first.
+            document.addEventListener('submit', function (e) {
+              var form = document.getElementById('profileForm');
+              if (!form || e.target !== form) return;
+              toggleOtherField(document.getElementById('citizenship_select'), 'citizenship_other', 'citizenship');
+              toggleOtherField(document.getElementById('religion_select'), 'religion_other', 'religion');
+            }, true); // capture phase: runs before the bottom script's own submit listener
+          })();
+          </script>
+
           <!-- Ethnicity -->
           <div>
             <label class="field-label" for="ethnicity">Ethnicity</label>
@@ -895,23 +957,10 @@ function clearError(inputEl) {
 }
 
 /* ============================================================
-   "OTHER, PLEASE SPECIFY" DROPDOWN FIELDS (Citizenship / Religion)
+   NOTE: toggleOtherField / syncOtherField now live in the small
+   self-contained script block right after the Citizenship/Religion
+   fields, so they no longer depend on this block parsing cleanly.
    ============================================================ */
-function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
-    const otherInput  = document.getElementById(otherInputId);
-    const hiddenInput = document.getElementById(hiddenInputId);
-    if (selectEl.value === 'Other') {
-        otherInput.classList.remove('hidden');
-        hiddenInput.value = otherInput.value;
-        otherInput.focus();
-    } else {
-        otherInput.classList.add('hidden');
-        hiddenInput.value = selectEl.value;
-    }
-}
-function syncOtherField(otherInputId, hiddenInputId) {
-    document.getElementById(hiddenInputId).value = document.getElementById(otherInputId).value;
-}
 
 function validateField(el) {
     const name = el.name;
