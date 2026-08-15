@@ -696,21 +696,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         </div>
 
-        <!-- Map pin confirmation (Leaflet) -->
-        <div class="mt-5">
-          <div class="flex items-center justify-between mb-2">
-            <label class="field-label mb-0">Pin Your Exact Location <span class="text-gray-400 font-normal normal-case">(optional, helps verification)</span></label>
-            <span id="mapStatus" class="text-xs text-gray-400"></span>
-          </div>
-          <div class="flex gap-2 mb-2">
-            <input type="text" id="mapSearchBox" class="field-input" placeholder="Search your address on the map…" autocomplete="off">
-            <button type="button" id="mapSearchBtn" class="px-4 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 flex-shrink-0">Search</button>
-          </div>
-          <div id="addressMap" style="height:280px;border-radius:12px;overflow:hidden;border:1.5px solid #d1d5db;"></div>
-          <p class="text-xs text-gray-400 mt-1">Drag the pin to your exact address, or search above. This uses OpenStreetMap and does not affect the required fields.</p>
-          <input type="hidden" id="latitude" name="latitude" value="<?php echo oldValue('latitude'); ?>">
-          <input type="hidden" id="longitude" name="longitude" value="<?php echo oldValue('longitude'); ?>">
-        </div>
       </div>
         </div>
       </div>
