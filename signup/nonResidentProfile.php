@@ -98,7 +98,7 @@ $csrfToken = $_SESSION['csrf_token'];
 $prefillKeys = [
     'firstname', 'lastname', 'middlename', 'suffix', 'family_role', 'gender', 'birthday', 'birthplace',
     'civil_status', 'citizenship', 'religion', 'ethnicity',
-    'street', 'barangay', 'city', 'province', 'zip',
+    'street', 'barangay', 'city', 'province', 'zip', 'latitude', 'longitude',
     'phone', 'email', 'emergency_contact', 'emergency_phone', 'health_conditions', 'terms',
 ];
 
@@ -127,6 +127,41 @@ function inputClass(string $field, array $highlightFields): string
 $allowedFamilyRoles  = ['head', 'spouse', 'child', 'parent', 'other'];
 $allowedGenders      = ['male', 'female', 'other'];
 $allowedCivilStatus  = ['single', 'married', 'divorced', 'widowed', 'separated'];
+
+/* ============================================================
+   PH ADDRESS REFERENCE DATA (Province / City / Barangay)
+   Same JSON the client-side cascading dropdowns use — loaded here too so
+   the server enforces the same whitelist instead of trusting the client.
+   Where we don't have a verified list yet (most cities/provinces outside
+   Nueva Ecija & Metro Manila), we fall back to the old free-text checks
+   for that field instead of rejecting the submission.
+   ============================================================ */
+$phAddressData = [];
+$phAddressFile = __DIR__ . '/../assets/data/ph-address.json';
+if (is_readable($phAddressFile)) {
+    $decoded = json_decode(file_get_contents($phAddressFile), true);
+    if (is_array($decoded)) $phAddressData = $decoded;
+}
+$phProvinces  = $phAddressData['provinces']  ?? [];
+$phCities     = $phAddressData['cities']     ?? [];
+$phBarangays  = $phAddressData['barangays']  ?? [];
+
+/**
+ * Validate a submitted value that SHOULD be a dropdown selection.
+ * If we have a reference list for the given key (province name, or a
+ * city name for barangays), the value must exactly match an entry in it.
+ * If we don't have a reference list for that key yet, fall back to a
+ * lenient free-text check (non-empty, min length) — same behavior as before.
+ */
+function validateAddressLevel(string $value, ?array $referenceList, string $label): ?string
+{
+    if ($referenceList !== null && count($referenceList) > 0) {
+        return in_array($value, $referenceList, true) ? null : "Please select a valid $label from the list.";
+    }
+    if ($value === '') return "$label is required.";
+    if (mb_strlen($value) < 2) return "$label is too short.";
+    return null;
+}
 
 /* ============================================================
    SERVER-SIDE FORM PROCESSING (POST)
@@ -167,6 +202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'emergency_phone'   => sanitizeText($_POST['emergency_phone']   ?? ''),
         'health_conditions' => sanitizeText($_POST['health_conditions'] ?? ''),
         'terms'             => ($_POST['terms'] ?? '') === 'agree' ? 'agree' : '',
+        'latitude'          => is_numeric($_POST['latitude'] ?? '') ? (string)(float)$_POST['latitude'] : '',
+        'longitude'         => is_numeric($_POST['longitude'] ?? '') ? (string)(float)$_POST['longitude'] : '',
     ];
 
     // --- Validation rules ---
@@ -176,16 +213,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['terms'] = 'You must agree to the Terms of Service.';
     }
 
-    // Required text fields: name + address
+    // Required text fields: name only (address levels are validated separately below,
+    // since province/city/barangay each need dataset-aware — not plain length — checks)
     $requiredTextFields = [
         'firstname'    => 'First name',
         'lastname'     => 'Last name',
         'birthplace'   => 'Birthplace',
         'citizenship'  => 'Citizenship',
         'street'       => 'Street address',
-        'barangay'     => 'Barangay',
-        'city'         => 'City / Municipality',
-        'province'     => 'Province',
     ];
     foreach ($requiredTextFields as $field => $label) {
         if ($data[$field] === '') {
@@ -194,6 +229,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[$field] = "$label is too short.";
         }
     }
+
+    // Province / City / Barangay — validated against the PH address dataset
+    // wherever we have a verified list; falls back to lenient text checks otherwise.
+    $provErr = validateAddressLevel($data['province'], $phProvinces, 'Province');
+    if ($provErr) $errors['province'] = $provErr;
+
+    $cityRef = $phCities[$data['province']] ?? null; // null = no verified list for this province -> free text ok
+    $cityErr = validateAddressLevel($data['city'], $cityRef, 'City / Municipality');
+    if ($cityErr) $errors['city'] = $cityErr;
+
+    $brgyRef = $phBarangays[$data['city']] ?? null; // null = no verified list for this city -> free text ok
+    $brgyErr = validateAddressLevel($data['barangay'], $brgyRef, 'Barangay');
+    if ($brgyErr) $errors['barangay'] = $brgyErr;
 
     // Name fields: only letters, spaces, hyphens, apostrophes
     foreach (['firstname', 'lastname', 'middlename'] as $nameField) {
@@ -268,7 +316,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
+  #addressMap.leaflet-container { font-family: 'DM Sans', sans-serif; }
+  .map-result-list { position:relative; }
+  .map-result-list ul { list-style:none; margin:0; padding:0; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d1d5db; border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
+  .map-result-list li { padding:9px 14px; font-size:0.85rem; cursor:pointer; border-bottom:1px solid #f1f5f9; }
+  .map-result-list li:last-child { border-bottom:none; }
+  .map-result-list li:hover { background:#f0fdf4; }
   body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; }
 
   .nav-link { position: relative; transition: color 0.2s; }
@@ -337,6 +392,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.22s; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../assets/js/ph-address-picker.js"></script>
 </head>
 <body>
 
@@ -623,35 +680,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
           <div>
-            <label class="field-label" for="street">Street Address <span class="required-star">*</span></label>
-            <input type="text" id="street" name="street" required maxlength="200" autocomplete="address-line1"
-                   class="<?php echo inputClass('street', $highlightFields) . (isset($errors['street']) ? ' error' : ''); ?>"
-                   value="<?php echo oldValue('street'); ?>" placeholder="Street name and number">
-            <?php if (isset($errors['street'])): ?><span class="field-error"><?php echo e($errors['street']); ?></span><?php endif; ?>
+            <label class="field-label" for="province">Province <span class="required-star">*</span></label>
+            <select id="province" name="province" required disabled
+                    class="<?php echo inputClass('province', $highlightFields) . (isset($errors['province']) ? ' error' : ''); ?>">
+              <option value="">Loading provinces…</option>
+            </select>
+            <?php if (isset($errors['province'])): ?><span class="field-error"><?php echo e($errors['province']); ?></span><?php endif; ?>
           </div>
 
-          <div>
+          <!-- City/Municipality and Barangay are rendered into these wrappers by ph-address-picker.js:
+               a <select> when we have a verified list for the chosen province/city, otherwise a
+               free-text <input> fallback (identical to the old behavior) so the form never blocks. -->
+          <div id="cityFieldWrap" data-error="<?php echo isset($errors['city']) ? '1' : ''; ?>">
+            <label class="field-label" for="city">City / Municipality <span class="required-star">*</span></label>
+            <div id="cityFieldInner"><input type="text" class="field-input" disabled placeholder="Select a province first"></div>
+            <?php if (isset($errors['city'])): ?><span class="field-error"><?php echo e($errors['city']); ?></span><?php endif; ?>
+          </div>
+
+          <div id="barangayFieldWrap" data-error="<?php echo isset($errors['barangay']) ? '1' : ''; ?>">
             <label class="field-label" for="barangay">Barangay <span class="required-star">*</span></label>
-            <input type="text" id="barangay" name="barangay" required maxlength="100"
-                   class="<?php echo inputClass('barangay', $highlightFields) . (isset($errors['barangay']) ? ' error' : ''); ?>"
-                   value="<?php echo oldValue('barangay'); ?>" placeholder="Barangay">
+            <div id="barangayFieldInner"><input type="text" class="field-input" disabled placeholder="Select a city / municipality first"></div>
             <?php if (isset($errors['barangay'])): ?><span class="field-error"><?php echo e($errors['barangay']); ?></span><?php endif; ?>
           </div>
 
           <div>
-            <label class="field-label" for="city">City / Municipality <span class="required-star">*</span></label>
-            <input type="text" id="city" name="city" required maxlength="100" autocomplete="address-level2"
-                   class="<?php echo inputClass('city', $highlightFields) . (isset($errors['city']) ? ' error' : ''); ?>"
-                   value="<?php echo oldValue('city'); ?>" placeholder="City or Municipality">
-            <?php if (isset($errors['city'])): ?><span class="field-error"><?php echo e($errors['city']); ?></span><?php endif; ?>
-          </div>
-
-          <div>
-            <label class="field-label" for="province">Province <span class="required-star">*</span></label>
-            <input type="text" id="province" name="province" required maxlength="100" autocomplete="address-level1"
-                   class="<?php echo inputClass('province', $highlightFields) . (isset($errors['province']) ? ' error' : ''); ?>"
-                   value="<?php echo oldValue('province'); ?>" placeholder="Province">
-            <?php if (isset($errors['province'])): ?><span class="field-error"><?php echo e($errors['province']); ?></span><?php endif; ?>
+            <label class="field-label" for="street">Street Address <span class="required-star">*</span></label>
+            <input type="text" id="street" name="street" required maxlength="200" autocomplete="address-line1"
+                   class="<?php echo inputClass('street', $highlightFields) . (isset($errors['street']) ? ' error' : ''); ?>"
+                   value="<?php echo oldValue('street'); ?>" placeholder="House/Unit no., Street name">
+            <?php if (isset($errors['street'])): ?><span class="field-error"><?php echo e($errors['street']); ?></span><?php endif; ?>
           </div>
 
           <div>
@@ -663,6 +720,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (isset($errors['zip'])): ?><span class="field-error"><?php echo e($errors['zip']); ?></span><?php endif; ?>
           </div>
 
+        </div>
+
+        <!-- Map pin confirmation (Leaflet) -->
+        <div class="mt-5">
+          <div class="flex items-center justify-between mb-2">
+            <label class="field-label mb-0">Pin Your Exact Location <span class="text-gray-400 font-normal normal-case">(optional, helps verification)</span></label>
+            <span id="mapStatus" class="text-xs text-gray-400"></span>
+          </div>
+          <div class="flex gap-2 mb-2">
+            <input type="text" id="mapSearchBox" class="field-input" placeholder="Search your address on the map…" autocomplete="off">
+            <button type="button" id="mapSearchBtn" class="px-4 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 flex-shrink-0">Search</button>
+          </div>
+          <div id="addressMap" style="height:280px;border-radius:12px;overflow:hidden;border:1.5px solid #d1d5db;"></div>
+          <p class="text-xs text-gray-400 mt-1">Drag the pin to your exact address, or search above. This uses OpenStreetMap and does not affect the required fields.</p>
+          <input type="hidden" id="latitude" name="latitude" value="<?php echo oldValue('latitude'); ?>">
+          <input type="hidden" id="longitude" name="longitude" value="<?php echo oldValue('longitude'); ?>">
         </div>
       </div>
 
@@ -876,8 +949,14 @@ function hasTruthyValue(value) {
     return t !== '' && t !== '0' && t !== 'false' && t !== 'no' && t !== 'off';
 }
 
+// Province/City/Barangay/lat/lng are owned by PHAddressPicker + the map below,
+// which restore their own old values from PHP — skip them here to avoid a race
+// against the async dataset fetch that builds those dropdowns.
+const ADDRESS_PICKER_OWNED = ['province', 'city', 'barangay', 'latitude', 'longitude'];
+
 document.addEventListener('DOMContentLoaded', function() {
     Object.keys(prefillData).forEach(function(name) {
+        if (ADDRESS_PICKER_OWNED.includes(name)) return;
         const value = prefillData[name];
         const fields = document.getElementsByName(name);
         if (!fields || fields.length === 0) return;
@@ -891,6 +970,116 @@ document.addEventListener('DOMContentLoaded', function() {
             if (type === 'radio') { field.checked = String(field.value) === String(value); return; }
             field.value = value ?? '';
         });
+    });
+});
+</script>
+
+<script>
+/* ============================================================
+   CASCADING PROVINCE -> CITY/MUNICIPALITY -> BARANGAY DROPDOWNS
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    const picker = new PHAddressPicker({
+        dataUrl:          '../assets/data/ph-address.json',
+        provinceId:       'province',
+        cityWrapId:       'cityFieldInner',
+        barangayWrapId:   'barangayFieldInner',
+        cityFieldName:    'city',
+        barangayFieldName:'barangay',
+        oldProvince:      <?php echo json_encode($_SESSION['province'] ?? ''); ?>,
+        oldCity:          <?php echo json_encode($_SESSION['city'] ?? ''); ?>,
+        oldBarangay:      <?php echo json_encode($_SESSION['barangay'] ?? ''); ?>,
+        onChange: function () {
+            if (typeof checkForChanges === 'function') checkForChanges();
+        }
+    });
+});
+</script>
+
+<script>
+/* ============================================================
+   LEAFLET MAP: search + drag-pin, purely optional (fills
+   #latitude/#longitude hidden inputs; does not block submission)
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    const mapEl = document.getElementById('addressMap');
+    if (!mapEl || typeof L === 'undefined') return;
+
+    const latInput  = document.getElementById('latitude');
+    const lngInput  = document.getElementById('longitude');
+    const statusEl  = document.getElementById('mapStatus');
+    const searchBox = document.getElementById('mapSearchBox');
+    const searchBtn = document.getElementById('mapSearchBtn');
+
+    const startLat = parseFloat(latInput.value) || 15.4869; // Cabanatuan City center as default
+    const startLng = parseFloat(lngInput.value) || 120.9673;
+
+    const map = L.map('addressMap').setView([startLat, startLng], latInput.value ? 16 : 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    const marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
+
+    function setCoords(lat, lng) {
+        latInput.value = lat.toFixed(6);
+        lngInput.value = lng.toFixed(6);
+        statusEl.textContent = 'Pin set (' + lat.toFixed(5) + ', ' + lng.toFixed(5) + ')';
+    }
+
+    if (latInput.value && lngInput.value) setCoords(startLat, startLng);
+
+    marker.on('dragend', function () {
+        const pos = marker.getLatLng();
+        setCoords(pos.lat, pos.lng);
+    });
+
+    map.on('click', function (e) {
+        marker.setLatLng(e.latlng);
+        setCoords(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Nominatim search (OpenStreetMap's free geocoder) — client-side only, no server dependency.
+    let resultsBox = null;
+    function clearResults() { if (resultsBox) { resultsBox.remove(); resultsBox = null; } }
+
+    function doSearch() {
+        const q = searchBox.value.trim();
+        if (!q) return;
+        statusEl.textContent = 'Searching…';
+        fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=ph&q=' + encodeURIComponent(q))
+            .then(function (res) { return res.json(); })
+            .then(function (results) {
+                clearResults();
+                statusEl.textContent = '';
+                if (!results.length) { statusEl.textContent = 'No results found.'; return; }
+                resultsBox = document.createElement('div');
+                resultsBox.className = 'map-result-list';
+                const ul = document.createElement('ul');
+                results.forEach(function (r) {
+                    const li = document.createElement('li');
+                    li.textContent = r.display_name;
+                    li.addEventListener('click', function () {
+                        const lat = parseFloat(r.lat), lng = parseFloat(r.lon);
+                        map.setView([lat, lng], 17);
+                        marker.setLatLng([lat, lng]);
+                        setCoords(lat, lng);
+                        clearResults();
+                    });
+                    ul.appendChild(li);
+                });
+                resultsBox.appendChild(ul);
+                searchBox.parentNode.style.position = 'relative';
+                searchBox.parentNode.appendChild(resultsBox);
+            })
+            .catch(function () { statusEl.textContent = 'Search failed — you can still drag the pin manually.'; });
+    }
+
+    searchBtn.addEventListener('click', doSearch);
+    searchBox.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); doSearch(); } });
+    document.addEventListener('click', function (e) {
+        if (resultsBox && !resultsBox.contains(e.target) && e.target !== searchBox) clearResults();
     });
 });
 </script>

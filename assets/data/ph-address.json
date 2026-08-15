@@ -1,0 +1,64 @@
+{
+  "_source_note": "Provinces: barangaydirectory.com/provinces (82 provinces, PSA-based). Nueva Ecija cities/municipalities: philatlas.com. Cabanatuan City barangays (89): barangaydirectory.com/city/city-of-cabanatuan, cross-checked against PhilAtlas barangay count. Verify against the official PSA PSGC (psa.gov.ph/classification/psgc) before relying on this for production/legal purposes — barangay boundaries occasionally change (PSA issues quarterly PSGC corrections).",
+  "provinces": [
+    "Metro Manila (NCR)",
+    "Abra", "Agusan del Norte", "Agusan del Sur", "Aklan", "Albay", "Antique", "Apayao", "Aurora",
+    "Basilan", "Bataan", "Batanes", "Batangas", "Benguet", "Biliran", "Bohol", "Bukidnon", "Bulacan",
+    "Cagayan", "Camarines Norte", "Camarines Sur", "Camiguin", "Capiz", "Catanduanes", "Cavite", "Cebu",
+    "Cotabato", "Davao de Oro", "Davao del Norte", "Davao del Sur", "Davao Occidental", "Davao Oriental",
+    "Dinagat Islands", "Eastern Samar", "Guimaras", "Ifugao", "Ilocos Norte", "Ilocos Sur", "Iloilo",
+    "Isabela", "Kalinga", "La Union", "Laguna", "Lanao del Norte", "Lanao del Sur", "Leyte",
+    "Maguindanao del Norte", "Maguindanao del Sur", "Marinduque", "Masbate", "Misamis Occidental",
+    "Misamis Oriental", "Mountain Province", "Negros Occidental", "Negros Oriental", "Northern Samar",
+    "Nueva Ecija", "Nueva Vizcaya", "Occidental Mindoro", "Oriental Mindoro", "Palawan", "Pampanga",
+    "Pangasinan", "Quezon", "Quirino", "Rizal", "Romblon", "Samar", "Sarangani", "Siquijor", "Sorsogon",
+    "South Cotabato", "Southern Leyte", "Sultan Kudarat", "Sulu", "Surigao del Norte", "Surigao del Sur",
+    "Tarlac", "Tawi-Tawi", "Zambales", "Zamboanga del Norte", "Zamboanga del Sur", "Zamboanga Sibugay"
+  ],
+  "cities": {
+    "Nueva Ecija": [
+      "Aliaga", "Bongabon", "Cabanatuan City", "Cabiao", "Carranglan", "Cuyapo", "Gabaldon",
+      "Gapan City", "General Mamerto Natividad", "General Tinio", "Guimba", "Jaen", "Laur", "Licab",
+      "Llanera", "Lupao", "Science City of Muñoz", "Nampicuan", "Palayan City", "Pantabangan",
+      "Peñaranda", "Quezon", "Rizal", "San Antonio", "San Isidro", "San Jose City", "San Leonardo",
+      "Santa Rosa", "Santo Domingo", "Talavera", "Talugtug", "Zaragoza"
+    ],
+    "Metro Manila (NCR)": [
+      "Caloocan", "Las Piñas", "Makati", "Malabon", "Mandaluyong", "Manila", "Marikina", "Muntinlupa",
+      "Navotas", "Parañaque", "Pasay", "Pasig", "Pateros", "Quezon City", "San Juan", "Taguig",
+      "Valenzuela"
+    ]
+  },
+  "barangays": {
+    "Cabanatuan City": [
+      "Aduas Centro", "Aduas Norte", "Aduas Sur",
+      "Bagong Buhay", "Bagong Sikat", "Bakero", "Bakod Bayan", "Balite", "Bangad", "Bantug Bulalo",
+      "Bantug Norte", "Barlis", "Barrera District (Pob.)", "Bernardo District (Pob.)", "Bitas",
+      "Bonifacio District (Pob.)", "Buliran",
+      "Caalibangbangan", "Cabu", "Calawagan", "Campo Tinio", "Caridad", "Caudillo", "Cinco-Cinco",
+      "City Supermarket (Pob.)", "Communal", "Cruz Roja",
+      "Daang Sarile", "Dalampang", "Dicarma (Pob.)", "Dimasalang (Pob.)", "Dionisio S. Garcia",
+      "Fatima (Pob.)",
+      "General Luna (Pob.)",
+      "Hermogenes C. Concepcion, Sr.",
+      "Ibabao Bana", "Imelda District", "Isla (Pob.)",
+      "Kalikid Norte", "Kalikid Sur", "Kapitan Pepe (Pob.)",
+      "Lagare", "Lourdes",
+      "M. S. Garcia", "Mabini Extension", "Mabini Homesite", "Macatbong", "Magsaysay District",
+      "Magsaysay South", "Maria Theresa", "Matadero (Pob.)", "Mayapyap Norte", "Mayapyap Sur",
+      "Melojavilla (Pob.)",
+      "Nabao (Pob.)",
+      "Obrero",
+      "Padre Burgos (Pob.)", "Padre Crisostomo", "Pagas", "Palagay", "Pamaldan", "Pangatian",
+      "Patalac", "Polilio", "Pula",
+      "Quezon District (Pob.)",
+      "Rizdelis (Pob.)",
+      "Samon", "San Isidro", "San Josef Norte", "San Josef Sur", "San Juan (Pob.)", "San Roque Norte",
+      "San Roque Sur", "Sanbermicristi (Pob.)", "Sangitan", "Sangitan East", "Santa Arcadia",
+      "Santo Niño", "Sapang", "Sumacab Este", "Sumacab Norte", "Sumacab South",
+      "Talipapa",
+      "Valdefuente", "Valle Cruz", "Vijandre District (Pob.)", "Villa Ofelia-Caridad",
+      "Zulueta District (Pob.)"
+    ]
+  }
+}
