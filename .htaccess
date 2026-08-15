@@ -28,6 +28,10 @@ RewriteRule ^ - [E=PROTO:http]
 
 # Redirect .php URLs to clean URLs (scheme forced explicitly to avoid
 # Apache emitting http:// in the Location header when behind a proxy).
+# GET/HEAD only — never redirect POST, PUT, DELETE, etc. A 301/302 causes
+# browsers to downgrade the follow-up request to GET and drop the body,
+# which silently destroyed form submissions (e.g. profile saves, file uploads).
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
 RewriteCond %{THE_REQUEST} \s/+([^\s?]+)\.php(?:[\s?]|$) [NC]
 RewriteRule ^ %{ENV:PROTO}://%{HTTP_HOST}/%1 [R=301,L]
 
