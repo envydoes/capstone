@@ -254,7 +254,7 @@ if ($isRoleChange) {
 }
 
 /* ─── Build parameterized UPDATE for tbl_userinfo ─── */
-$setClauses = implode(' = ?, ', array_keys($fields)) . ' = ?';
+$setClauses = implode(' = ?, ', array_keys($fields)) . ' = ?, last_verified_at = NOW()';
 $values     = array_values($fields);
 $types      = str_repeat('s', count($values)) . 's'; // +1 for accID WHERE clause
 $values[]   = $accId;

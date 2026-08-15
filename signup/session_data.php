@@ -43,11 +43,6 @@ $voterId          = $_SESSION['voter_id'] ?? '';
 $precinct         = $_SESSION['precinct'] ?? '';
 $userStatus       = 'pending';
 
-// Map pin (optional) — stored as NULL when the applicant didn't drop a pin,
-// rather than as 0/0 (which would silently point at the coast of Africa).
-$latitude  = (isset($_SESSION['latitude'])  && $_SESSION['latitude']  !== '') ? (float)$_SESSION['latitude']  : null;
-$longitude = (isset($_SESSION['longitude']) && $_SESSION['longitude'] !== '') ? (float)$_SESSION['longitude'] : null;
-
 // ID Image - store relative path for display
 $frontIdImage = '';
 if (!empty($_SESSION['saved_id_upload']['front']['path'])) {
@@ -68,12 +63,6 @@ if (!date_default_timezone_get()) {
     date_default_timezone_set('Asia/Manila');
 }
 $dateRegistered = date('Y-m-d H:i:s');
-
-// Ensure the columns exist. Run outside the transaction below — DDL statements
-// like ALTER TABLE cause an implicit commit in MySQL, which would break the
-// retry/rollback logic in the transaction loop if run inside it.
-$conn->query("ALTER TABLE tbl_userinfo ADD COLUMN IF NOT EXISTS latitude  DECIMAL(10,7) NULL AFTER zip");
-$conn->query("ALTER TABLE tbl_userinfo ADD COLUMN IF NOT EXISTS longitude DECIMAL(10,7) NULL AFTER latitude");
 
 // ---------------------------------------------------------------------
 // Account creation  –  wrapped in a single transaction so:
@@ -138,22 +127,20 @@ while ($attempt < $maxAttempts) {
             civil_status, citizenship, religion, ethnicity, street, barangay, city, province, zip, email,
             phone, emergency_contact, emergency_phone, health_conditions,
             employment_status, job_title, monthly_income,
-            years_resident, resident_birth, voter_id, precinct, userStatus, frontID, backID, dateRegistered,
-            latitude, longitude
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            years_resident, resident_birth, voter_id, precinct, userStatus, frontID, backID, dateRegistered, last_verified_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmtInfo = $conn->prepare($sqlInfo);
         if (!$stmtInfo) {
             throw new Exception("Error preparing profile insert: " . $conn->error);
         }
         $stmtInfo->bind_param(
-            "ssssssssssssssssssssssssssdisssssssdd",
+            "ssssssssssssssssssssssssssdissssssss",
             $accID, $accountRolesCsv, $firstname, $lastname, $middlename, $suffix, $familyRole, $gender, $birthday, $birthplace,
             $civilStatus, $citizenship, $religion, $ethnicity, $street, $barangay, $city, $province, $zip, $email,
             $phone, $emergencyContact, $emergencyPhone, $healthConditions,
             $employmentStatus, $jobTitle, $monthlyIncome,
-            $yearsResident, $residentBirth, $voterId, $precinct, $userStatus, $frontIdImage, $backIdImage, $dateRegistered,
-            $latitude, $longitude
+            $yearsResident, $residentBirth, $voterId, $precinct, $userStatus, $frontIdImage, $backIdImage, $dateRegistered, $dateRegistered
         );
         $stmtInfo->execute();
         $stmtInfo->close();

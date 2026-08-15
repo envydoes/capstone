@@ -102,7 +102,7 @@ if ($accId) {
             'resident_birth' => isset($_POST['resident_birth']) ? '1' : '0'
         ];
 
-        $stmt = $conn->prepare('UPDATE tbl_userinfo SET email=?, phone=?, street=?, barangay=?, city=?, province=?, zip=?, emergency_contact=?, emergency_phone=?, health_conditions=?, employment_status=?, job_title=?, monthly_income=?, voter_id=?, precinct=?, years_resident=?, resident_birth=? WHERE accID=?');
+        $stmt = $conn->prepare('UPDATE tbl_userinfo SET email=?, phone=?, street=?, barangay=?, city=?, province=?, zip=?, emergency_contact=?, emergency_phone=?, health_conditions=?, employment_status=?, job_title=?, monthly_income=?, voter_id=?, precinct=?, years_resident=?, resident_birth=?, last_verified_at=NOW() WHERE accID=?');
         if ($stmt) {
             $stmt->bind_param('ssssssssssssssssss',
                 $updateData['email'],

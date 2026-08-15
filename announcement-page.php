@@ -207,7 +207,7 @@ $roleBadgeClass = match($role) {
       <?php if ($showMyPanel): ?>
         <a href="resident/residentPanel.php" class="nav-link">My Panel</a>
       <?php endif; ?>
-      <?php if ($roleLower === 'admin' | $role === 'staff'): ?>
+      <?php if ($roleLower === 'admin' || $role === 'staff'): ?>
         <a href="admin/adminDashboard.php" class="nav-link">Dashboard</a>
       <?php endif; ?>
       <a href="landing.php#announcements" class="nav-link">Announcements</a>
@@ -256,7 +256,7 @@ $roleBadgeClass = match($role) {
                 </a>
                 <?php endif; ?>
               <?php endif; ?>
-              <?php if ($roleLower === 'admin' | $role === 'staff'): ?>
+              <?php if ($roleLower === 'admin' || $role === 'staff'): ?>
               <a href="admin/adminDashboard.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 transition"><i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> Admin Panel</a>
               <?php endif; ?>
             </div>
@@ -301,7 +301,7 @@ $roleBadgeClass = match($role) {
         <i class="fa-solid fa-gauge-high w-4 text-green-600"></i> My Panel
       </a>
     <?php endif; ?>
-    <?php if ($roleLower === 'admin'): ?>
+    <?php if ($roleLower === 'admin'|| $role === 'staff'): ?>
       <a href="admin/adminDashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-purple-50 hover:text-purple-700 transition">
         <i class="fa-solid fa-shield-halved w-4 text-purple-500"></i> Dashboard
       </a>
@@ -322,9 +322,11 @@ $roleBadgeClass = match($role) {
     <?php endif; ?>
     <?php if ($logged_in): ?>
     <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
+      <?php if (!$role === 'staff'): ?>
       <a href="<?= htmlspecialchars($profileUrl) ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition">
         <i class="fa-solid fa-user w-4 text-gray-400"></i> My Profile
       </a>
+      <?php endif; ?>
       <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-medium hover:bg-red-50 transition">
         <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout
       </a>
