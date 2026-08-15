@@ -208,7 +208,7 @@ if ($requestIsResident) {
 $primaryRole  = $requestIsResident ? 'resident' : 'non-resident';
 $redirectDest = $requestIsResident
     ? '../resident/residentProfile.php'
-    : 'nonResidentProfile.php';
+    : 'nonresidentProfile.php';
 
 /* ============================================================
    BUILD UPDATE FIELDS FOR tbl_userinfo
@@ -275,17 +275,18 @@ $stmt->close();
    IF ROLE CHANGED: also update tbl_useracc.account_role immediately
    ============================================================ */
 if ($isRoleChange) {
-    // Map CSV role to the display string stored in tbl_useracc
-    // tbl_useracc typically stores a single primary role string
-    $accRoleMap = [
-        'resident'                              => 'resident',
-        'non-resident'                          => 'non-resident',
-        'business/apartment owner'              => 'business/apartment owner',
-        'resident,business/apartment owner'     => 'resident',
-        'non-resident,business/apartment owner' => 'non-resident',
-        
-    ];
-    $newAccRole = $accRoleMap[$selectedRole] ?? 'non-resident';
+    // Store the FULL combined role string as-is — do not collapse it.
+    // $selectedRole is already lowercased, trimmed, and validated against
+    // $allowedRoles above, so it's safe to use directly.
+    //
+    // Previously this was passed through an $accRoleMap that collapsed
+    // combined roles like "non-resident,business/apartment owner" down to
+    // just "non-resident", silently dropping the Owner status from
+    // tbl_useracc AND from the live session. That meant anywhere reading
+    // $_SESSION['account_role'] (e.g. the "Post Listing" nav link check)
+    // never saw the requested Owner role, even though tbl_userinfo's
+    // account_role_csv correctly stored the full combination.
+    $newAccRole = $selectedRole;
 
     $accStmt = $conn->prepare('UPDATE tbl_useracc SET account_role = ? WHERE accID = ?');
     if ($accStmt) {
@@ -306,7 +307,7 @@ if ($isRoleChange) {
     // Redirect to the appropriate profile page with a toast param
     $profileDest = $requestIsResident
         ? '../resident/residentProfile.php?toast=role_changed'
-        : 'nonResidentProfile.php?toast=role_changed';
+        : 'nonresidentProfile.php?toast=role_changed';
     header('Location: ' . $profileDest);
     exit;
 } else {
