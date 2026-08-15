@@ -1136,15 +1136,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 </body>
-</html>;
-    overlay.style.display = 'none';
-    overlay.classList.add('hidden');
-    document.getElementById('legalModalFrame').src = '';
-    document.body.style.overflow = '';
-  }
-  document.getElementById('legalModalOverlay').addEventListener('click', function (e) {
-    if (e.target === this) closeLegalModal();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeLegalModal();
-  });
+</html>
