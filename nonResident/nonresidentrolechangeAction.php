@@ -204,11 +204,11 @@ if ($requestIsResident) {
 /* ============================================================
    DETERMINE REDIRECT DESTINATION
    ============================================================ */
-// After save: go to residentProfile if new/current role is resident, else nonresidentProfile
+// After save: go to residentProfile if new/current role is resident, else nonResidentProfile
 $primaryRole  = $requestIsResident ? 'resident' : 'non-resident';
 $redirectDest = $requestIsResident
     ? '../resident/residentProfile.php'
-    : 'nonresidentProfile.php';
+    : 'nonResidentProfile.php';
 
 /* ============================================================
    BUILD UPDATE FIELDS FOR tbl_userinfo
@@ -306,7 +306,7 @@ if ($isRoleChange) {
     // Redirect to the appropriate profile page with a toast param
     $profileDest = $requestIsResident
         ? '../resident/residentProfile.php?toast=role_changed'
-        : 'nonresidentProfile.php?toast=role_changed';
+        : 'nonResidentProfile.php?toast=role_changed';
     header('Location: ' . $profileDest);
     exit;
 } else {
