@@ -336,7 +336,7 @@ function tagColor(string $tag): array {
 
             <!-- Menu items -->
             <div class="py-1">
-              <?php if ($role === 'admin' | $role === 'staff'): ?>
+              <?php if ($role === 'admin' || $role === 'staff'): ?>
               <a href="adminDashboard.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition">
                 <i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> Admin Panel
               </a>

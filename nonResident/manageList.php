@@ -129,6 +129,9 @@ if (isset($_GET['error']))   { $toastType = 'error';   $toastMsg = 'Error submit
 if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing deleted successfully.'; }
 if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing updated successfully!'; }
 
+$verifyEditProfileUrl = 'nonresidentEditProfile.php';
+$verifyActionUrl      = 'verifyAccount.php';
+require_once __DIR__ . '/../includes/verification_modal.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

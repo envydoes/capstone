@@ -264,6 +264,8 @@ function tagColor(string $tag): array {
 </head>
 <body class="bg-gray-50">
 
+<?php require_once __DIR__ . '/../includes/verification_modal.php'; ?>
+
   <!-- NAVBAR -->
    <?php if ($adminAccessRevoked): ?>
 <div style="background:#fef2f2;border:1.5px solid #fecaca;color:#dc2626;padding:14px 18px;border-radius:10px;margin:16px 0;display:flex;align-items:center;gap:10px;font-size:0.88rem;font-weight:600;">
