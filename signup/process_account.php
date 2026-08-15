@@ -214,7 +214,7 @@ if (in_array('resident', $normalisedRoles, true)) {
     header('Location: residentProfile.php');
 } elseif (in_array('non-resident', $normalisedRoles, true) || in_array('business/apartment owner', $normalisedRoles, true)) {
     // Non-resident and business accounts both use this flow
-    header('Location: nonResidentProfile.php');
+    header('Location: nonresidentProfile.php');
 } else {
     // No valid role, redirect back with error
     header('Location: accountCreation.php?error=no_role');
