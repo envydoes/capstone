@@ -541,9 +541,9 @@ if ($accId) {
                   </select>
                 </div>
                 <div>
-                  <label class="text-sm font-semibold text-slate-700">Gender</label>
+                  <label class="text-sm font-semibold text-slate-700">Sex</label>
                   <select name="gender" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 bg-slate-100 focus:ring-emerald-500 focus:border-emerald-500" disabled>
-                    <option value="">Select Gender</option>
+                    <option value="">Select Sex</option>
                     <?php foreach (['male'=>'Male','female'=>'Female','other'=>'Other'] as $v => $l): ?>
                       <option value="<?php echo htmlspecialchars($v); ?>" <?php echo ($resident['gender'] === $v ? 'selected' : ''); ?>><?php echo htmlspecialchars($l); ?></option>
                     <?php endforeach; ?>

@@ -1614,6 +1614,26 @@ $sidebarSections = [
      call .getImageURI() on whichever ones the admin selects. */
   const chartRegistry = {};
 
+  /* Registry of each chart's underlying data, keyed the same way - so the
+     printed report can include an actual data table alongside (or instead
+     of, if the image capture fails) the chart image. Built generically from
+     the Google DataTable every draw*Chart() function already constructs, so
+     no chart needs its own bespoke extraction logic. */
+  const CHART_TABLE_DATA = {};
+  function registerChartTable(key, dataTable) {
+    const numCols = dataTable.getNumberOfColumns();
+    const numRows = dataTable.getNumberOfRows();
+    const headers = [];
+    for (let c = 0; c < numCols; c++) headers.push(dataTable.getColumnLabel(c) || ('Column ' + (c + 1)));
+    const rows = [];
+    for (let r = 0; r < numRows; r++) {
+      const rowVals = [];
+      for (let c = 0; c < numCols; c++) rowVals.push(dataTable.getFormattedValue(r, c));
+      rows.push(rowVals);
+    }
+    CHART_TABLE_DATA[key] = { headers, rows };
+  }
+
   function drawIncomeVsAgeChart() {
     const data = google.visualization.arrayToDataTable(
         <?= json_encode($incomeAgeChartData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
@@ -1639,6 +1659,7 @@ $sidebarSections = [
     const chart = new google.visualization.ColumnChart(document.getElementById('incomeVsAgeChart'));
     chart.draw(data, options);
     chartRegistry['incomeVsAgeChart'] = chart;
+    registerChartTable('incomeVsAgeChart', data);
 }
 
   function drawBar() {
@@ -1664,6 +1685,7 @@ $sidebarSections = [
       },
     });
     chartRegistry['barchart'] = chart;
+    registerChartTable('barchart', data);
   }
 
   function drawDonut() {
@@ -1684,6 +1706,7 @@ $sidebarSections = [
       pieSliceBorderColor: 'transparent',
     });
     chartRegistry['donutchart'] = chart;
+    registerChartTable('donutchart', data);
   }
 
   /* ──────────────────────────────────────────
@@ -1956,6 +1979,7 @@ $sidebarSections = [
 
     const charts = {};
     const bars   = {};
+    const tables = {};
 
     checked.forEach(key => {
       if (ANALYTICS_ITEM_TYPES[key] === 'bars') {
@@ -1966,6 +1990,7 @@ $sidebarSections = [
         if (chart && typeof chart.getImageURI === 'function') {
           try { charts[key] = chart.getImageURI(); } catch (e) { /* left unset - printed report shows "unavailable" */ }
         }
+        if (CHART_TABLE_DATA[key]) tables[key] = CHART_TABLE_DATA[key];
       }
     });
 
@@ -1980,7 +2005,7 @@ $sidebarSections = [
 
     const payloadInput = document.createElement('input');
     payloadInput.type = 'hidden'; payloadInput.name = 'payload';
-    payloadInput.value = JSON.stringify({ selected: checked, charts, bars });
+    payloadInput.value = JSON.stringify({ selected: checked, charts, bars, tables });
     form.appendChild(payloadInput);
 
     document.body.appendChild(form);
@@ -2090,6 +2115,7 @@ $sidebarSections = [
       vAxis: { minValue: 0, textStyle: { color: '#6b7280' }, gridlines: { color: '#f3f4f6' } },
     });
     chartRegistry['chartPurok'] = chart;
+    registerChartTable('chartPurok', data);
   }
   function drawAgeBracketChart() {
     document.getElementById('bkMinors').textContent  = AGE_BRACKET.minors.toLocaleString();
@@ -2107,6 +2133,7 @@ $sidebarSections = [
       chartArea: { width: '92%', height: '80%' }, backgroundColor: 'transparent', pieSliceBorderColor: 'transparent',
     });
     chartRegistry['chartAgeBracket'] = chart;
+    registerChartTable('chartAgeBracket', data);
   }
   function renderGender() {
     document.getElementById('genderMaleLbl').textContent = GENDER_TOTALS.male.toLocaleString();
@@ -2125,6 +2152,7 @@ $sidebarSections = [
       vAxis: { minValue: 0, textStyle: { color: '#6b7280' }, gridlines: { color: '#f3f4f6' } },
     });
     chartRegistry['chartBenPrograms'] = chart;
+    registerChartTable('chartBenPrograms', data);
   }
 
   /* ?? BUSINESS / APARTMENT (chart-only pieces) ?? */
@@ -2138,6 +2166,7 @@ $sidebarSections = [
       chartArea: { width: '92%', height: '78%' }, backgroundColor: 'transparent', pieSliceBorderColor: 'transparent',
     });
     chartRegistry['chartListingType'] = chart;
+    registerChartTable('chartListingType', data);
   }
   function drawOccupancyChart() {
     const data = google.visualization.arrayToDataTable([
@@ -2149,6 +2178,7 @@ $sidebarSections = [
       chartArea: { width: '92%', height: '78%' }, backgroundColor: 'transparent', pieSliceBorderColor: 'transparent',
     });
     chartRegistry['chartOccupancy'] = chart;
+    registerChartTable('chartOccupancy', data);
   }
 
   /* ?? EQUIPMENT (chart-only piece) ?? */
@@ -2164,6 +2194,7 @@ $sidebarSections = [
       vAxis: { textStyle: { color: '#6b7280', fontSize: 11 } },
     });
     chartRegistry['chartMostBorrowed'] = chart;
+    registerChartTable('chartMostBorrowed', data);
   }
 
   /* ?? DOCUMENT REQUESTS ?? */
@@ -2189,6 +2220,7 @@ $sidebarSections = [
       pointSize: 5, curveType: 'function',
     });
     chartRegistry['chartDocMonthly'] = chart;
+    registerChartTable('chartDocMonthly', data);
   }
 
   /* ?? USER / ACCOUNT MANAGEMENT ?? */
@@ -2201,6 +2233,7 @@ $sidebarSections = [
       chartArea: { width: '90%', height: '85%' }, backgroundColor: 'transparent', pieSliceBorderColor: 'transparent',
     });
     chartRegistry['chartRoleCounts'] = chart;
+    registerChartTable('chartRoleCounts', data);
   }
   function drawAccountStatusChart() {
     const data = google.visualization.arrayToDataTable([
@@ -2212,6 +2245,7 @@ $sidebarSections = [
       chartArea: { width: '92%', height: '78%' }, backgroundColor: 'transparent', pieSliceBorderColor: 'transparent',
     });
     chartRegistry['chartAccountStatus'] = chart;
+    registerChartTable('chartAccountStatus', data);
   }
   function drawRegTrendChart() {
     if (!REG_TREND.length) { document.getElementById('chartRegTrend').innerHTML = '<div class="mini-empty">No data available</div>'; return; }
@@ -2225,6 +2259,7 @@ $sidebarSections = [
       pointSize: 5, curveType: 'function',
     });
     chartRegistry['chartRegTrend'] = chart;
+    registerChartTable('chartRegTrend', data);
   }
 
   window.addEventListener('resize', () => {
@@ -2265,7 +2300,6 @@ $sidebarSections = [
             <label>Account Role</label>
             <select id="gfAccountRole">
               <option value="">Any</option>
-              <option value="admin">Admin</option>
               <option value="resident">Resident</option>
               <option value="non-resident">Non-Resident</option>
               <option value="business/apartment owner">Business/Apartment Owner</option>

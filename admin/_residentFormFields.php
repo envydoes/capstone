@@ -30,9 +30,9 @@
       </select>
     </div>
     <div>
-      <label class="field-label">Gender <span class="required-star">*</span></label>
+      <label class="field-label">Sex <span class="required-star">*</span></label>
       <select id="e_gender" class="field-input">
-        <option value="">Select Gender</option>
+        <option value="">Select Sex</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
         <option value="other">Other</option>

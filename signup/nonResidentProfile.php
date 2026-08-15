@@ -450,9 +450,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <span>
       I agree to the 
-      <a href="../infoSecurity/terms.php" class="text-green-700 font-semibold hover:underline">Terms of Service</a> 
+      <a href="#" onclick="openLegalModal('../infoSecurity/termsModal.php', 'Terms of Service'); return false;" class="text-green-700 font-semibold hover:underline">Terms of Service</a> 
       and have read the 
-      <a href="../infoSecurity/dataProtection.php" class="text-green-700 font-semibold hover:underline">Data Protection Notice</a> 
+      <a href="#" onclick="openLegalModal('../infoSecurity/dataProtectionModal.php', 'Data Protection Notice'); return false;" class="text-green-700 font-semibold hover:underline">Data Protection Notice</a> 
       regarding the use of my personal information.
     </span>
 
@@ -916,6 +916,50 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   })();
+</script>
+
+<!-- ══════════ LEGAL DOCUMENT MODAL (Terms of Service / Data Protection Notice) ══════════ -->
+<div id="legalModalOverlay" class="hidden fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm items-center justify-center p-4" style="display:none;">
+  <div class="bg-white w-full max-w-3xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
+      <h3 id="legalModalTitle" class="font-bold text-green-900 text-base"></h3>
+      <button type="button" onclick="closeLegalModal()" class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-50 transition" aria-label="Close">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-hidden bg-gray-50 relative">
+      <div id="legalModalLoading" class="absolute inset-0 flex items-center justify-center">
+        <i class="fa-solid fa-circle-notch fa-spin text-2xl text-green-600"></i>
+      </div>
+      <iframe id="legalModalFrame" src="" class="w-full h-full border-0 relative z-10" onload="document.getElementById('legalModalLoading').style.display='none';"></iframe>
+    </div>
+  </div>
+</div>
+<script>
+  function openLegalModal(url, title) {
+    const overlay = document.getElementById('legalModalOverlay');
+    const frame   = document.getElementById('legalModalFrame');
+    const loading = document.getElementById('legalModalLoading');
+    document.getElementById('legalModalTitle').textContent = title;
+    loading.style.display = 'flex';
+    frame.src = url;
+    overlay.style.display = 'flex';
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLegalModal() {
+    const overlay = document.getElementById('legalModalOverlay');
+    overlay.style.display = 'none';
+    overlay.classList.add('hidden');
+    document.getElementById('legalModalFrame').src = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('legalModalOverlay').addEventListener('click', function (e) {
+    if (e.target === this) closeLegalModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLegalModal();
+  });
 </script>
 
 </body>
