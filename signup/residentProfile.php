@@ -695,12 +695,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
         </div>
-
-      </div>
-        </div>
-      </div>
-
-      <!-- CONTACT & HEALTH -->
+    
       <div class="section-card">
         <div class="section-title">
           <div class="section-icon"><i class="fa-solid fa-phone text-green-700 text-sm"></i></div>
