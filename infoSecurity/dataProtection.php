@@ -295,7 +295,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       <i class="fa-solid fa-shield-halved text-xs" style="color:var(--site-primary-pale)"></i> Legal Document
     </div>
     <h1 class="text-white font-bold text-3xl sm:text-4xl mb-3" style="font-family:'Playfair Display',serif;" id="heroTitle">Data Protection Notice</h1>
-    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;�&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
+    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
   </div>
 </div>
 
@@ -319,7 +319,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       </div>
       <div class="min-w-0">
         <h2 class="text-white font-bold text-lg" id="cardTitle">Data Protection Notice</h2>
-        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">9 sections � Read time ~3 min</p>
+        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">9 sections • Read time ~3 min</p>
       </div>
       <div class="ml-auto bg-white/15 border border-white/20 rounded-xl px-4 py-2 text-center hidden sm:block flex-shrink-0">
         <p class="text-white font-bold text-lg leading-none">9</p>
@@ -393,15 +393,15 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">� 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ❤️ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
 const content = {
   en: {
-    heroTitle:'Data Protection Notice', heroMeta:'Last Updated: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Data Protection Notice', cardMeta:'9 sections � Read time ~3 min', sectionLabel:'Sections',
+    heroTitle:'Data Protection Notice', heroMeta:'Last Updated: March 2026 • Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Data Protection Notice', cardMeta:'9 sections • Read time ~3 min', sectionLabel:'Sections',
     introNote:'This Data Protection Notice explains how the <?= e($siteSettings['site_title']) ?> collects, uses, stores, and protects personal information submitted by users of the platform.',
     backLabel:'Back', complianceTitle:'Compliant with Philippine Data Privacy Act of 2012',
     complianceSub:'Republic Act No. 10173 - This system is designed to handle personal information responsibly and securely.',
@@ -419,8 +419,8 @@ const content = {
     ]
   },
   fil: {
-    heroTitle:'Paunawa sa Proteksyon ng Datos', heroMeta:'Huling na bago: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Paunawa sa Proteksyon ng Datos', cardMeta:'9 seksyon � Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
+    heroTitle:'Paunawa sa Proteksyon ng Datos', heroMeta:'Huling na bago: March 2026 • Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Paunawa sa Proteksyon ng Datos', cardMeta:'9 seksyon • Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
     introNote:'Ang Paunawa sa Proteksyon ng Datos na ito ay nagpapaliwanag kung paano kinokolekta, ginagamit, itinatago, at pinoprotektahan ng <?= e($siteSettings['site_title']) ?> ang personal na impormasyong ibinibigay ng mga user.',
     backLabel:'Bumalik', complianceTitle:'Sumusunod sa Philippine Data Privacy Act of 2012',
     complianceSub:'Republic Act No. 10173 - Ang sistemang ito ay idinisenyo upang pangasiwaan ang personal na impormasyon nang may pananagutan at seguridad.',

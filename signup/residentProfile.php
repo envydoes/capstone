@@ -1,6 +1,18 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../config/db_connection.php';
+require_once __DIR__ . '/../includes/site_config.php';
+
+$siteSettings = site_config_load($conn);
+
+// Every resident registering here lives in this barangay/city by definition —
+// locking these instead of free text prevents "Sumacab Este" vs "Sumaca Este"
+// style inconsistencies. Province isn't stored in tbl_settings (only
+// barangay_name + municipality), so it's fixed here; update if this portal
+// is ever reused for a barangay in a different province.
+define('SITE_PROVINCE', 'Nueva Ecija');
+
 /* ============================================================
    SERVER-SIDE SECURITY HELPERS
    ============================================================ */
@@ -148,13 +160,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'birthday'           => sanitizeText($_POST['birthday']           ?? '', 10),
         'birthplace'         => sanitizeText($_POST['birthplace']         ?? '', 200),
         'civil_status'       => allowedValue($_POST['civil_status']       ?? '', $allowedCivilStatus),
-        'citizenship'        => sanitizeText($_POST['citizenship']        ?? '', 100),
-        'religion'           => sanitizeText($_POST['religion']           ?? '', 100),
+        // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
+        'citizenship'        => sanitizeText(
+                                     ($_POST['citizenship'] ?? '') === 'Other'
+                                         ? ($_POST['citizenship_other'] ?? '')
+                                         : ($_POST['citizenship'] ?? ''),
+                                     100
+                                 ),
+        'religion'           => sanitizeText(
+                                     ($_POST['religion'] ?? '') === 'Other'
+                                         ? ($_POST['religion_other'] ?? '')
+                                         : ($_POST['religion'] ?? ''),
+                                     100
+                                 ),
         'ethnicity'          => sanitizeText($_POST['ethnicity']          ?? '', 100),
         'street'             => sanitizeText($_POST['street']             ?? '', 200),
-        'barangay'           => sanitizeText($_POST['barangay']           ?? '', 100),
-        'city'               => sanitizeText($_POST['city']               ?? '', 100),
-        'province'           => sanitizeText($_POST['province']           ?? '', 100),
+        // Locked fields — always the site's own barangay/city, never trust POST here.
+        'barangay'           => $siteSettings['barangay_name'],
+        'city'               => $siteSettings['municipality'],
+        'province'           => SITE_PROVINCE,
         'zip'                => sanitizeText($_POST['zip']                ?? '', 10),
         'phone'              => sanitizeText($_POST['phone']              ?? '', 20),
         'email'              => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
@@ -184,9 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'birthplace'  => 'Birthplace',
         'citizenship' => 'Citizenship',
         'street'      => 'Street address',
-        'barangay'    => 'Barangay',
-        'city'        => 'City / Municipality',
-        'province'    => 'Province',
+        // barangay/city/province are locked to site settings above — always
+        // populated, no need to validate them as user input.
     ];
     foreach ($requiredText as $field => $label) {
         if ($data[$field] === '') {
@@ -205,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Select whitelists
     if ($data['family_role']  === '') $errors['family_role']  = 'Family role is required.';
-    if ($data['gender']       === '') $errors['gender']       = 'Gender is required.';
+    if ($data['gender']       === '') $errors['gender']       = 'Sex is required.';
     if ($data['civil_status'] === '') $errors['civil_status'] = 'Civil status is required.';
 
     // Birthday
@@ -337,6 +360,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   .terms-box input[type="checkbox"] { accent-color: #16a34a; width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
   .field-error { color: #dc2626; font-size: 0.75rem; margin-top: 4px; display: block; }
+  .field-locked { display: flex; align-items: center; gap: 8px; }
+
+  /* ── Terms Modal ── */
+  .terms-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 900; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .terms-modal-overlay.open { display: flex; }
+  .terms-modal-card { background: #fff; border-radius: 18px; width: 100%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
+  .terms-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
+  .terms-modal-body { flex: 1; overflow: hidden; min-height: 0; }
+  .terms-modal-body iframe { width: 100%; height: 100%; border: none; min-height: 55vh; }
+  .terms-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; border-top: 1px solid #f3f4f6; flex-shrink: 0; flex-wrap: wrap; }
+  .terms-modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f3f4f6; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
+  .terms-modal-close:hover { background: #fee2e2; color: #dc2626; }
+  .terms-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; flex-wrap: wrap; }
+  .terms-summary-text { font-size: 0.85rem; color: #14532d; display: flex; align-items: center; gap: 10px; }
+  .terms-view-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1.5px solid #15803d; color: #15803d; background: #fff; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .terms-view-btn:hover { background: #f0fdf4; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
   .fade-up { animation: fadeUp 0.5s ease both; }
   .fade-up-1 { animation-delay: 0.05s; }
@@ -442,6 +481,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <a href="#" onclick="openLegalModal('../infoSecurity/dataProtectionModal.php', 'Data Protection Notice'); return false;" class="text-green-700 font-semibold hover:underline">Data Protection Notice</a> regarding the use of my personal information.
         </label>
       </div>
+      <input type="hidden" name="terms" id="termsHiddenInput" value="<?php echo oldValue('terms') === 'agree' ? 'agree' : ''; ?>">
       <?php if (isset($errors['terms'])): ?>
         <p class="field-error -mt-6 mb-4"><?php echo e($errors['terms']); ?></p>
       <?php endif; ?>
@@ -537,18 +577,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (isset($errors['civil_status'])): ?><span class="field-error"><?php echo e($errors['civil_status']); ?></span><?php endif; ?>
           </div>
 
+          <?php
+            $citizenshipOptions = ['Filipino', 'Dual Citizen', 'Foreign National'];
+            $citizenshipOld     = oldValue('citizenship');
+            $citizenshipIsOther = $citizenshipOld !== '' && !in_array($citizenshipOld, $citizenshipOptions, true);
+
+            $religionOptions = [
+                'Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Born Again Christian',
+                'Seventh-day Adventist', "Jehovah's Witness", 'Aglipayan (Philippine Independent Church)',
+                'Baptist', 'None',
+            ];
+            $religionOld     = oldValue('religion');
+            $religionIsOther = $religionOld !== '' && !in_array($religionOld, $religionOptions, true);
+          ?>
+
           <div>
-            <label class="field-label" for="citizenship">Citizenship <span class="required-star">*</span></label>
-            <input type="text" id="citizenship" name="citizenship" required maxlength="100"
-                   class="field-input <?php echo isset($errors['citizenship']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('citizenship'); ?>" placeholder="e.g., Filipino">
+            <label class="field-label" for="citizenship_select">Citizenship <span class="required-star">*</span></label>
+            <select id="citizenship_select"
+                    class="field-input <?php echo isset($errors['citizenship']) ? 'error' : ''; ?>"
+                    onchange="toggleOtherField(this, 'citizenship_other', 'citizenship')">
+              <option value="">Select Citizenship</option>
+              <?php foreach ($citizenshipOptions as $opt): ?>
+                <option value="<?php echo e($opt); ?>" <?php echo $citizenshipOld === $opt ? 'selected' : ''; ?>><?php echo e($opt); ?></option>
+              <?php endforeach; ?>
+              <option value="Other" <?php echo $citizenshipIsOther ? 'selected' : ''; ?>>Other</option>
+            </select>
+            <input type="text" id="citizenship_other" maxlength="100"
+                   class="field-input mt-2 <?php echo $citizenshipIsOther ? '' : 'hidden'; ?>"
+                   placeholder="Please specify"
+                   value="<?php echo $citizenshipIsOther ? e($citizenshipOld) : ''; ?>"
+                   oninput="syncOtherField('citizenship_other', 'citizenship')">
+            <input type="hidden" name="citizenship" id="citizenship" value="<?php echo e($citizenshipOld); ?>">
             <?php if (isset($errors['citizenship'])): ?><span class="field-error"><?php echo e($errors['citizenship']); ?></span><?php endif; ?>
           </div>
 
           <div>
-            <label class="field-label" for="religion">Religion</label>
-            <input type="text" id="religion" name="religion" maxlength="100"
-                   class="field-input" value="<?php echo oldValue('religion'); ?>" placeholder="e.g., Catholic">
+            <label class="field-label" for="religion_select">Religion</label>
+            <select id="religion_select" class="field-input" onchange="toggleOtherField(this, 'religion_other', 'religion')">
+              <option value="">Select Religion (optional)</option>
+              <?php foreach ($religionOptions as $opt): ?>
+                <option value="<?php echo e($opt); ?>" <?php echo $religionOld === $opt ? 'selected' : ''; ?>><?php echo e($opt); ?></option>
+              <?php endforeach; ?>
+              <option value="Other" <?php echo $religionIsOther ? 'selected' : ''; ?>>Other</option>
+            </select>
+            <input type="text" id="religion_other" maxlength="100"
+                   class="field-input mt-2 <?php echo $religionIsOther ? '' : 'hidden'; ?>"
+                   placeholder="Please specify"
+                   value="<?php echo $religionIsOther ? e($religionOld) : ''; ?>"
+                   oninput="syncOtherField('religion_other', 'religion')">
+            <input type="hidden" name="religion" id="religion" value="<?php echo e($religionOld); ?>">
           </div>
 
           <div>
@@ -577,27 +654,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <div>
-            <label class="field-label" for="barangay">Barangay <span class="required-star">*</span></label>
-            <input type="text" id="barangay" name="barangay" required maxlength="100"
-                   class="<?php echo inputClass('barangay',$highlightFields).(isset($errors['barangay'])?' error':''); ?>"
-                   value="<?php echo oldValue('barangay'); ?>" placeholder="Barangay">
-            <?php if (isset($errors['barangay'])): ?><span class="field-error"><?php echo e($errors['barangay']); ?></span><?php endif; ?>
+            <label class="field-label">Barangay</label>
+            <div class="field-input field-locked bg-gray-50 text-gray-500 cursor-not-allowed">
+              <i class="fa-solid fa-lock text-xs text-gray-400"></i> <?php echo e($siteSettings['barangay_name']); ?>
+            </div>
+            <input type="hidden" name="barangay" value="<?php echo e($siteSettings['barangay_name']); ?>">
+            <span class="text-gray-400 text-xs mt-1 block">Fixed — this portal is only for <?php echo e($siteSettings['barangay_name']); ?> residents</span>
           </div>
 
           <div>
-            <label class="field-label" for="city">City / Municipality <span class="required-star">*</span></label>
-            <input type="text" id="city" name="city" required maxlength="100" autocomplete="address-level2"
-                   class="<?php echo inputClass('city',$highlightFields).(isset($errors['city'])?' error':''); ?>"
-                   value="<?php echo oldValue('city'); ?>" placeholder="City or Municipality">
-            <?php if (isset($errors['city'])): ?><span class="field-error"><?php echo e($errors['city']); ?></span><?php endif; ?>
+            <label class="field-label">City / Municipality</label>
+            <div class="field-input field-locked bg-gray-50 text-gray-500 cursor-not-allowed">
+              <i class="fa-solid fa-lock text-xs text-gray-400"></i> <?php echo e($siteSettings['municipality']); ?>
+            </div>
+            <input type="hidden" name="city" value="<?php echo e($siteSettings['municipality']); ?>">
           </div>
 
           <div>
-            <label class="field-label" for="province">Province <span class="required-star">*</span></label>
-            <input type="text" id="province" name="province" required maxlength="100" autocomplete="address-level1"
-                   class="<?php echo inputClass('province',$highlightFields).(isset($errors['province'])?' error':''); ?>"
-                   value="<?php echo oldValue('province'); ?>" placeholder="Province">
-            <?php if (isset($errors['province'])): ?><span class="field-error"><?php echo e($errors['province']); ?></span><?php endif; ?>
+            <label class="field-label">Province</label>
+            <div class="field-input field-locked bg-gray-50 text-gray-500 cursor-not-allowed">
+              <i class="fa-solid fa-lock text-xs text-gray-400"></i> <?php echo e(SITE_PROVINCE); ?>
+            </div>
+            <input type="hidden" name="province" value="<?php echo e(SITE_PROVINCE); ?>">
           </div>
 
           <div>
@@ -772,7 +850,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </div>
 
+<!-- TERMS OF SERVICE MODAL -->
+<div class="terms-modal-overlay" id="termsModalOverlay" onclick="closeTermsModalOnOverlay(event)">
+  <div class="terms-modal-card" onclick="event.stopPropagation()">
+    <div class="terms-modal-header">
+      <div>
+        <p class="font-bold text-gray-900 text-base">Terms of Service &amp; Data Protection</p>
+        <p class="text-gray-400 text-xs mt-0.5">Please read before continuing</p>
+      </div>
+      <button type="button" class="terms-modal-close" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="terms-modal-body">
+      <iframe src="../infoSecurity/terms.php" title="Terms of Service"></iframe>
+    </div>
+    <div class="terms-modal-footer">
+      <a href="../infoSecurity/dataProtection.php" target="_blank" class="text-xs text-green-700 hover:underline">
+        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> View Data Protection Notice
+      </a>
+      <div class="flex items-center gap-3">
+        <button type="button" class="text-sm text-gray-500 hover:text-gray-700 px-3 py-2" onclick="closeTermsModal()">Cancel</button>
+        <button type="button" class="submit-btn" onclick="agreeToTerms()">
+          <i class="fa-solid fa-check"></i> I Agree, Continue
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ============================================================
+   TERMS MODAL
+   ============================================================ */
+function openTermsModal() {
+    document.getElementById('termsModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeTermsModal() {
+    document.getElementById('termsModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function closeTermsModalOnOverlay(e) {
+    if (e.target.id === 'termsModalOverlay') closeTermsModal();
+}
+function agreeToTerms() {
+    document.getElementById('termsHiddenInput').value = 'agree';
+    document.getElementById('termsSummaryRow').style.borderColor = '#15803d';
+    document.getElementById('termsStatusText').innerHTML =
+        '<i class="fa-solid fa-circle-check" style="color:#15803d;"></i> You agreed to the Terms of Service.';
+    const errEl = document.getElementById('terms-js-err');
+    if (errEl) errEl.remove();
+    closeTermsModal();
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsModal(); });
+
+/* ============================================================
+   DROPDOWN + "OTHER, PLEASE SPECIFY" FIELDS (Citizenship / Religion)
+   ============================================================ */
+function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
+    const otherInput  = document.getElementById(otherInputId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    if (selectEl.value === 'Other') {
+        otherInput.classList.remove('hidden');
+        hiddenInput.value = otherInput.value;
+        otherInput.focus();
+    } else {
+        otherInput.classList.add('hidden');
+        hiddenInput.value = selectEl.value;
+    }
+}
+function syncOtherField(otherInputId, hiddenInputId) {
+    document.getElementById(hiddenInputId).value = document.getElementById(otherInputId).value;
+}
+
 /* ============================================================
    WHITELISTS (mirror PHP)
    ============================================================ */
@@ -867,24 +1016,36 @@ document.querySelectorAll('.field-input').forEach(el => {
 document.getElementById('residentForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Terms check
-    const terms = document.getElementById('terms');
-    if (!terms.checked) {
-        const box = terms.closest('.terms-box');
-        box.style.borderColor = '#ef4444';
+    // Terms check (now driven by the modal's hidden input, not a checkbox)
+    const termsHidden = document.getElementById('termsHiddenInput');
+    if (termsHidden.value !== 'agree') {
+        const row = document.getElementById('termsSummaryRow');
+        row.style.borderColor = '#ef4444';
         let tErr = document.getElementById('terms-js-err');
         if (!tErr) {
             tErr = document.createElement('p');
             tErr.id = 'terms-js-err';
             tErr.className = 'field-error';
             tErr.textContent = 'You must agree to the Terms of Service.';
-            box.insertAdjacentElement('afterend', tErr);
+            row.insertAdjacentElement('afterend', tErr);
         }
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
     let valid = true;
     document.querySelectorAll('.field-input').forEach(el => { if (!validateField(el)) valid = false; });
+
+    // Citizenship select has no name/required attr (its value flows through
+    // the hidden #citizenship input), so check it explicitly.
+    const citizenshipSelect = document.getElementById('citizenship_select');
+    const citizenshipHidden = document.getElementById('citizenship');
+    if (!citizenshipHidden.value.trim()) {
+        showError(citizenshipSelect, 'Citizenship is required.');
+        valid = false;
+    } else {
+        clearError(citizenshipSelect);
+    }
 
     if (!valid) {
         const first = document.querySelector('.error, .field-error');

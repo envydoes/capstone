@@ -289,11 +289,11 @@ $incomeAgeStats = mysqli_fetch_assoc(mysqli_query($conn, "
 "));
 
 $incomeCounts = [
-    'Below ?5k/mo' => (int) ($incomeBracketStats['below_5k'] ?? 0),
-    '?5k - ?10k/mo' => (int) ($incomeBracketStats['from_5k_10k'] ?? 0),
-    '?10k - ?20k/mo' => (int) ($incomeBracketStats['from_10k_20k'] ?? 0),
-    '?20k - ?40k/mo' => (int) ($incomeBracketStats['from_20k_40k'] ?? 0),
-    'Above ?40k/mo' => (int) ($incomeBracketStats['above_40k'] ?? 0),
+    'Below ₱5k/mo' => (int) ($incomeBracketStats['below_5k'] ?? 0),
+    '₱5k - ₱10k/mo' => (int) ($incomeBracketStats['from_5k_10k'] ?? 0),
+    '₱10k - ₱20k/mo' => (int) ($incomeBracketStats['from_10k_20k'] ?? 0),
+    '₱20k - ₱40k/mo' => (int) ($incomeBracketStats['from_20k_40k'] ?? 0),
+    'Above ₱40k/mo' => (int) ($incomeBracketStats['above_40k'] ?? 0),
 ];
 
 $totalIncomeCount = array_sum($incomeCounts);
@@ -1253,11 +1253,11 @@ $sidebarSections = [
               <?php
                   $pct = $totalIncomeCount > 0 ? round(($value / $totalIncomeCount) * 100, 1) : 0;
                   $barColor = [
-                      'Below ?5k/mo' => '#E24B4A',
-                      '?5k - ?10k/mo' => '#BA7517',
-                      '?10k - ?20k/mo' => '#639922',
-                      '?20k - ?40k/mo' => '#1D9E75',
-                      'Above ?40k/mo' => '#378ADD',
+                      'Below ₱5k/mo' => '#E24B4A',
+                      '₱5k - ₱10k/mo' => '#BA7517',
+                      '₱10k - ₱20k/mo' => '#639922',
+                      '₱20k - ₱40k/mo' => '#1D9E75',
+                      'Above ₱40k/mo' => '#378ADD',
                   ][$label];
               ?>
               <div class="flex items-center justify-between">
@@ -2411,7 +2411,7 @@ $sidebarSections = [
           <div class="gf-field gf-span-2">
             <label>Monthly Income Range</label>
             <div class="gf-range">
-              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ?"><span>-</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ?">
+              <input type="number" id="gfIncomeMin" min="0" placeholder="Min ₱"><span>-</span><input type="number" id="gfIncomeMax" min="0" placeholder="Max ₱">
             </div>
           </div>
         </div>

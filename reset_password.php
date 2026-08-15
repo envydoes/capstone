@@ -257,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p id="strength-label" class="text-xs mt-1 text-gray-400"></p>
         <p id="password-hint" class="text-gray-400 text-xs mt-1">
-          Min 8 � max 72 characters - include uppercase, lowercase, and a number.
+          Min 8 – max 72 characters - include uppercase, lowercase, and a number.
         </p>
         <p id="password-error" class="text-red-500 text-xs mt-1.5 hidden" role="alert"></p>
       </div>

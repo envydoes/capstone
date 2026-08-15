@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// â�?��,�â�?��,� Parse request: multipart (with new photos) OR JSON â�?��,�â�?��,�
+// ─── Parse request: multipart (with new photos) OR JSON ───
 $data      = null;
 $newPhotos = [];
 $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
@@ -56,7 +56,7 @@ if (!$listingId) {
     exit;
 }
 
-// â�?��,�â�?��,� Verify ownership â�?��,�â�?��,�
+// ─── Verify ownership ───
 $ownerStmt = $conn->prepare("SELECT id, photos FROM tbl_busaptlisting WHERE id = ? AND userId = ? LIMIT 1");
 if (!$ownerStmt) {
     echo json_encode(['success' => false, 'message' => 'DB error: ' . $conn->error]);
@@ -72,7 +72,7 @@ if (!$ownerRow) {
     exit;
 }
 
-// â�?��,�â�?��,� Shared fields â�?��,�â�?��,�
+// ─── Shared fields ───
 $contact  = trim($data['contact']  ?? '');
 $email    = trim($data['email']    ?? '');
 $mapsLink = trim($data['mapsLink'] ?? '');
@@ -80,7 +80,7 @@ $address  = trim($data['address']  ?? '');
 
 $isApt = ($listingType === 'apt' || $listingType === 'apartment');
 
-// â�?��,�â�?��,� Handle photo removals â�?��,�â�?��,�
+// ─── Handle photo removals ───
 $currentPhotos = json_decode($ownerRow['photos'] ?? '[]', true);
 if (!is_array($currentPhotos)) $currentPhotos = [];
 
@@ -97,7 +97,7 @@ foreach ($removedPhotos as $photoPath) {
     }
 }
 
-// â�?��,�â�?��,� Upload new photos â�?��,�â�?��,�
+// ─── Upload new photos ───
 if (!empty($newPhotos['tmp_name'])) {
     $uploadDir = dirname(__FILE__) . '/../uploads/listings/';
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
@@ -121,7 +121,7 @@ if (!empty($newPhotos['tmp_name'])) {
 $photosJson = json_encode(array_values($currentPhotos));
 
 if ($isApt) {
-    // â�?��,�â�?��,� APARTMENT UPDATE (20 params) â�?��,�â�?��,�
+    // ─── APARTMENT UPDATE (20 params) ───
     // Positions and types:
     //  1 aptTitle       s    5 aptFloor       s    9 slotsAvailable i   13 aptRules  s   17 email      s
     //  2 aptType        s    6 aptRooms        i   10 aptDesc        s   14 address   s   18 photosJson s
@@ -129,7 +129,7 @@ if ($isApt) {
     //  4 aptPrice       d    8 aptBath         s   12 aptAmenities   s   16 contact   s   20 accId      s
     //
     // Type string (20 chars): s s s d s i i s i s s s s s s s s s i s
-    // Verified: 'sssdsiisisssssssssis' length=20 â�"�?o
+    // Verified: 'sssdsiisisssssssssis' length=20 â====
 
     $aptTitle       = trim($data['aptTitle']       ?? '');
     $aptType        = trim($data['aptType']        ?? '');
@@ -175,7 +175,7 @@ if ($isApt) {
     }
 
     $stmt->bind_param(
-        'sssdsiisisssssssssis',   // â�?� 20 chars, verified â�"�?o
+        'sssdsiisisssssssssis',   // â? 20 chars, verified â====
         $aptTitle,        //  1 s
         $aptType,         //  2 s
         $aptStatus,       //  3 s
@@ -199,10 +199,10 @@ if ($isApt) {
     );
 
 } else {
-    // â�?��,�â�?��,� BUSINESS UPDATE (17 params) â�?��,�â�?��,�
+    // ─── BUSINESS UPDATE (17 params) ───
     // All string fields, then listingId (int), then accId (string)
-    // Type string (17 chars): 15�f�?"s + i + s
-    // Verified: 'sssssssssssssssis' length=17 â�"�?o
+    // Type string (17 chars): 15f – s + i + s
+    // Verified: 'sssssssssssssssis' length=17 â====
 
     $bussName     = trim($data['bussName']   ?? '');
     $bussCat      = trim($data['bussCat']    ?? '');
@@ -244,7 +244,7 @@ if ($isApt) {
     }
 
     $stmt->bind_param(
-        'sssssssssssssssis',   // â�?� 17 chars, verified â�"�?o
+        'sssssssssssssssis',   // â? 17 chars, verified â====
         $bussName,      //  1 s
         $bussCat,       //  2 s
         $bussStatus,    //  3 s

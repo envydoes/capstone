@@ -358,7 +358,7 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">� 2026 SumEste Portal. All Rights Reserved. Made with ?? for Sumacab Este.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 SumEste Portal. All Rights Reserved. Made with ❤️ for Sumacab Este.</div>
   </div>
 </footer>
 

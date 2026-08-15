@@ -282,7 +282,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       <i class="fa-solid fa-file-contract text-xs" style="color:var(--site-primary-pale)"></i> Legal Document
     </div>
     <h1 class="text-white font-bold text-3xl sm:text-4xl mb-3" style="font-family:'Playfair Display',serif;" id="heroTitle">Terms of Service</h1>
-    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;�&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
+    <p class="text-sm" id="heroMeta" style="color:var(--site-primary-pale)">Last Updated: March 2026 &nbsp;&nbsp; Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?></p>
   </div>
 </div>
 
@@ -306,7 +306,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
       </div>
       <div class="min-w-0">
         <h2 class="text-white font-bold text-lg" id="cardTitle">Terms of Service</h2>
-        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">11 sections � Read time ~3 min</p>
+        <p class="text-xs mt-0.5" id="cardMeta" style="color:var(--site-primary-pale)">11 sections • Read time ~3 min</p>
       </div>
       <div class="ml-auto bg-white/15 border border-white/20 rounded-xl px-4 py-2 text-center hidden sm:block flex-shrink-0">
         <p class="text-white font-bold text-lg leading-none">11</p>
@@ -370,15 +370,15 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
         </div>
       </div>
     </div>
-    <div class="text-center mt-6 text-green-500 text-sm">� 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ?? for <?= e($siteSettings['barangay_name']) ?>.</div>
+    <div class="text-center mt-6 text-green-500 text-sm">© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. Made with ❤️ for <?= e($siteSettings['barangay_name']) ?>.</div>
   </div>
 </footer>
 
 <script>
 const content = {
   en: {
-    heroTitle:'Terms of Service', heroMeta:'Last Updated: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Terms of Service', cardMeta:'11 sections � Read time ~3 min', sectionLabel:'Sections',
+    heroTitle:'Terms of Service', heroMeta:'Last Updated: March 2026 • Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Terms of Service', cardMeta:'11 sections • Read time ~3 min', sectionLabel:'Sections',
     introNote:'Please read all terms carefully before using the <?= e($siteSettings['site_title']) ?>. By registering and using this system, you confirm that you have read and understood these terms.',
     backLabel:'Back', bottomTitle:'By using <?= e($siteSettings['site_title']) ?>, you agree to these terms.',
     bottomSub:'For questions or concerns, contact us at',
@@ -397,8 +397,8 @@ const content = {
     ]
   },
   fil: {
-    heroTitle:'Mga Tuntunin ng Serbisyo', heroMeta:'Huling na bago: March 2026 � Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
-    cardTitle:'Mga Tuntunin ng Serbisyo', cardMeta:'11 seksyon � Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
+    heroTitle:'Mga Tuntunin ng Serbisyo', heroMeta:'Huling na bago: March 2026 • Barangay <?= e($siteSettings['barangay_name']) ?>, <?= e($siteSettings['municipality']) ?>',
+    cardTitle:'Mga Tuntunin ng Serbisyo', cardMeta:'11 seksyon • Oras ng pagbabasa ~3 min', sectionLabel:'Mga Seksyon',
     introNote:'Mangyaring basahin nang mabuti ang lahat ng tuntunin bago gamitin ang SumEste Portal. Sa pamamagitan ng pagpaparehistro at paggamit ng sistemang ito, kinukumpirma mo na nabasa at naintindihan mo ang mga tuntuning ito.',
     backLabel:'Bumalik', bottomTitle:'Sa paggamit ng SumEste Portal, sumasang-ayon ka sa mga tuntuning ito.',
     bottomSub:'Para sa mga katanungan o alalahanin, makipag-ugnayan sa amin sa',

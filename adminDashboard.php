@@ -967,7 +967,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
             <p id="weatherSummary" class="text-xs text-gray-500 flex items-center gap-1.5 mb-1">
               <i class="fa-solid fa-cloud-sun text-amber-400"></i> Loading weather...
             </p>
-            <p id="weatherTemp" class="text-3xl font-bold text-gray-800 leading-none">--�</p>
+            <p id="weatherTemp" class="text-3xl font-bold text-gray-800 leading-none">--°</p>
             <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-[10px]" style="color: var(--site-primary);"></i>Cabanatuan City
             </p>
@@ -1453,7 +1453,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
       const label = weatherCodeMap[code] || 'Current weather';
 
       summaryEl.innerHTML = `<i class="fa-solid fa-cloud-sun text-amber-400"></i> ${label}${typeof humidity === 'number' ? ` . ${humidity}% RH` : ''}`;
-      tempEl.textContent = `${temp}�`;
+      tempEl.textContent = `${temp}°`;
     } catch (_) {
       summaryEl.innerHTML = '<i class="fa-solid fa-cloud-sun text-amber-400"></i> Weather unavailable';
     }
