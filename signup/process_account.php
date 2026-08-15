@@ -12,7 +12,10 @@ function failBack(string $field, string $message): never {
     $_SESSION['reg_error_field']   = $field;
     $_SESSION['reg_error_message'] = $message;
     $_SESSION['reg_old_email']     = trim($_POST['email'] ?? '');
-    $_SESSION['reg_old_role']      = $_POST['account_role'] ?? [];
+    $oldRoles = [];
+    if (!empty($_POST['residency_type'])) $oldRoles[] = $_POST['residency_type'];
+    if (!empty($_POST['is_owner']))       $oldRoles[] = $_POST['is_owner'];
+    $_SESSION['reg_old_role'] = $oldRoles;
     header('Location: accountCreation.php');
     exit;
 }
@@ -102,7 +105,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rawEmail    = trim($_POST['email']           ?? '');
 $rawPassword = $_POST['password']             ?? '';   // spaces valid in passwords
 $rawConfirm  = $_POST['confirm_password']     ?? '';
-$rawRoles    = (array)($_POST['account_role'] ?? []);
+
+// The form sends residency status as a single radio ("residency_type") and
+// business/apartment ownership as a separate optional checkbox ("is_owner") —
+// combine them into the same $rawRoles shape the rest of this script expects.
+$rawRoles = [];
+if (!empty($_POST['residency_type'])) {
+    $rawRoles[] = $_POST['residency_type'];
+}
+if (!empty($_POST['is_owner'])) {
+    $rawRoles[] = $_POST['is_owner'];
+}
 
 // ?? 3. Email validation ???????????????????????????????????????????????????????
 if (empty($rawEmail))
