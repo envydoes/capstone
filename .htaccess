@@ -16,9 +16,20 @@ RewriteRule ^ - [L]
 # Root request should load the site homepage instead of showing the directory index.
 RewriteRule ^/?$ landing.php [L]
 
-# Redirect .php URLs to clean URLs.
+# Detect the original scheme. Behind a reverse proxy (Traefik/Cloudflare Tunnel),
+# Apache itself sees plain HTTP, so trust X-Forwarded-Proto when present.
+# Falls back to Apache's own HTTPS var for local XAMPP / direct TLS setups.
+RewriteCond %{HTTP:X-Forwarded-Proto} =https [OR]
+RewriteCond %{HTTPS} =on
+RewriteRule ^ - [E=PROTO:https]
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ - [E=PROTO:http]
+
+# Redirect .php URLs to clean URLs (scheme forced explicitly to avoid
+# Apache emitting http:// in the Location header when behind a proxy).
 RewriteCond %{THE_REQUEST} \s/+([^\s?]+)\.php(?:[\s?]|$) [NC]
-RewriteRule ^ %1 [R=301,L]
+RewriteRule ^ %{ENV:PROTO}://%{HTTP_HOST}/%1 [R=301,L]
 
 # Internally map clean URLs to existing .php files.
 RewriteCond %{REQUEST_FILENAME}.php -f

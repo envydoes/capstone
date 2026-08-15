@@ -317,7 +317,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
+  #addressMap.leaflet-container { font-family: 'DM Sans', sans-serif; }
+  .map-result-list { position:relative; }
+  .map-result-list ul { list-style:none; margin:0; padding:0; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d1d5db; border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
+  .map-result-list li { padding:9px 14px; font-size:0.85rem; cursor:pointer; border-bottom:1px solid #f1f5f9; }
+  .map-result-list li:last-child { border-bottom:none; }
+  .map-result-list li:hover { background:#f0fdf4; }
   body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; }
   .nav-link { position: relative; transition: color 0.2s; }
   .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s ease; }
@@ -382,6 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.22s; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
 
@@ -685,11 +693,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    value="<?php echo oldValue('zip'); ?>" placeholder="ZIP Code" pattern="[A-Za-z0-9]{4,10}">
             <?php if (isset($errors['zip'])): ?><span class="field-error"><?php echo e($errors['zip']); ?></span><?php endif; ?>
           </div>
-
+              
         </div>
       </div>
-
-      <!-- CONTACT & HEALTH -->
       <div class="section-card">
         <div class="section-title">
           <div class="section-icon"><i class="fa-solid fa-phone text-green-700 text-sm"></i></div>
