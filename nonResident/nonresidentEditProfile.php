@@ -585,8 +585,14 @@ $pendingRole = $resident['pending_role'] ?? '';
                     <span id="roleChangeWarningText"></span>
                 </div>
 
-                <input type="hidden" id="selectedRolesJson" value="">
-                <input type="hidden" name="selectedRole" id="selectedRoleHidden" value="<?php echo htmlspecialchars($currentRoleCsv); ?>">
+                <!-- These two hidden inputs live in the Role Selector card, which sits
+                     OUTSIDE the <form id="profileForm"> element below (the form only wraps
+                     the "MAIN GRID (sidebar + form)" section). Without the form="profileForm"
+                     attribute, browsers silently exclude fields that aren't physically nested
+                     inside <form>...</form> from the submission — no error, just missing data.
+                     That was the bug: selectedRole never appeared in the POST body at all. -->
+                <input type="hidden" id="selectedRolesJson" form="profileForm" value="">
+                <input type="hidden" name="selectedRole" id="selectedRoleHidden" form="profileForm" value="<?php echo htmlspecialchars($currentRoleCsv); ?>">
             </div>
 
             <!-- ════════════════════════════════════════════
