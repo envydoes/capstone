@@ -16,8 +16,18 @@
  */
 
 if (!function_exists('print_report_start')) {
-    function print_report_start(array $siteSettings, string $reportTitle, array $metaLines = []): void
+    /**
+     * @param string $orientation 'portrait' (default) or 'landscape'.
+     *        Reports with many columns (e.g. the Global Resident List, which
+     *        now always shows Name/Age/Birthdate/Contact/Address plus any
+     *        active condition columns) should pass 'landscape' — Legal
+     *        landscape gives roughly double the usable table width versus
+     *        portrait, which is a much better fix for a wide table than
+     *        shrinking the font until it's hard to read.
+     */
+    function print_report_start(array $siteSettings, string $reportTitle, array $metaLines = [], string $orientation = 'portrait'): void
     {
+        $pageSize = $orientation === 'landscape' ? 'legal landscape' : 'legal';
         $logoUrl = site_config_logo_url($siteSettings, '../');
         $barangayUrl = site_config_barangay_logo_url($siteSettings, '../');
         $municipalUrl = site_config_municipality_logo_url($siteSettings, '../');
@@ -118,10 +128,10 @@ if (!function_exists('print_report_start')) {
   .report-summary .count strong { color: #1a2e1a; }
   table.report-table { width: 100%; border-collapse: collapse; }
   table.report-table thead th {
-    background: var(--site-primary); color: #fff; text-align: left; font-size: 0.68rem;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 10px;
+    background: var(--site-primary); color: #fff; text-align: left; font-size: 0.66rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; padding: 7px 8px;
   }
-  table.report-table tbody td { padding: 7px 10px; font-size: 0.76rem; color: #374151; border-bottom: 1px solid #eef0f2; }
+  table.report-table tbody td { padding: 6px 8px; font-size: 0.72rem; color: #374151; border-bottom: 1px solid #eef0f2; }
   table.report-table tbody tr:nth-child(even) { background: #fafbfa; }
   table.report-table tbody tr:last-child td { border-bottom: 1px solid #d1d5db; }
   table.report-table tbody td.report-empty { text-align: center; color: #9ca3af; padding: 18px; }
@@ -162,7 +172,7 @@ if (!function_exists('print_report_start')) {
        on-screen ".screen-footer-preview" block above mirrors the same
        content as a fallback that's always visible when reading on screen. */
   @page {
-    size: legal;
+    size: <?= $pageSize ?>;
     margin: 0.7in 0.6in 1in 0.6in;
     @bottom-left {
       content: "This report was generated electronically by <?= $footerSiteName ?>\A\A<?= $footerBarangay ?>\A<?= $footerAddress ?>\AContact: <?= $footerContact ?>\AEmail: <?= $footerEmail ?>";

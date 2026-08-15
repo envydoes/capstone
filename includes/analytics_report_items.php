@@ -24,7 +24,7 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'title'   => 'Demographic Distribution',
             'group'   => 'Overview',
             'type'    => 'image',
-            'summary' => "Shows the male-to-female split among all registered residents, giving a quick read on the gender balance of the barangay population.",
+            'summary' => "Shows the male-to-female split among all registered residents, giving a quick read on the sex balance of the barangay population.",
         ],
         'barchart' => [
             'title'   => 'Monthly Service Requests',

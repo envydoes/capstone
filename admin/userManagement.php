@@ -758,7 +758,7 @@ function renderBulkActions($tab) { ?>
         <div class="section-title"><div class="section-icon"><i class="fa-solid fa-user text-green-700 text-sm"></i></div>Personal Information</div>
         <div class="space-y-3">
           <div><p class="field-label">Full Name</p><input class="field-val" id="mFullName" readonly></div>
-          <div class="grid grid-cols-2 gap-3"><div><p class="field-label">Sex / Gender</p><input class="field-val" id="mGender" readonly></div><div><p class="field-label">Age</p><input class="field-val" id="mAge" readonly></div></div>
+          <div class="grid grid-cols-2 gap-3"><div><p class="field-label">Sex</p><input class="field-val" id="mGender" readonly></div><div><p class="field-label">Age</p><input class="field-val" id="mAge" readonly></div></div>
           <div><p class="field-label">Birthdate</p><input class="field-val" id="mBirthday" readonly></div>
           <div><p class="field-label">Birthplace</p><input class="field-val" id="mBirthplace" readonly></div>
           <div class="grid grid-cols-2 gap-3"><div><p class="field-label">Family Role</p><input class="field-val" id="mFamilyRole" readonly></div><div><p class="field-label">Civil Status</p><input class="field-val" id="mCivilStatus" readonly></div></div>

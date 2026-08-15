@@ -1060,8 +1060,8 @@ mysqli_close($conn);
           <div><label class="field-label">Suffix</label><input type="text" id="a_suffix" maxlength="20" class="field-input" placeholder="e.g. Jr., Sr., III"></div>
           <div><label class="field-label">Family Role <span class="required-star">*</span></label>
             <select id="a_family_role" class="field-input"><option value="">Select Family Role</option><option value="head">Head of Family</option><option value="spouse">Spouse</option><option value="child">Child</option><option value="parent">Parent</option><option value="other">Other</option></select></div>
-          <div><label class="field-label">Gender <span class="required-star">*</span></label>
-            <select id="a_gender" class="field-input"><option value="">Select Gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+          <div><label class="field-label">Sex <span class="required-star">*</span></label>
+            <select id="a_gender" class="field-input"><option value="">Select Sex</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
           <div><label class="field-label">Birthday <span class="required-star">*</span></label><input type="date" id="a_birthday" max="<?= date('Y-m-d') ?>" class="field-input"></div>
           <div><label class="field-label">Birthplace <span class="required-star">*</span></label><input type="text" id="a_birthplace" maxlength="200" class="field-input" placeholder="City, Province, Country"></div>
           <div><label class="field-label">Civil Status <span class="required-star">*</span></label>

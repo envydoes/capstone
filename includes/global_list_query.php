@@ -159,7 +159,7 @@ if (!function_exists('gf_run_global_list_query')) {
         $sql = "
             SELECT
                 u.userID, u.firstname, u.middlename, u.lastname, u.suffix,
-                u.gender, u.birthday, u.family_role, u.civil_status, u.citizenship,
+                u.gender, u.birthday, u.phone, u.family_role, u.civil_status, u.citizenship,
                 u.religion, u.ethnicity, u.health_conditions AS blood_type,
                 u.employment_status, u.job_title, u.monthly_income,
                 u.street, u.barangay, u.city, u.province,
@@ -236,15 +236,20 @@ if (!function_exists('gf_run_global_list_query')) {
             ])));
             if ($name === '') $name = '(No name on file)';
 
-            $row = ['name' => $name];
+            // Core identifying details — always shown regardless of which
+            // conditions are set, per the panelist's requirement that every
+            // row carry enough info to identify and reach the resident.
+            $row = [
+                'name'            => $name,
+                'age'             => $age ?? '-',
+                'birthdate'       => !empty($r['birthday']) ? date('F j, Y', strtotime($r['birthday'])) : '-',
+                'contact_number'  => $r['phone'] ?: '-',
+                'address'         => trim(implode(', ', array_filter([$r['street'], $r['barangay'], $r['city'], $r['province']]))) ?: '-',
+            ];
 
             if ($accountRole !== '')                 $row['account_role'] = gf_label($r['account_role']);
             if ($dateFrom !== '' || $dateTo !== '')   $row['date_created'] = !empty($r['dateRegistered']) ? date('M d, Y', strtotime($r['dateRegistered'])) : '-';
             if ($sex !== '')                          $row['sex'] = gf_label($r['gender']);
-            if ($birthMonth !== null)                 $row['birth_month'] = !empty($r['birthday']) ? date('F', strtotime($r['birthday'])) : '-';
-            if ($birthYear !== null)                  $row['birth_year'] = !empty($r['birthday']) ? date('Y', strtotime($r['birthday'])) : '-';
-            if ($ageMin !== null || $ageMax !== null) $row['age'] = $age ?? '-';
-            if ($address !== '')                      $row['address'] = trim(implode(', ', array_filter([$r['street'], $r['barangay'], $r['city'], $r['province']]))) ?: '-';
             if ($familyRole !== '')                   $row['family_role'] = gf_label($r['family_role']);
             if ($civilStatus !== '')                  $row['civil_status'] = gf_label($r['civil_status']);
             if ($citizenship !== '')                  $row['citizenship'] = $r['citizenship'] ?: '-';
@@ -308,10 +313,6 @@ if (!function_exists('gf_run_global_list_query')) {
             ['key' => 'account_role',      'label' => 'Account Role',         'active' => $accountRole !== ''],
             ['key' => 'date_created',      'label' => 'Date Created',         'active' => ($dateFrom !== '' || $dateTo !== '')],
             ['key' => 'sex',               'label' => 'Sex',                  'active' => $sex !== ''],
-            ['key' => 'birth_month',       'label' => 'Birth Month',          'active' => $birthMonth !== null],
-            ['key' => 'birth_year',        'label' => 'Birth Year',           'active' => $birthYear !== null],
-            ['key' => 'age',               'label' => 'Age',                  'active' => ($ageMin !== null || $ageMax !== null)],
-            ['key' => 'address',           'label' => 'Address',              'active' => $address !== ''],
             ['key' => 'family_role',       'label' => 'Family Role',          'active' => $familyRole !== ''],
             ['key' => 'civil_status',      'label' => 'Civil Status',         'active' => $civilStatus !== ''],
             ['key' => 'citizenship',       'label' => 'Citizenship',          'active' => $citizenship !== ''],

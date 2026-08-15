@@ -92,6 +92,7 @@ if ($list === 'analytics') {
     $selected = isset($payload['selected']) && is_array($payload['selected']) ? $payload['selected'] : [];
     $charts   = isset($payload['charts'])   && is_array($payload['charts'])   ? $payload['charts']   : [];
     $bars     = isset($payload['bars'])     && is_array($payload['bars'])     ? $payload['bars']     : [];
+    $tables   = isset($payload['tables'])   && is_array($payload['tables'])   ? $payload['tables']   : [];
 
     // Enforce module access on the selection itself - a hand-crafted POST
     // payload can't smuggle in a chart from a module this account doesn't
@@ -125,6 +126,8 @@ if ($list === 'analytics') {
         'Generated On: ' . date('F d, Y') . ' at ' . date('g:i A'),
     ]);
 
+    echo '<style>.analytics-data-table{margin-top:10px;font-size:0.85em;}.analytics-data-table th,.analytics-data-table td{padding:6px 10px;}</style>';
+
     if (empty($orderedSelected)) {
         echo '<p class="conditions-empty">No charts or graphs were selected.</p>';
     } else {
@@ -146,6 +149,27 @@ if ($list === 'analytics') {
                 } else {
                     echo '<p class="analytics-item-unavailable">Chart image unavailable - try re-generating the report.</p>';
                 }
+
+                // Data table version — always included alongside the chart
+                // image (or in its place if the image capture failed), so
+                // the printed report always has the exact figures on paper.
+                $tableData = $tables[$key] ?? null;
+                if ($tableData && !empty($tableData['rows'])) {
+                    echo '<table class="report-table analytics-data-table">';
+                    echo '<thead><tr>';
+                    foreach ($tableData['headers'] as $h) {
+                        echo '<th>' . e($h) . '</th>';
+                    }
+                    echo '</tr></thead><tbody>';
+                    foreach ($tableData['rows'] as $row) {
+                        echo '<tr>';
+                        foreach ($row as $cell) {
+                            echo '<td>' . e($cell) . '</td>';
+                        }
+                        echo '</tr>';
+                    }
+                    echo '</tbody></table>';
+                }
             } else { // 'bars'
                 $rows = $bars[$key] ?? [];
                 if (empty($rows)) {
@@ -163,6 +187,19 @@ if ($list === 'analytics') {
                         echo '<div class="print-bar-value">' . $value . '</div>';
                         echo '</div>';
                     }
+
+                    // Data table version of the same bars, for a plain
+                    // figures-only view alongside the visual bars above.
+                    echo '<table class="report-table analytics-data-table">';
+                    echo '<thead><tr><th>Category</th><th>Value</th><th>Share</th></tr></thead><tbody>';
+                    foreach ($rows as $row) {
+                        echo '<tr>';
+                        echo '<td>' . e($row['label'] ?? '—') . '</td>';
+                        echo '<td>' . e($row['value'] ?? '—') . '</td>';
+                        echo '<td>' . e($row['pct'] ?? '—') . '</td>';
+                        echo '</tr>';
+                    }
+                    echo '</tbody></table>';
                 }
             }
 
@@ -239,7 +276,7 @@ if ($list === 'global') {
 $metaLines[] = 'Generated On: ' . date('F d, Y') . ' at ' . date('g:i A');
 
 // 8. Begin Print Layout Rendering
-print_report_start($siteSettings, $title, $metaLines);
+print_report_start($siteSettings, $title, $metaLines, $list === 'global' ? 'landscape' : 'portrait');
 ?>
 
 <?php if ($showConditions): ?>
@@ -271,6 +308,12 @@ print_report_start($siteSettings, $title, $metaLines);
     <tr>
       <th style="width: 40px; text-align: center;">#</th>
       <th><?= e($nameLabel) ?></th>
+      <?php if ($list === 'global'): ?>
+        <th>Age</th>
+        <th>Birthdate</th>
+        <th>Contact Number</th>
+        <th>Address</th>
+      <?php endif; ?>
       <?php foreach ($columns as $c): ?>
         <th><?= e($c['label']) ?></th>
       <?php endforeach; ?>
@@ -279,7 +322,7 @@ print_report_start($siteSettings, $title, $metaLines);
   <tbody>
     <?php if (empty($rows)): ?>
       <tr>
-        <td class="report-empty" colspan="<?= 2 + count($columns) ?>">
+        <td class="report-empty" colspan="<?= ($list === 'global' ? 6 : 2) + count($columns) ?>">
           No records found matching the criteria.
         </td>
       </tr>
@@ -288,6 +331,12 @@ print_report_start($siteSettings, $title, $metaLines);
         <tr>
           <td style="text-align: center; color: #6b7280; font-weight: 600;"><?= $i + 1 ?></td>
           <td style="font-weight: 600; color: #111827;"><?= e($row['name'] ?? '-') ?></td>
+          <?php if ($list === 'global'): ?>
+            <td><?= e($row['age'] ?? '-') ?></td>
+            <td><?= e($row['birthdate'] ?? '-') ?></td>
+            <td><?= e($row['contact_number'] ?? '-') ?></td>
+            <td><?= e($row['address'] ?? '-') ?></td>
+          <?php endif; ?>
           <?php foreach ($columns as $c): ?>
             <td>
               <?php

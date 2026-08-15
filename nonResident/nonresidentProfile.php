@@ -316,7 +316,7 @@ $fullName = $userName ?: trim($userData['firstname'] . ' ' . $userData['middlena
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div><p class="text-xs text-slate-400 mb-1">Full Name</p><p class="text-sm font-semibold text-slate-900"><?php echo htmlspecialchars($fullName); ?></p></div>
               <div><p class="text-xs text-slate-400 mb-1">Date of Birth</p><p class="text-sm font-semibold text-slate-900"><?php echo htmlspecialchars($userData['birthday'] ?? 'N/A'); ?></p></div>
-              <div><p class="text-xs text-slate-400 mb-1">Gender</p><p class="text-sm font-semibold text-slate-900"><?php echo htmlspecialchars($userData['gender'] ?? 'N/A'); ?></p></div>
+              <div><p class="text-xs text-slate-400 mb-1">Sex</p><p class="text-sm font-semibold text-slate-900"><?php echo htmlspecialchars($userData['gender'] ?? 'N/A'); ?></p></div>
               <div><p class="text-xs text-slate-400 mb-1">Civil Status</p><p class="text-sm font-semibold text-slate-900"><?php echo htmlspecialchars($userData['civil_status'] ?? 'N/A'); ?></p></div>
               <div><p class="text-xs text-slate-400 mb-1">Citizenship</p><p class="text-sm font-semibold text-slate-900">Filipino</p></div>
               <div><p class="text-xs text-slate-400 mb-1">Occupation</p><p class="text-sm font-semibold text-slate-900">-</p></div>
