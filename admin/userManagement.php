@@ -124,10 +124,13 @@ function buildRow($u, $tab) {
     $chips   = '';
     foreach ($roles as $r) {
         $r = trim($r); if (!$r) continue;
+        // Role strings are stored lowercase (see nonresidentRoleChangeAction.php),
+        // so this match must be case-insensitive or every role silently falls
+        // through to the generic "business" chip.
         $cls = match(true) {
-            str_contains($r,'Non-Resident') => 'chip-nonresident',
-            str_contains($r,'Resident')     => 'chip-resident',
-            default                         => 'chip-business',
+            stripos($r,'Non-Resident') !== false => 'chip-nonresident',
+            stripos($r,'Resident')     !== false => 'chip-resident',
+            default                               => 'chip-business',
         };
         $chips .= "<span class='role-chip $cls'>".htmlspecialchars($r)."</span>";
     }
@@ -679,7 +682,16 @@ function renderTable($tab, $users) { ?>
           </td>
           <td class="col-role">
             <?php foreach ($roles as $r): $r=trim($r); if (!$r) continue;
-              $cls = match(true) { str_contains($r,'Non-Resident')=>'chip-nonresident', str_contains($r,'Resident')=>'chip-resident', default=>'chip-business' }; ?>
+              // Role strings are stored lowercase, so this match must be
+              // case-insensitive or every role falls through to the
+              // generic "business" chip (this previously hid the
+              // Resident/Non-Resident distinction on combined-role rows,
+              // e.g. after a non-resident requested the Owner role).
+              $cls = match(true) {
+                  stripos($r,'Non-Resident') !== false => 'chip-nonresident',
+                  stripos($r,'Resident')     !== false => 'chip-resident',
+                  default                                => 'chip-business',
+              }; ?>
             <span class="role-chip <?= $cls ?>"><?= htmlspecialchars($r) ?></span>
             <?php endforeach; ?>
           </td>
