@@ -585,8 +585,14 @@ $pendingRole = $resident['pending_role'] ?? '';
                     <span id="roleChangeWarningText"></span>
                 </div>
 
-                <input type="hidden" id="selectedRolesJson" value="">
-                <input type="hidden" name="selectedRole" id="selectedRoleHidden" value="<?php echo htmlspecialchars($currentRoleCsv); ?>">
+                <!-- These two hidden inputs live in the Role Selector card, which sits
+                     OUTSIDE the <form id="profileForm"> element below (the form only wraps
+                     the "MAIN GRID (sidebar + form)" section). Without the form="profileForm"
+                     attribute, browsers silently exclude fields that aren't physically nested
+                     inside <form>...</form> from the submission — no error, just missing data.
+                     That was the bug: selectedRole never appeared in the POST body at all. -->
+                <input type="hidden" id="selectedRolesJson" form="profileForm" value="">
+                <input type="hidden" name="selectedRole" id="selectedRoleHidden" form="profileForm" value="<?php echo htmlspecialchars($currentRoleCsv); ?>">
             </div>
 
             <!-- ════════════════════════════════════════════
@@ -1051,14 +1057,17 @@ function checkForChanges() {
     formHasChanges = fieldChanged || fileChanged || roleChanged;
 
     const btn = document.getElementById('submitBtn');
-    btn.disabled = !formHasChanges;
+    if (btn) btn.disabled = !formHasChanges;
 
-    // Update button label
+    // Update button label — guarded, since the submit handler below
+    // may have already replaced this element's contents once the
+    // form was submitted (e.g. user hit Back and the page was
+    // restored from bfcache with a mutated DOM).
     const btnText = document.getElementById('submitBtnText');
-    if (roleChanged && !isPending) {
-        btnText.textContent = 'Submit & Request Role Change';
-    } else {
-        btnText.textContent = 'Save Changes';
+    if (btnText) {
+        btnText.textContent = (roleChanged && !isPending)
+            ? 'Submit & Request Role Change'
+            : 'Save Changes';
     }
 }
 
@@ -1133,7 +1142,7 @@ function getPrimaryRole() {
 
 function updateFormState() {
     const isResident = (getPrimaryRole() === 'resident');
-    const roleStr    = buildRoleString();
+    const roleStr     = buildRoleString();
     const roleChanged = (roleStr !== currentRole);
 
     // Show/hide role-based sections
@@ -1208,10 +1217,15 @@ document.getElementById('profileForm').addEventListener('submit', function (e) {
         }
     }
 
-    // Disable button to prevent double submit
+    // Disable button to prevent double submit — swap the icon and label
+    // in place rather than clobbering btn.innerHTML, so #submitBtnText
+    // still exists if checkForChanges() runs again afterward (e.g. bfcache).
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving.';
+    const iconEl = btn.querySelector('i');
+    if (iconEl) iconEl.className = 'fas fa-spinner fa-spin mr-2';
+    const btnTextEl = document.getElementById('submitBtnText');
+    if (btnTextEl) btnTextEl.textContent = 'Saving...';
 });
 
 /* ════════════════════════════════════════════

@@ -1,19 +1,25 @@
 {
-  "devDependencies": {
-    "tailwindcss": "^3.4.19"
-  },
   "name": "capstone",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tailwindcss -i ./tailwind/input.css -o ./dist/output.css --minify",
+    "watch": "tailwindcss -i ./tailwind/input.css -o ./dist/output.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "dependencies": {
-    "@tailwindcss/cli": "^4.2.2"
-  }
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/envydoes/capstone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/envydoes/capstone/issues"
+  },
+  "homepage": "https://github.com/envydoes/capstone#readme"
 }

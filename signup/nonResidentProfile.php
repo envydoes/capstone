@@ -190,23 +190,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
         'birthplace'        => sanitizeText($_POST['birthplace']        ?? ''),
         'civil_status'      => allowedValue($_POST['civil_status']      ?? '', $allowedCivilStatus),
-                // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
-        'citizenship'        => sanitizeText(
-                                     ($_POST['citizenship'] ?? '') === 'Other'
-                                         ? ($_POST['citizenship_other'] ?? '')
-                                         : ($_POST['citizenship'] ?? ''),
-                                     100
-                                 ),
-        'religion'           => sanitizeText(
-                                     ($_POST['religion'] ?? '') === 'Other'
-                                         ? ($_POST['religion_other'] ?? '')
-                                         : ($_POST['religion'] ?? ''),
-                                     100
-                                 ),
-        'ethnicity'          => sanitizeText($_POST['ethnicity']          ?? '', 100),
-        'street'             => sanitizeText($_POST['street']             ?? '', 200),
-        // Locked fields — always the site's own barangay/city, never trust POST here.
+        // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
+        'citizenship'       => sanitizeText(
+                                    ($_POST['citizenship'] ?? '') === 'Other'
+                                        ? ($_POST['citizenship_other'] ?? '')
+                                        : ($_POST['citizenship'] ?? '')
+                                ),
+        'religion'          => sanitizeText(
+                                    ($_POST['religion'] ?? '') === 'Other'
+                                        ? ($_POST['religion_other'] ?? '')
+                                        : ($_POST['religion'] ?? '')
+                                ),
         'ethnicity'         => sanitizeText($_POST['ethnicity']         ?? ''),
+        // Non-residents' address genuinely varies — NOT locked like the resident
+        // form. Validated against the PH address dataset further down instead.
         'street'            => sanitizeText($_POST['street']            ?? ''),
         'barangay'          => sanitizeText($_POST['barangay']          ?? ''),
         'city'              => sanitizeText($_POST['city']              ?? ''),
@@ -706,6 +703,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="hidden" name="religion" id="religion" value="<?php echo e($religionOld); ?>">
           </div>
 
+          <script>
+          /* ============================================================
+             Self-contained "Other, please specify" logic for Citizenship
+             and Religion. Deliberately kept separate from the big script
+             block at the bottom of the page: if anything down there fails
+             to parse, this still runs, so the hidden #citizenship /
+             #religion inputs (the fields actually submitted) never go
+             out of sync with what's visibly selected.
+             ============================================================ */
+          (function () {
+            function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
+              var otherInput  = document.getElementById(otherInputId);
+              var hiddenInput = document.getElementById(hiddenInputId);
+              if (!otherInput || !hiddenInput) return;
+              if (selectEl.value === 'Other') {
+                otherInput.classList.remove('hidden');
+                hiddenInput.value = otherInput.value;
+              } else {
+                otherInput.classList.add('hidden');
+                hiddenInput.value = selectEl.value;
+              }
+            }
+            function syncOtherField(otherInputId, hiddenInputId) {
+              var otherEl  = document.getElementById(otherInputId);
+              var hiddenEl = document.getElementById(hiddenInputId);
+              if (otherEl && hiddenEl) hiddenEl.value = otherEl.value;
+            }
+            // Expose globally so the inline onchange/oninput attributes keep working.
+            window.toggleOtherField = toggleOtherField;
+            window.syncOtherField = syncOtherField;
+
+            function wire(selectId, otherId, hiddenId) {
+              var sel = document.getElementById(selectId);
+              var other = document.getElementById(otherId);
+              if (!sel) return;
+              sel.addEventListener('change', function () {
+                toggleOtherField(sel, otherId, hiddenId);
+              });
+              if (other) {
+                other.addEventListener('input', function () {
+                  syncOtherField(otherId, hiddenId);
+                });
+              }
+              // Run once immediately so the hidden field always reflects
+              // reality, even before the user touches the dropdown.
+              toggleOtherField(sel, otherId, hiddenId);
+            }
+            wire('citizenship_select', 'citizenship_other', 'citizenship');
+            wire('religion_select', 'religion_other', 'religion');
+
+            // Belt-and-suspenders: if the big script's submit handler at the
+            // bottom of the page never attaches (e.g. it throws), this still
+            // catches a bad submit and re-syncs both hidden fields first.
+            document.addEventListener('submit', function (e) {
+              var form = document.getElementById('profileForm');
+              if (!form || e.target !== form) return;
+              toggleOtherField(document.getElementById('citizenship_select'), 'citizenship_other', 'citizenship');
+              toggleOtherField(document.getElementById('religion_select'), 'religion_other', 'religion');
+            }, true); // capture phase: runs before the bottom script's own submit listener
+          })();
+          </script>
+
           <!-- Ethnicity -->
           <div>
             <label class="field-label" for="ethnicity">Ethnicity</label>
@@ -897,6 +956,12 @@ function clearError(inputEl) {
     if (err) err.remove();
 }
 
+/* ============================================================
+   NOTE: toggleOtherField / syncOtherField now live in the small
+   self-contained script block right after the Citizenship/Religion
+   fields, so they no longer depend on this block parsing cleanly.
+   ============================================================ */
+
 function validateField(el) {
     const name = el.name;
     const val  = el.value.trim();
@@ -937,6 +1002,20 @@ document.querySelectorAll('.field-input').forEach(el => {
 document.getElementById('profileForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    // Always recompute from the dropdown right before validating — don't
+    // rely on onchange having already synced the hidden field. This is
+    // what was causing "Citizenship is required" even when a valid option
+    // was visibly selected: the hidden #citizenship input could go stale.
+    function getEffectiveValue(selectId, otherId) {
+        const sel = document.getElementById(selectId);
+        if (sel.value === 'Other') {
+            return document.getElementById(otherId).value.trim();
+        }
+        return sel.value;
+    }
+    document.getElementById('citizenship').value = getEffectiveValue('citizenship_select', 'citizenship_other');
+    document.getElementById('religion').value = getEffectiveValue('religion_select', 'religion_other');
+
     // Terms
     const terms = document.getElementById('terms');
     if (!terms.checked) {
@@ -957,6 +1036,18 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     document.querySelectorAll('.field-input').forEach(el => {
         if (!validateField(el)) valid = false;
     });
+
+    // Citizenship select has no name/required attr (its value flows through
+    // the hidden #citizenship input above), so it needs an explicit check —
+    // the generic .field-input loop above silently skips it otherwise.
+    const citizenshipSelect = document.getElementById('citizenship_select');
+    const citizenshipHidden = document.getElementById('citizenship');
+    if (!citizenshipHidden.value.trim()) {
+        showError(citizenshipSelect, 'Citizenship is required.');
+        valid = false;
+    } else {
+        clearError(citizenshipSelect);
+    }
 
     if (!valid) {
         document.querySelector('.error, .field-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1054,28 +1145,6 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19
     }).addTo(map);
-// Citizenship select has no name/required attr (its value flows through
-    // the hidden #citizenship input), so check it explicitly.
-    const citizenshipSelect = document.getElementById('citizenship_select');
-    const citizenshipHidden = document.getElementById('citizenship');
-    if (!citizenshipHidden.value.trim()) {
-        showError(citizenshipSelect, 'Citizenship is required.');
-        valid = false;
-    } else {
-        clearError(citizenshipSelect);
-    }
-
-    if (!valid) {
-        const first = document.querySelector('.error, .field-error');
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting.';
-    this.submit();
-});
 
     const marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
 
