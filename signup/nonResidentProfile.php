@@ -9,6 +9,7 @@ session_start();
  * Sanitize a plain-text string: strip tags, normalize whitespace.
  * Returns a UTF-8 clean string safe for storage and HTML output.
  */
+
 function sanitizeText(string $value): string
 {
     $value = strip_tags($value);           // remove any HTML/PHP tags
@@ -162,6 +163,7 @@ function validateAddressLevel(string $value, ?array $referenceList, string $labe
     if (mb_strlen($value) < 2) return "$label is too short.";
     return null;
 }
+
 
 /* ============================================================
    SERVER-SIDE FORM PROCESSING (POST)
@@ -639,20 +641,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (isset($errors['civil_status'])): ?><span class="field-error"><?php echo e($errors['civil_status']); ?></span><?php endif; ?>
           </div>
 
-          <!-- Citizenship -->
-          <div>
-            <label class="field-label" for="citizenship">Citizenship <span class="required-star">*</span></label>
-            <input type="text" id="citizenship" name="citizenship" required maxlength="100"
-                   class="field-input <?php echo isset($errors['citizenship']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('citizenship'); ?>" placeholder="e.g., Filipino">
+             <?php
+            $citizenshipOptions = ['Filipino', 'Dual Citizen', 'Foreign National'];
+            $citizenshipOld     = oldValue('citizenship');
+            $citizenshipIsOther = $citizenshipOld !== '' && !in_array($citizenshipOld, $citizenshipOptions, true);
+
+            $religionOptions = [
+                'Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Born Again Christian',
+                'Seventh-day Adventist', "Jehovah's Witness", 'Aglipayan (Philippine Independent Church)',
+                'Baptist', 'None',
+            ];
+            $religionOld     = oldValue('religion');
+            $religionIsOther = $religionOld !== '' && !in_array($religionOld, $religionOptions, true);
+          ?>
+        <div>
+            <label class="field-label" for="citizenship_select">Citizenship <span class="required-star">*</span></label>
+            <select id="citizenship_select"
+                    class="field-input <?php echo isset($errors['citizenship']) ? 'error' : ''; ?>"
+                    onchange="toggleOtherField(this, 'citizenship_other', 'citizenship')">
+              <option value="">Select Citizenship</option>
+              <?php foreach ($citizenshipOptions as $opt): ?>
+                <option value="<?php echo e($opt); ?>" <?php echo $citizenshipOld === $opt ? 'selected' : ''; ?>><?php echo e($opt); ?></option>
+              <?php endforeach; ?>
+              <option value="Other" <?php echo $citizenshipIsOther ? 'selected' : ''; ?>>Other</option>
+            </select>
+            <input type="text" id="citizenship_other" maxlength="100"
+                   class="field-input mt-2 <?php echo $citizenshipIsOther ? '' : 'hidden'; ?>"
+                   placeholder="Please specify"
+                   value="<?php echo $citizenshipIsOther ? e($citizenshipOld) : ''; ?>"
+                   oninput="syncOtherField('citizenship_other', 'citizenship')">
+            <input type="hidden" name="citizenship" id="citizenship" value="<?php echo e($citizenshipOld); ?>">
             <?php if (isset($errors['citizenship'])): ?><span class="field-error"><?php echo e($errors['citizenship']); ?></span><?php endif; ?>
           </div>
 
           <!-- Religion -->
           <div>
-            <label class="field-label" for="religion">Religion</label>
-            <input type="text" id="religion" name="religion" maxlength="100"
-                   class="field-input" value="<?php echo oldValue('religion'); ?>" placeholder="e.g., Catholic">
+            <label class="field-label" for="religion_select">Religion</label>
+            <select id="religion_select" class="field-input" onchange="toggleOtherField(this, 'religion_other', 'religion')">
+              <option value="">Select Religion (optional)</option>
+              <?php foreach ($religionOptions as $opt): ?>
+                <option value="<?php echo e($opt); ?>" <?php echo $religionOld === $opt ? 'selected' : ''; ?>><?php echo e($opt); ?></option>
+              <?php endforeach; ?>
+              <option value="Other" <?php echo $religionIsOther ? 'selected' : ''; ?>>Other</option>
+            </select>
+            <input type="text" id="religion_other" maxlength="100"
+                   class="field-input mt-2 <?php echo $religionIsOther ? '' : 'hidden'; ?>"
+                   placeholder="Please specify"
+                   value="<?php echo $religionIsOther ? e($religionOld) : ''; ?>"
+                   oninput="syncOtherField('religion_other', 'religion')">
+            <input type="hidden" name="religion" id="religion" value="<?php echo e($religionOld); ?>">
           </div>
 
           <!-- Ethnicity -->
@@ -879,7 +916,24 @@ document.querySelectorAll('.field-input').forEach(el => {
     el.addEventListener('blur', () => validateField(el));
     el.addEventListener('input', () => { if (el.classList.contains('error')) validateField(el); });
 });
-
+/* ============================================================
+   DROPDOWN + "OTHER, PLEASE SPECIFY" FIELDS (Citizenship / Religion)
+   ============================================================ */
+function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
+    const otherInput  = document.getElementById(otherInputId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    if (selectEl.value === 'Other') {
+        otherInput.classList.remove('hidden');
+        hiddenInput.value = otherInput.value;
+        otherInput.focus();
+    } else {
+        otherInput.classList.add('hidden');
+        hiddenInput.value = selectEl.value;
+    }
+}
+function syncOtherField(otherInputId, hiddenInputId) {
+    document.getElementById(hiddenInputId).value = document.getElementById(otherInputId).value;
+}
 /* ============================================================
    FORM SUBMIT
    ============================================================ */
@@ -1003,6 +1057,28 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19
     }).addTo(map);
+// Citizenship select has no name/required attr (its value flows through
+    // the hidden #citizenship input), so check it explicitly.
+    const citizenshipSelect = document.getElementById('citizenship_select');
+    const citizenshipHidden = document.getElementById('citizenship');
+    if (!citizenshipHidden.value.trim()) {
+        showError(citizenshipSelect, 'Citizenship is required.');
+        valid = false;
+    } else {
+        clearError(citizenshipSelect);
+    }
+
+    if (!valid) {
+        const first = document.querySelector('.error, .field-error');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting.';
+    this.submit();
+});
 
     const marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
 
