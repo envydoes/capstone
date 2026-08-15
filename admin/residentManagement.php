@@ -969,29 +969,6 @@ mysqli_close($conn);
   </main>
 </div>
 
-<!-- ══════════════════════════════════════
-     EDIT MODAL
-══════════════════════════════════════ -->
-<div class="modal-overlay" id="editModalOverlay" onclick="closeEditModalOnOverlay(event)">
-  <div class="modal" id="editModal">
-    <div class="modal-header">
-      <div class="flex items-center gap-3 min-w-0">
-        <div style="width:36px;height:36px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fa-solid fa-pen-to-square text-green-700 text-sm"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="font-bold text-gray-900 text-base">Edit Resident</p>
-          <p class="text-gray-400 text-xs mt-0.5 truncate" id="editModalSubtitle">Update resident information</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <span class="changes-badge" id="changesBadge" style="display:none;">
-          <i class="fa-solid fa-circle-dot text-xs"></i>
-          <span id="changesCount" class="badge-count">0</span> change(s)
-        </span>
-        <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-    </div>
 
     <div class="modal-body" id="editModalBody">
       <!-- ID Photos (view only) -->
