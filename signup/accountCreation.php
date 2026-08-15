@@ -91,7 +91,12 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .terms-modal-overlay.open { display: flex; }
   .terms-modal-card { background: #fff; border-radius: 18px; width: 100%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
   .terms-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
-  .terms-modal-body { flex: 1; overflow: hidden; min-height: 0; }
+  .terms-modal-tabs { display: flex; gap: 4px; padding: 0 22px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; background: #fafafa; }
+  .terms-tab-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 14px; font-size: 0.83rem; font-weight: 700; color: #9ca3af; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.15s, border-color 0.15s; margin-bottom: -1px; }
+  .terms-tab-btn:hover { color: var(--site-primary-dark); }
+  .terms-tab-btn.active { color: var(--site-primary-dark); border-bottom-color: var(--site-primary); }
+  .terms-modal-body { flex: 1; overflow: hidden; min-height: 0; position: relative; }
+  .terms-modal-body iframe.hidden-frame { display: none; }
   .terms-modal-body iframe { width: 100%; height: 100%; border: none; min-height: 55vh; }
   .terms-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; border-top: 1px solid #f3f4f6; flex-shrink: 0; flex-wrap: wrap; }
   .terms-modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f3f4f6; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
@@ -263,14 +268,14 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
         <div class="terms-summary-row" id="termsSummaryRow">
           <div class="terms-summary-text">
             <i class="fa-solid fa-file-shield" style="color:var(--site-primary);"></i>
-            <span id="termsStatusText">Please review and agree to the Terms of Service to continue.</span>
+            <span id="termsStatusText">Please review and agree to the Terms of Service and Data Protection Notice to continue.</span>
           </div>
           <button type="button" class="terms-view-btn" onclick="openTermsModal()">
             <i class="fa-solid fa-eye"></i> View &amp; Agree
           </button>
         </div>
         <input type="hidden" name="terms" id="termsHiddenInput" value="">
-        <p id="terms-error" class="text-red-500 text-xs -mt-5 mb-2 hidden" role="alert">You must agree to the Terms of Service.</p>
+        <p id="terms-error" class="text-red-500 text-xs -mt-5 mb-2 hidden" role="alert">You must agree to the Terms of Service and Data Protection Notice.</p>
 
         <p id="rate-limit-msg" class="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3 hidden">
           <i class="fa-solid fa-triangle-exclamation mr-1"></i> Too many attempts. Please wait before trying again.
@@ -294,23 +299,30 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   </div>
 </div>
 
-<!-- ═══ TERMS OF SERVICE MODAL ═══ -->
+<!-- ═══ TERMS OF SERVICE & DATA PROTECTION MODAL ═══ -->
 <div class="terms-modal-overlay" id="termsModalOverlay" onclick="closeTermsModalOnOverlay(event)">
   <div class="terms-modal-card" onclick="event.stopPropagation()">
     <div class="terms-modal-header">
       <div>
         <p class="font-bold text-gray-900 text-base">Terms of Service &amp; Data Protection</p>
-        <p class="text-gray-400 text-xs mt-0.5">Please read before creating your account</p>
+        <p class="text-gray-400 text-xs mt-0.5">Please read both before creating your account</p>
       </div>
       <button type="button" class="terms-modal-close" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <div class="terms-modal-tabs" role="tablist">
+      <button type="button" class="terms-tab-btn active" id="tabBtnTerms" role="tab" aria-selected="true" onclick="switchTermsTab('terms')">
+        <i class="fa-solid fa-file-contract"></i> Terms of Service
+      </button>
+      <button type="button" class="terms-tab-btn" id="tabBtnData" role="tab" aria-selected="false" onclick="switchTermsTab('data')">
+        <i class="fa-solid fa-shield-halved"></i> Data Protection
+      </button>
+    </div>
     <div class="terms-modal-body">
-      <iframe src="../infoSecurity/terms.php" title="Terms of Service"></iframe>
+      <iframe id="termsFrame" src="terms-and-conditions.php" title="Terms of Service"></iframe>
+      <iframe id="dataFrame" class="hidden-frame" src="data-protection.php" title="Data Protection Notice"></iframe>
     </div>
     <div class="terms-modal-footer">
-      <a href="../infoSecurity/dataProtection.php" target="_blank" class="text-xs text-green-700 hover:underline">
-        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> View Data Protection Notice
-      </a>
+      <p class="text-xs text-gray-400">Switch tabs to read both documents in full.</p>
       <div class="flex items-center gap-3">
         <button type="button" class="text-sm text-gray-500 hover:text-gray-700 px-3 py-2" onclick="closeTermsModal()">Cancel</button>
         <button type="button" class="submit-btn" onclick="agreeToTerms()">
@@ -398,9 +410,18 @@ document.getElementById('business').addEventListener('change', function() {
   document.getElementById('card-business').classList.toggle('selected', this.checked);
 });
 
-/* ── Terms Modal ── */
+/* ── Terms & Data Protection Modal ── */
 let termsAgreed = false;
+function switchTermsTab(tab) {
+  document.getElementById('tabBtnTerms').classList.toggle('active', tab === 'terms');
+  document.getElementById('tabBtnData').classList.toggle('active', tab === 'data');
+  document.getElementById('tabBtnTerms').setAttribute('aria-selected', tab === 'terms');
+  document.getElementById('tabBtnData').setAttribute('aria-selected', tab === 'data');
+  document.getElementById('termsFrame').classList.toggle('hidden-frame', tab !== 'terms');
+  document.getElementById('dataFrame').classList.toggle('hidden-frame', tab !== 'data');
+}
 function openTermsModal() {
+  switchTermsTab('terms');
   document.getElementById('termsModalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -416,7 +437,7 @@ function agreeToTerms() {
   document.getElementById('termsHiddenInput').value = 'agree';
   document.getElementById('termsSummaryRow').style.borderColor = 'var(--site-primary)';
   document.getElementById('termsStatusText').innerHTML =
-    '<i class="fa-solid fa-circle-check" style="color:var(--site-primary);"></i> You agreed to the Terms of Service.';
+    '<i class="fa-solid fa-circle-check" style="color:var(--site-primary);"></i> You agreed to the Terms of Service and Data Protection Notice.';
   document.getElementById('terms-error').classList.add('hidden');
   closeTermsModal();
 }

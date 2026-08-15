@@ -1,5 +1,8 @@
 <?php
 session_start();
+include "../config/db_connection.php";
+require_once __DIR__ . '/../includes/site_config.php';
+$siteSettings = site_config_load($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,8 +14,14 @@ session_start();
   <link rel="icon" href="../assets/logo2.png" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="/tailwind/input.css">
-  <link rel="stylesheet" href="/tailwind/input.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <?= site_config_css_vars($siteSettings) ?>
+  <style>
+    .bg-green-50 { background-color: var(--site-primary-pale) !important; }
+    .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
+    .text-green-700 { color: var(--site-primary) !important; }
+    .text-green-900 { color: color-mix(in srgb, var(--site-primary) 75%, black) !important; }
+  </style>
 </head>
 <body class="bg-green-50 min-h-screen">
   <div class="max-w-4xl mx-auto px-4 py-8">
