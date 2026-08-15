@@ -623,7 +623,7 @@ $initials = strtoupper(substr($userName, 0, 2));
 
           <div class="flex justify-end mt-auto pt-2 border-t border-gray-50">
             <div class="qty-wrap">
-              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>^'</button>
+              <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, -1)" id="btn_minus_<?= $eq['id'] ?>" <?= !$available ? 'disabled' : '' ?>>−</button>
               <div class="qty-val" id="qty_<?= $eq['id'] ?>">0</div>
               <button type="button" class="qty-btn" onclick="changeQty(<?= $eq['id'] ?>, 1)"  id="btn_plus_<?= $eq['id'] ?>"  <?= !$available ? 'disabled' : '' ?>>+</button>
             </div>

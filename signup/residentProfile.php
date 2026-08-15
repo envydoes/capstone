@@ -1022,6 +1022,20 @@ document.querySelectorAll('.field-input').forEach(el => {
 document.getElementById('residentForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    // Always recompute from the dropdown right before validating — don't
+    // rely on onchange having already synced the hidden field. This is
+    // what was causing "Citizenship is required" even when Filipino was
+    // visibly selected: the hidden #citizenship input could be stale.
+    function getEffectiveValue(selectId, otherId) {
+        const sel = document.getElementById(selectId);
+        if (sel.value === 'Other') {
+            return document.getElementById(otherId).value.trim();
+        }
+        return sel.value;
+    }
+    document.getElementById('citizenship').value = getEffectiveValue('citizenship_select', 'citizenship_other');
+    document.getElementById('religion').value = getEffectiveValue('religion_select', 'religion_other');
+
     // Terms check (now driven by the modal's hidden input, not a checkbox)
     const termsHidden = document.getElementById('termsHiddenInput');
     if (termsHidden.value !== 'agree') {

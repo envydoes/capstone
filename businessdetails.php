@@ -280,28 +280,33 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
 </head>
 <body>
 
-<!-- ?????????????????? HEADER ?????????????????? -->
-<header class="w-full h-[68px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm sticky top-0 z-50">
+<!-- ================================ HEADER ================================ -->
+<header class="w-full h-[68px] border-b border-green-100 flex items-center px-4 sm:px-6 lg:px-8 bg-white shadow-sm">
   <div class="flex items-center gap-3 flex-shrink-0">
     <a href="<?= $logged_in ? 'resident/residentLanding.php' : 'landing.php' ?>" class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full flex items-center justify-center shadow overflow-hidden flex-shrink-0" style="background: var(--site-primary)">
-        <img src="<?= e(site_config_logo_url($siteSettings, '')) ?>" alt="Logo" class="w-full h-full object-contain" />
+      <div class="w-9 h-9 rounded-full bg-green-700 flex items-center justify-center shadow overflow-hidden flex-shrink-0">
+        <img src="<?= e(site_config_logo_url($siteSettings)) ?>" alt="Logo" class="w-full h-full object-contain" />
       </div>
       <div class="sm:block">
-        <h3 class="font-bold text-sm leading-tight" style="color:var(--site-primary-darker)"><?= e($siteSettings['site_title']) ?></h3>
-        <p class="text-[9px] tracking-widest uppercase" style="color:var(--site-primary)"><?= e($siteSettings['barangay_name']) ?></p>
+        <h3 class="font-bold text-sm leading-tight" style="font-family:'DM Sans',sans-serif;color:var(--site-primary-dark)"><?= e($siteSettings['site_title']) ?></h3>
+        <p class="text-[9px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
     </a>
   </div>
 
   <nav class="ml-auto flex items-center gap-3 md:gap-6 text-gray-600 text-sm font-medium">
+
+    <!-- Desktop Nav -->
     <div class="hidden md:flex items-center gap-5 lg:gap-7">
+
       <?php if ($showMyPanel): ?>
         <a href="resident/residentPanel.php" class="nav-link">My Panel</a>
       <?php endif; ?>
+
       <?php if ($isAdminLike): ?>
         <a href="admin/adminDashboard.php" class="nav-link">Dashboard</a>
       <?php endif; ?>
+
       <a href="landing.php#announcements" class="nav-link">Announcements</a>
       <a href="busaptListing.php?type=business" class="nav-link">Business</a>
       <a href="busaptListing.php?type=apartment" class="nav-link">Apartment</a>
@@ -332,7 +337,9 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             </svg>
           </button>
 
-          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50" role="menu">
+          <div id="profile-dropdown"
+            class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+            role="menu">
             <div class="px-4 py-3 bg-gradient-to-br from-green-50 to-emerald-50 border-b border-gray-100">
               <div class="flex items-center gap-3">
                 <span class="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center text-sm font-bold select-none flex-shrink-0">
@@ -369,7 +376,9 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
     </div>
 
     <!-- Mobile hamburger -->
-    <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center p-2 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition" aria-label="Toggle menu">
+    <button id="mobile-menu-btn"
+      class="md:hidden flex items-center justify-center p-2 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition"
+      aria-label="Toggle menu">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
@@ -377,7 +386,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
   </nav>
 </header>
 
-<!-- ?????????????????? MOBILE SIDEBAR ?????????????????? -->
+<!-- ================================ MOBILE SIDEBAR ================================ -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -393,33 +402,47 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
       <?php endif; ?>
     </div>
     <button id="mobile-menu-close" class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-50 transition">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
     </button>
   </div>
   <div class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
+
     <?php if ($showMyPanel): ?>
-      <a href="resident/residentPanel.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
+      <a href="resident/residentPanel.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--site-primary-dark)] font-medium hover:bg-[var(--site-primary-pale)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
         <i class="fa-solid fa-gauge-high w-4 text-[var(--site-primary)]"></i> My Panel
       </a>
     <?php endif; ?>
+
     <?php if ($isAdminLike): ?>
-      <a href="admin/adminDashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
+      <a href="admin/adminDashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--site-primary-dark)] font-medium hover:bg-[var(--site-primary-pale)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
         <i class="fa-solid fa-shield-halved w-4 text-[var(--site-primary)]"></i> Dashboard
       </a>
     <?php endif; ?>
-    <a href="landing.php#announcements" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
+
+    <?php
+      if ($showMyPanel) {
+          $annUrl = 'resident/residentLanding.php#announcements';
+      } elseif ($logged_in) {
+          $annUrl = 'nonResident/nonresidentLanding.php#announcements';
+      } else {
+          $annUrl = 'landing.php#announcements';
+      }
+    ?>
+    <a href="<?= $annUrl ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--site-primary-dark)] font-medium hover:bg-[var(--site-primary-pale)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
       <i class="fa-solid fa-bullhorn w-4 text-[var(--site-primary)]"></i> Announcements
     </a>
-    <a href="busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
+    <a href="busaptListing.php?type=business" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium active:scale-[0.97] transition-all duration-150 <?= $currentType === 'business' ? 'text-[var(--site-primary-dark)] font-bold bg-[var(--site-primary-pale)]' : 'text-[var(--site-primary-dark)] hover:bg-[var(--site-primary-pale)] active:bg-[var(--site-primary-pale)]' ?>">
       <i class="fa-solid fa-store w-4 text-[var(--site-primary)]"></i> Business
     </a>
-    <a href="busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] active:scale-[0.97] active:bg-[var(--site-primary-pale)] transition-all duration-150">
+    <a href="busaptListing.php?type=apartment" class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium active:scale-[0.97] transition-all duration-150 <?= $currentType === 'apartment' ? 'text-[var(--site-primary-dark)] font-bold bg-[var(--site-primary-pale)]' : 'text-[var(--site-primary-dark)] hover:bg-[var(--site-primary-pale)] active:bg-[var(--site-primary-pale)]' ?>">
       <i class="fa-solid fa-building w-4 text-[var(--site-primary)]"></i> Apartment
     </a>
     <?php if (str_contains($roleLower, 'non-resident,business/apartment owner') || str_contains($roleLower, 'business') && !str_contains($roleLower, 'resident')): ?>
       <a href="nonResident/manageList.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
         <i class="fa-solid fa-plus w-4 text-[var(--site-primary)]"></i> Post Listing
-      </a>
+    </a>
     <?php endif; ?>
     <?php if ($logged_in): ?>
     <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
@@ -558,7 +581,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
       <div class="w-full lg:w-2/5 min-w-0 space-y-4">
 
         <!-- Title card -->
-      <div class="p-5 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm">
+        <div class="p-5 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?= esc($isApt ? 'Apartment / Room' : 'Business') ?></span>
           <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mt-1 leading-tight" style="font-family:'Playfair Display',serif;"><?= esc($name) ?></h2>
           <p class="text-xs text-gray-400 mt-0.5"><?= esc($isApt ? 'Apartment • ' . labelMap($aptType, $APT_TYPE) : 'Business • ' . labelMap($bussCat, $BIZ_CAT)) ?></p>
@@ -626,7 +649,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             </div>
             <?= $isApt ? 'Room Details' : 'Business Info' ?>
           </div>
-          <?php if ($info-row): ?>
+          <?php if ($isApt): ?>
           <div class="info-grid">
             <div class="info-row"><span class="info-label">Room Type</span><span class="info-value <?= $aptType?'':'empty' ?>"><?= $aptType ? esc(labelMap($aptType, $APT_TYPE)) : '-' ?></span></div>
             <div class="info-row"><span class="info-label">Floor / Level</span><span class="info-value <?= $aptFloor?'':'empty' ?>"><?= $aptFloor ? esc($aptFloor) : '-' ?></span></div>

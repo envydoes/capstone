@@ -190,23 +190,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
         'birthplace'        => sanitizeText($_POST['birthplace']        ?? ''),
         'civil_status'      => allowedValue($_POST['civil_status']      ?? '', $allowedCivilStatus),
-                // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
-        'citizenship'        => sanitizeText(
-                                     ($_POST['citizenship'] ?? '') === 'Other'
-                                         ? ($_POST['citizenship_other'] ?? '')
-                                         : ($_POST['citizenship'] ?? ''),
-                                     100
-                                 ),
-        'religion'           => sanitizeText(
-                                     ($_POST['religion'] ?? '') === 'Other'
-                                         ? ($_POST['religion_other'] ?? '')
-                                         : ($_POST['religion'] ?? ''),
-                                     100
-                                 ),
-        'ethnicity'          => sanitizeText($_POST['ethnicity']          ?? '', 100),
-        'street'             => sanitizeText($_POST['street']             ?? '', 200),
-        // Locked fields — always the site's own barangay/city, never trust POST here.
+        // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
+        'citizenship'       => sanitizeText(
+                                    ($_POST['citizenship'] ?? '') === 'Other'
+                                        ? ($_POST['citizenship_other'] ?? '')
+                                        : ($_POST['citizenship'] ?? '')
+                                ),
+        'religion'          => sanitizeText(
+                                    ($_POST['religion'] ?? '') === 'Other'
+                                        ? ($_POST['religion_other'] ?? '')
+                                        : ($_POST['religion'] ?? '')
+                                ),
         'ethnicity'         => sanitizeText($_POST['ethnicity']         ?? ''),
+        // Non-residents' address genuinely varies — NOT locked like the resident
+        // form. Validated against the PH address dataset further down instead.
         'street'            => sanitizeText($_POST['street']            ?? ''),
         'barangay'          => sanitizeText($_POST['barangay']          ?? ''),
         'city'              => sanitizeText($_POST['city']              ?? ''),
@@ -897,6 +894,25 @@ function clearError(inputEl) {
     if (err) err.remove();
 }
 
+/* ============================================================
+   "OTHER, PLEASE SPECIFY" DROPDOWN FIELDS (Citizenship / Religion)
+   ============================================================ */
+function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
+    const otherInput  = document.getElementById(otherInputId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    if (selectEl.value === 'Other') {
+        otherInput.classList.remove('hidden');
+        hiddenInput.value = otherInput.value;
+        otherInput.focus();
+    } else {
+        otherInput.classList.add('hidden');
+        hiddenInput.value = selectEl.value;
+    }
+}
+function syncOtherField(otherInputId, hiddenInputId) {
+    document.getElementById(hiddenInputId).value = document.getElementById(otherInputId).value;
+}
+
 function validateField(el) {
     const name = el.name;
     const val  = el.value.trim();
@@ -937,6 +953,20 @@ document.querySelectorAll('.field-input').forEach(el => {
 document.getElementById('profileForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    // Always recompute from the dropdown right before validating — don't
+    // rely on onchange having already synced the hidden field. This is
+    // what was causing "Citizenship is required" even when a valid option
+    // was visibly selected: the hidden #citizenship input could go stale.
+    function getEffectiveValue(selectId, otherId) {
+        const sel = document.getElementById(selectId);
+        if (sel.value === 'Other') {
+            return document.getElementById(otherId).value.trim();
+        }
+        return sel.value;
+    }
+    document.getElementById('citizenship').value = getEffectiveValue('citizenship_select', 'citizenship_other');
+    document.getElementById('religion').value = getEffectiveValue('religion_select', 'religion_other');
+
     // Terms
     const terms = document.getElementById('terms');
     if (!terms.checked) {
@@ -957,6 +987,18 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     document.querySelectorAll('.field-input').forEach(el => {
         if (!validateField(el)) valid = false;
     });
+
+    // Citizenship select has no name/required attr (its value flows through
+    // the hidden #citizenship input above), so it needs an explicit check —
+    // the generic .field-input loop above silently skips it otherwise.
+    const citizenshipSelect = document.getElementById('citizenship_select');
+    const citizenshipHidden = document.getElementById('citizenship');
+    if (!citizenshipHidden.value.trim()) {
+        showError(citizenshipSelect, 'Citizenship is required.');
+        valid = false;
+    } else {
+        clearError(citizenshipSelect);
+    }
 
     if (!valid) {
         document.querySelector('.error, .field-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1054,28 +1096,6 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19
     }).addTo(map);
-// Citizenship select has no name/required attr (its value flows through
-    // the hidden #citizenship input), so check it explicitly.
-    const citizenshipSelect = document.getElementById('citizenship_select');
-    const citizenshipHidden = document.getElementById('citizenship');
-    if (!citizenshipHidden.value.trim()) {
-        showError(citizenshipSelect, 'Citizenship is required.');
-        valid = false;
-    } else {
-        clearError(citizenshipSelect);
-    }
-
-    if (!valid) {
-        const first = document.querySelector('.error, .field-error');
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Submitting.';
-    this.submit();
-});
 
     const marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
 
