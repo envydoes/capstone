@@ -693,9 +693,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    value="<?php echo oldValue('zip'); ?>" placeholder="ZIP Code" pattern="[A-Za-z0-9]{4,10}">
             <?php if (isset($errors['zip'])): ?><span class="field-error"><?php echo e($errors['zip']); ?></span><?php endif; ?>
           </div>
-
+              
         </div>
-    
+      </div>
       <div class="section-card">
         <div class="section-title">
           <div class="section-icon"><i class="fa-solid fa-phone text-green-700 text-sm"></i></div>
