@@ -422,9 +422,7 @@ function tagColor(string $tag): array {
         </div>
       <?php else: ?>
         <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
-          <a href="nonResidentProfile.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
-            <i class="fa-solid fa-user w-4 text-[var(--site-primary)]"></i> My Profile
-          </a>
+<a href="nonresidentProfile.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">          </a>
           <?php if ($role === 'admin'): ?>
           <a href="adminDashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
             <i class="fa-solid fa-shield-halved w-4 text-[var(--site-primary)]"></i> Admin Panel
