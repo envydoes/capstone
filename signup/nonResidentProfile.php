@@ -190,8 +190,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
         'birthplace'        => sanitizeText($_POST['birthplace']        ?? ''),
         'civil_status'      => allowedValue($_POST['civil_status']      ?? '', $allowedCivilStatus),
-        'citizenship'       => sanitizeText($_POST['citizenship']       ?? ''),
-        'religion'          => sanitizeText($_POST['religion']          ?? ''),
+                // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
+        'citizenship'        => sanitizeText(
+                                     ($_POST['citizenship'] ?? '') === 'Other'
+                                         ? ($_POST['citizenship_other'] ?? '')
+                                         : ($_POST['citizenship'] ?? ''),
+                                     100
+                                 ),
+        'religion'           => sanitizeText(
+                                     ($_POST['religion'] ?? '') === 'Other'
+                                         ? ($_POST['religion_other'] ?? '')
+                                         : ($_POST['religion'] ?? ''),
+                                     100
+                                 ),
+        'ethnicity'          => sanitizeText($_POST['ethnicity']          ?? '', 100),
+        'street'             => sanitizeText($_POST['street']             ?? '', 200),
+        // Locked fields — always the site's own barangay/city, never trust POST here.
         'ethnicity'         => sanitizeText($_POST['ethnicity']         ?? ''),
         'street'            => sanitizeText($_POST['street']            ?? ''),
         'barangay'          => sanitizeText($_POST['barangay']          ?? ''),
@@ -916,24 +930,7 @@ document.querySelectorAll('.field-input').forEach(el => {
     el.addEventListener('blur', () => validateField(el));
     el.addEventListener('input', () => { if (el.classList.contains('error')) validateField(el); });
 });
-/* ============================================================
-   DROPDOWN + "OTHER, PLEASE SPECIFY" FIELDS (Citizenship / Religion)
-   ============================================================ */
-function toggleOtherField(selectEl, otherInputId, hiddenInputId) {
-    const otherInput  = document.getElementById(otherInputId);
-    const hiddenInput = document.getElementById(hiddenInputId);
-    if (selectEl.value === 'Other') {
-        otherInput.classList.remove('hidden');
-        hiddenInput.value = otherInput.value;
-        otherInput.focus();
-    } else {
-        otherInput.classList.add('hidden');
-        hiddenInput.value = selectEl.value;
-    }
-}
-function syncOtherField(otherInputId, hiddenInputId) {
-    document.getElementById(hiddenInputId).value = document.getElementById(otherInputId).value;
-}
+
 /* ============================================================
    FORM SUBMIT
    ============================================================ */
