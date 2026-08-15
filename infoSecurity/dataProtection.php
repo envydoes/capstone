@@ -198,7 +198,7 @@ $backHref = $_SERVER['HTTP_REFERER'] ?? '../landing';
                 <?php       
                   // Check non-resident first because it contains the word "resident"
                   if (str_contains($roleLower, 'non-resident')) {
-                      $profileUrl = '../nonResident/nonResidentProfile';
+                      $profileUrl = '../nonResident/nonresidentProfile';
                   } elseif (str_contains($roleLower, 'resident')) {
                       $profileUrl = '../resident/myProfile';
                   }

@@ -6,7 +6,7 @@ if (is_string($accountRoles)) {
 }
 $backHref = 'residentProfile.php';
 if (in_array('business', $accountRoles, true) || in_array('non_resident', $accountRoles, true)) {
-    $backHref = 'nonResidentProfile.php';
+    $backHref = 'nonresidentProfile.php';
 } elseif (in_array('resident', $accountRoles, true)) {
     $backHref = 'residentProfile.php';
 }
