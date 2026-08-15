@@ -86,21 +86,6 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
   .to-green-600 { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
 
-  /* ── Terms Modal ── */
-  .terms-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 900; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .terms-modal-overlay.open { display: flex; }
-  .terms-modal-card { background: #fff; border-radius: 18px; width: 100%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
-  .terms-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
-  .terms-modal-body { flex: 1; overflow: hidden; min-height: 0; }
-  .terms-modal-body iframe { width: 100%; height: 100%; border: none; min-height: 55vh; }
-  .terms-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; border-top: 1px solid #f3f4f6; flex-shrink: 0; flex-wrap: wrap; }
-  .terms-modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f3f4f6; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
-  .terms-modal-close:hover { background: #fee2e2; color: #dc2626; }
-  .terms-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--site-primary-pale); border: 1.5px solid color-mix(in srgb, var(--site-primary) 30%, white); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; flex-wrap: wrap; }
-  .terms-summary-text { font-size: 0.85rem; color: #14532d; display: flex; align-items: center; gap: 10px; }
-  .terms-view-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--site-primary); color: var(--site-primary-dark); background: #fff; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
-  .terms-view-btn:hover { background: var(--site-primary-pale); }
-
   /* ── Password requirements checklist ── */
   .pw-info-btn { color: #9ca3af; background: none; border: none; cursor: pointer; padding: 2px 4px; transition: color 0.15s; font-size: 0.85rem; }
   .pw-info-btn:hover { color: var(--site-primary-dark); }
@@ -193,14 +178,9 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
         </div>
 
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-semibold text-gray-700" for="password">
-              <i class="fa-solid fa-lock text-green-600 mr-1"></i> Password
-            </label>
-            <button type="button" id="pwInfoBtn" class="pw-info-btn" aria-expanded="false" aria-controls="pwRequirements" aria-label="Show password requirements">
-              <i class="fa-solid fa-circle-info"></i> Requirements
-            </button>
-          </div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="password">
+            <i class="fa-solid fa-lock text-green-600 mr-1"></i> Password
+          </label>
           <div class="relative">
             <input type="password" id="password" name="password" placeholder="Create a strong password" maxlength="128" autocomplete="new-password"
               class="field-input pr-12 <?php echo $serverErrorField === 'password' ? 'error' : ''; ?>"
@@ -209,6 +189,10 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
               <i class="fa fa-eye"></i>
             </button>
           </div>
+
+          <button type="button" id="pwInfoBtn" class="pw-info-btn mt-2" aria-expanded="false" aria-controls="pwRequirements" aria-label="Show password requirements">
+            <i class="fa-solid fa-circle-info"></i> Requirements
+          </button>
 
           <!-- ═══ Live password requirements checklist ═══ -->
           <div id="pwRequirements" class="pw-requirements hidden">
@@ -284,19 +268,6 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
           <p id="role-error" class="text-red-500 text-xs mt-2 hidden" role="alert"></p>
         </div>
 
-        <!-- ═══ #5: Terms of Service — now a modal, not an inline scroll box ═══ -->
-        <div class="terms-summary-row" id="termsSummaryRow">
-          <div class="terms-summary-text">
-            <i class="fa-solid fa-file-shield" style="color:var(--site-primary);"></i>
-            <span id="termsStatusText">Please review and agree to the Terms of Service to continue.</span>
-          </div>
-          <button type="button" class="terms-view-btn" onclick="openTermsModal()">
-            <i class="fa-solid fa-eye"></i> View &amp; Agree
-          </button>
-        </div>
-        <input type="hidden" name="terms" id="termsHiddenInput" value="">
-        <p id="terms-error" class="text-red-500 text-xs -mt-5 mb-2 hidden" role="alert">You must agree to the Terms of Service.</p>
-
         <p id="rate-limit-msg" class="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3 hidden">
           <i class="fa-solid fa-triangle-exclamation mr-1"></i> Too many attempts. Please wait before trying again.
         </p>
@@ -315,33 +286,6 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
       <a href="/capstone/login.php" class="text-sm text-green-700 hover:underline">
         <i class="fa-solid fa-arrow-left mr-1"></i> Already have an account? Log in
       </a>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ TERMS OF SERVICE MODAL ═══ -->
-<div class="terms-modal-overlay" id="termsModalOverlay" onclick="closeTermsModalOnOverlay(event)">
-  <div class="terms-modal-card" onclick="event.stopPropagation()">
-    <div class="terms-modal-header">
-      <div>
-        <p class="font-bold text-gray-900 text-base">Terms of Service &amp; Data Protection</p>
-        <p class="text-gray-400 text-xs mt-0.5">Please read before creating your account</p>
-      </div>
-      <button type="button" class="terms-modal-close" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="terms-modal-body">
-      <iframe src="../infoSecurity/terms.php?embed=1" title="Terms of Service"></iframe>
-    </div>
-    <div class="terms-modal-footer">
-      <a href="../infoSecurity/dataProtection.php" target="_blank" class="text-xs text-green-700 hover:underline">
-        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> View Data Protection Notice
-      </a>
-      <div class="flex items-center gap-3">
-        <button type="button" class="text-sm text-gray-500 hover:text-gray-700 px-3 py-2" onclick="closeTermsModal()">Cancel</button>
-        <button type="button" class="submit-btn" onclick="agreeToTerms()">
-          <i class="fa-solid fa-check"></i> I Agree, Continue
-        </button>
-      </div>
     </div>
   </div>
 </div>
@@ -550,30 +494,6 @@ document.getElementById('business').addEventListener('change', function() {
   document.getElementById('card-business').classList.toggle('selected', this.checked);
 });
 
-/* ── Terms Modal ── */
-let termsAgreed = false;
-function openTermsModal() {
-  document.getElementById('termsModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeTermsModal() {
-  document.getElementById('termsModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function closeTermsModalOnOverlay(e) {
-  if (e.target.id === 'termsModalOverlay') closeTermsModal();
-}
-function agreeToTerms() {
-  termsAgreed = true;
-  document.getElementById('termsHiddenInput').value = 'agree';
-  document.getElementById('termsSummaryRow').style.borderColor = 'var(--site-primary)';
-  document.getElementById('termsStatusText').innerHTML =
-    '<i class="fa-solid fa-circle-check" style="color:var(--site-primary);"></i> You agreed to the Terms of Service.';
-  document.getElementById('terms-error').classList.add('hidden');
-  closeTermsModal();
-}
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTermsModal(); });
-
 /* ── Live email availability check ── */
 let emailCheckTimer = null;
 let emailAvailable  = true;
@@ -688,12 +608,6 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     valid = false;
   } else {
     roleErrorEl.classList.add('hidden');
-  }
-
-  if (!termsAgreed) {
-    document.getElementById('terms-error').classList.remove('hidden');
-    document.getElementById('termsSummaryRow').style.borderColor = '#ef4444';
-    valid = false;
   }
 
   if (!valid) return;
