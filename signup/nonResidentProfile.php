@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="bg-white rounded-b-2xl shadow-lg border border-green-100 border-t-0 p-8">
 
-    <form id="profileForm" action="nonresidentProfile.php" method="POST" novalidate autocomplete="on">
+    <form id="profileForm" action="nonResidentProfile.php" method="POST" novalidate autocomplete="on">
 
       <!-- CSRF TOKEN -->
       <input type="hidden" name="csrf_token" value="<?php echo e($csrfToken); ?>">
