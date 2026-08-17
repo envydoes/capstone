@@ -1038,9 +1038,12 @@ document.getElementById('residentForm').addEventListener('submit', function(e) {
 
     // Terms check (now driven by the modal's hidden input, not a checkbox)
     const termsHidden = document.getElementById('termsHiddenInput');
-    if (termsHidden.value !== 'agree') {
-        const row = document.getElementById('termsSummaryRow');
+if (termsHidden && termsHidden.value !== 'agree') {
+    const row = document.getElementById('termsSummaryRow');
+    
+    if (row) {
         row.style.borderColor = '#ef4444';
+        
         let tErr = document.getElementById('terms-js-err');
         if (!tErr) {
             tErr = document.createElement('p');
@@ -1049,9 +1052,13 @@ document.getElementById('residentForm').addEventListener('submit', function(e) {
             tErr.textContent = 'You must agree to the Terms of Service.';
             row.insertAdjacentElement('afterend', tErr);
         }
+        
         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
+    } else {
+        console.warn("Element 'termsSummaryRow' was not found in the DOM.");
     }
+    return;
+}
 
     let valid = true;
     document.querySelectorAll('.field-input').forEach(el => { if (!validateField(el)) valid = false; });
