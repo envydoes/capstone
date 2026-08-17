@@ -841,14 +841,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <!-- FOOTER ACTIONS -->
-      <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-2">
-        <a href="accountCreation.php" class="text-sm text-green-700 hover:underline flex items-center gap-1">
-          <i class="fa-solid fa-arrow-left text-xs"></i> Back to Step 1
-        </a>
-        <button type="submit" id="submitBtn" class="submit-btn">
-          Next Step <i class="fa-solid fa-arrow-right text-sm"></i>
-        </button>
-      </div>
+ <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-2">
+  <a href="accountCreation.php" class="text-sm text-green-700 hover:underline flex items-center gap-1">
+    <i class="fa-solid fa-arrow-left text-xs"></i> Back to Step 1
+  </a>
+  <button type="submit" id="submitBtn" class="submit-btn flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+    <span id="btnText" class="flex items-center gap-1">
+      Next Step <i class="fa-solid fa-arrow-right text-sm"></i>
+    </span>
+    <span id="btnSpinner" class="hidden">
+      <i class="fa-solid fa-circle-notch fa-spin text-sm"></i> Processing...
+    </span>
+  </button>
+</div>
 
     </form>
     </div>
@@ -900,9 +905,18 @@ function closeTermsModalOnOverlay(e) {
 }
 function agreeToTerms() {
     document.getElementById('termsHiddenInput').value = 'agree';
-    document.getElementById('termsSummaryRow').style.borderColor = '#15803d';
-    document.getElementById('termsStatusText').innerHTML =
-        '<i class="fa-solid fa-circle-check" style="color:#15803d;"></i> You agreed to the Terms of Service.';
+
+    const termsCheckbox = document.getElementById('terms');
+    if (termsCheckbox) termsCheckbox.checked = true;
+
+    const row = document.getElementById('termsSummaryRow');
+    if (row) row.style.borderColor = '#15803d';
+
+    const statusText = document.getElementById('termsStatusText');
+    if (statusText) {
+        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#15803d;"></i> You agreed to the Terms of Service.';
+    }
+
     const errEl = document.getElementById('terms-js-err');
     if (errEl) errEl.remove();
     closeTermsModal();

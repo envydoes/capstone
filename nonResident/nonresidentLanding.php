@@ -266,6 +266,12 @@ function tagColor(string $tag): array {
 </head>
 <body class="bg-gray-50">
 
+<?php
+$verifyEditProfileUrl = 'nonresidentEditProfile.php';
+$verifyActionUrl      = 'verifyAccount.php';
+require_once __DIR__ . '/../includes/verification_modal.php';
+?>
+
   <!-- NAVBAR -->
    <?php if ($adminAccessRevoked): ?>
 <div style="background:#fef2f2;border:1.5px solid #fecaca;color:#dc2626;padding:14px 18px;border-radius:10px;margin:16px 0;display:flex;align-items:center;gap:10px;font-size:0.88rem;font-weight:600;">
@@ -422,7 +428,13 @@ function tagColor(string $tag): array {
         </div>
       <?php else: ?>
         <div class="pt-2 border-t border-gray-100 mt-2 space-y-0.5">
+<<<<<<< HEAD
 <a href="nonresidentProfile.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">          </a>
+=======
+          <a href="nonresidentProfile.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
+            <i class="fa-solid fa-user w-4 text-[var(--site-primary)]"></i> My Profile
+          </a>
+>>>>>>> bd0cc3cdc3d391e6999e697b9d2f958fff6c43eb
           <?php if ($role === 'admin'): ?>
           <a href="adminDashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-[var(--site-primary-pale)] hover:text-[var(--site-primary-dark)] transition">
             <i class="fa-solid fa-shield-halved w-4 text-[var(--site-primary)]"></i> Admin Panel
