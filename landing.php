@@ -766,7 +766,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
       <div class="text-center mt-6 text-green-500 text-sm">
 &copy; 2026 SumEste Portal. All Rights Reserved. Made for <?= e($siteSettings['barangay_name']) ?>.      </div>
     </div>
-  </footer>s
+  </footer>
   <script>
   function toggleProfileMenu() {
     const dropdown = document.getElementById('profile-dropdown');
