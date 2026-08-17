@@ -997,6 +997,7 @@ function getLabel(el) {
 }
 
 function validateField(el) {
+    if (typeof el.value !== 'string') return true; // not a real form field (e.g. a locked display div)
     const name = el.name, val = el.value.trim();
     clearError(el);
 
@@ -1026,7 +1027,7 @@ function validateField(el) {
 /* ============================================================
    LIVE BLUR / INPUT VALIDATION
    ============================================================ */
-document.querySelectorAll('.field-input').forEach(el => {
+document.querySelectorAll('input.field-input, select.field-input, textarea.field-input').forEach(el => {
     el.addEventListener('blur',  () => validateField(el));
     el.addEventListener('input', () => { if (el.classList.contains('error')) validateField(el); });
 });
@@ -1063,7 +1064,7 @@ document.getElementById('residentForm').addEventListener('submit', function(e) {
     }
 
     let valid = true;
-    document.querySelectorAll('.field-input').forEach(el => { if (!validateField(el)) valid = false; });
+    document.querySelectorAll('input.field-input, select.field-input, textarea.field-input').forEach(el => { if (!validateField(el)) valid = false; });
 
     // Citizenship select has no name/required attr (its value flows through
     // the hidden #citizenship input), so check it explicitly.
