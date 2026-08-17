@@ -482,8 +482,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <!-- TERMS -->
       <div class="terms-box mb-8 <?php echo isset($errors['terms']) ? 'border-red-400 bg-red-50' : ''; ?>">
-        <input type="checkbox" name="terms" value="agree" id="terms" required
-               <?php echo oldValue('terms') === 'agree' ? 'checked' : ''; ?>>
+        <input type="checkbox" id="terms" required
+               <?php echo oldValue('terms') === 'agree' ? 'checked' : ''; ?>
+               onchange="document.getElementById('termsHiddenInput').value = this.checked ? 'agree' : '';">
         <label for="terms" class="text-sm text-green-900 leading-relaxed cursor-pointer">
           I agree to the <a href="#" onclick="openLegalModal('../infoSecurity/termsModal.php', 'Terms of Service'); return false;" class="text-green-700 font-semibold hover:underline">Terms of Service</a> and have read the
           <a href="#" onclick="openLegalModal('../infoSecurity/dataProtectionModal.php', 'Data Protection Notice'); return false;" class="text-green-700 font-semibold hover:underline">Data Protection Notice</a> regarding the use of my personal information.
@@ -1050,29 +1051,16 @@ document.getElementById('residentForm').addEventListener('submit', function(e) {
     document.getElementById('citizenship').value = getEffectiveValue('citizenship_select', 'citizenship_other');
     document.getElementById('religion').value = getEffectiveValue('religion_select', 'religion_other');
 
-    // Terms check (now driven by the modal's hidden input, not a checkbox)
+    // Terms check — driven directly by the visible checkbox via its onchange handler
     const termsHidden = document.getElementById('termsHiddenInput');
-if (termsHidden && termsHidden.value !== 'agree') {
-    const row = document.getElementById('termsSummaryRow');
-    
-    if (row) {
-        row.style.borderColor = '#ef4444';
-        
-        let tErr = document.getElementById('terms-js-err');
-        if (!tErr) {
-            tErr = document.createElement('p');
-            tErr.id = 'terms-js-err';
-            tErr.className = 'field-error';
-            tErr.textContent = 'You must agree to the Terms of Service.';
-            row.insertAdjacentElement('afterend', tErr);
+    if (!termsHidden || termsHidden.value !== 'agree') {
+        const termsCheckbox = document.getElementById('terms');
+        if (termsCheckbox) {
+            showError(termsCheckbox, 'You must agree to the Terms of Service.');
+            termsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        
-        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-        console.warn("Element 'termsSummaryRow' was not found in the DOM.");
+        return;
     }
-    return;
-}
 
     let valid = true;
     document.querySelectorAll('.field-input').forEach(el => { if (!validateField(el)) valid = false; });
