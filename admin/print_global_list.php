@@ -15,6 +15,11 @@
 
 session_start();
 
+// Explicit local timezone — without this, date()/strtotime() below fall back
+// to the server's default (often UTC), which is why "Generated On ... at
+// [TIME]" could show a time several hours off from local Philippine time.
+date_default_timezone_set('Asia/Manila');
+
 // 1. Authentication Check
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
@@ -212,8 +217,6 @@ if ($list === 'analytics') {
     exit;
 }
 
-$showConditions = false;
-$filters        = [];
 $nameLabel      = 'Name';
 $summaryLabel   = 'Total residents';
 
@@ -244,8 +247,6 @@ switch ($list) {
         $myPermissions  = get_my_permissions($conn);
         $result         = gf_run_global_list_query($conn, $_GET, $myPermissions);
         $title          = 'Global Resident List';
-        $showConditions = true;
-        $filters        = $result['filters'] ?? [];
         $summaryLabel   = 'Total residents';
         break;
 }
@@ -279,29 +280,6 @@ $metaLines[] = 'Generated On: ' . date('F d, Y') . ' at ' . date('g:i A');
 // 8. Begin Print Layout Rendering
 print_report_start($siteSettings, $title, $metaLines, $list === 'global' ? 'landscape' : 'portrait');
 ?>
-
-<?php if ($showConditions): ?>
-    <!-- Active Conditions / Filters Section -->
-    <div class="conditions-box">
-      <p class="label">Conditions Applied</p>
-      <?php if (empty($filters)): ?>
-        <p class="conditions-empty">No conditions applied - showing all approved residents.</p>
-      <?php else: ?>
-        <div class="conditions-chips">
-          <?php foreach ($filters as $f): ?>
-            <span class="condition-chip">
-              <strong><?= e($f['label']) ?>:</strong> <?= e($f['value']) ?>
-            </span>
-          <?php endforeach; ?>
-        </div>
-      <?php endif; ?>
-    </div>
-<?php endif; ?>
-
-<!-- Summary Section -->
-<div class="report-summary">
-  <span class="count"><?= e($summaryLabel) ?>: <strong><?= number_format($count) ?></strong></span>
-</div>
 
 <!-- Main Printable Data Table -->
 <table class="report-table">
@@ -351,6 +329,11 @@ print_report_start($siteSettings, $title, $metaLines, $list === 'global' ? 'land
     <?php endif; ?>
   </tbody>
 </table>
+
+<!-- Summary Section (bottom-left, after the table) -->
+<div class="report-summary" style="margin-top: 14px; margin-bottom: 0;">
+  <span class="count"><?= e($summaryLabel) ?>: <strong><?= number_format($count) ?></strong></span>
+</div>
 
 <?php
 // 9. Signature Section & Footer
