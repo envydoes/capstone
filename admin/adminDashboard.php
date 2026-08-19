@@ -892,6 +892,21 @@ $sidebarSections = [
     .ar-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .ar-toolbar-links { display: flex; gap: 14px; }
     .ar-toolbar-links a { font-size: 0.72rem; font-weight: 700; color: var(--site-primary-dark); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ?? Per-module quick stats (Print Report picker) ?? */
+    .ar-stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .ar-stat-card {
+      background: #f9fafb; border: 1px solid #eef0f2; border-radius: 10px;
+      padding: 9px 12px; display: flex; align-items: center; gap: 9px;
+    }
+    .ar-stat-ico {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: #fff;
+    }
+    .ar-stat-text { min-width: 0; }
+    .ar-stat-num { font-size: 1.05rem; font-weight: 800; color: #111827; line-height: 1.15; }
+    .ar-stat-label { font-size: 0.66rem; font-weight: 600; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     .ar-check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
     .ar-check-item {
       display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
@@ -955,7 +970,8 @@ $sidebarSections = [
       text-transform: none; letter-spacing: normal; vertical-align: middle;
     }
     .gf-section-locked .gf-grid,
-    .gf-section-locked .ar-check-grid { opacity: 0.5; pointer-events: none; }
+    .gf-section-locked .ar-check-grid,
+    .gf-section-locked .ar-stats-row { opacity: 0.5; pointer-events: none; }
     .gf-section-locked select,
     .gf-section-locked input { cursor: not-allowed; }
     .gf-field-locked { opacity: 0.5; }
@@ -2565,6 +2581,68 @@ $arGroupModuleMap = [
     'Equipment'              => 'manage_borrowing',
     'Document Requests'      => 'manage_documents',
 ];
+
+// Quick "at a glance" numbers shown above each module's chart checklist,
+// so admins/staff can see the current scale of a module before deciding
+// what to include in the report. Reuses the same figures already computed
+// above for the dashboard's own charts/stat cards - no extra queries.
+$arBeneficiaryApproved = (int) ($requestStatusBeneficiary['approved'] ?? 0);
+$arBeneficiaryPending  = (int) ($requestStatusBeneficiary['pending']  ?? 0);
+$arBeneficiaryRejected = (int) ($requestStatusBeneficiary['rejected'] ?? 0);
+
+$arEquipmentApproved = (int) ($requestStatusEquipment['approved'] ?? 0);
+$arEquipmentPending  = (int) ($requestStatusEquipment['pending']  ?? 0);
+$arEquipmentRejected = (int) ($requestStatusEquipment['rejected'] ?? 0);
+
+$arDocApproved = (int) ($requestStatusDoc['approved'] ?? 0);
+$arDocPending  = (int) ($requestStatusDoc['pending']  ?? 0);
+$arDocRejected = (int) ($requestStatusDoc['rejected'] ?? 0);
+
+$arTotalAccounts = $activeAccounts + $inactiveAccounts;
+
+$arGroupStats = [
+    'Overview' => [
+        ['icon' => 'fa-users',               'label' => 'Residents',        'value' => $registeredResidents,       'color' => '#3b82f6'],
+        ['icon' => 'fa-hammer',               'label' => 'Borrowed Now',     'value' => $activeBorrowedEquipment,   'color' => '#f59e0b'],
+        ['icon' => 'fa-building',             'label' => 'Listings',         'value' => $activeListings,            'color' => '#a855f7'],
+        ['icon' => 'fa-user',                 'label' => 'Non-Residents',    'value' => $nonResidentUsers,          'color' => 'var(--site-primary)'],
+    ],
+    'Resident Management' => [
+        ['icon' => 'fa-house-chimney-user',   'label' => 'Approved Residents','value' => $registeredResidents,      'color' => '#3b82f6'],
+        ['icon' => 'fa-mars',                 'label' => 'Male',             'value' => $maleTotal,                 'color' => '#0ea5e9'],
+        ['icon' => 'fa-venus',                'label' => 'Female',           'value' => $femaleTotal,               'color' => '#ec4899'],
+        ['icon' => 'fa-child-reaching',       'label' => 'Minors',           'value' => $bracketMinors,             'color' => '#f59e0b'],
+    ],
+    'Beneficiary Management' => [
+        ['icon' => 'fa-hand-holding-heart',   'label' => 'Total',            'value' => $arBeneficiaryApproved + $arBeneficiaryPending + $arBeneficiaryRejected, 'color' => 'var(--site-primary)'],
+        ['icon' => 'fa-circle-check',         'label' => 'Approved',         'value' => $arBeneficiaryApproved,     'color' => '#15803d'],
+        ['icon' => 'fa-hourglass-half',       'label' => 'Pending',          'value' => $arBeneficiaryPending,      'color' => '#d97706'],
+        ['icon' => 'fa-circle-xmark',         'label' => 'Rejected',         'value' => $arBeneficiaryRejected,     'color' => '#dc2626'],
+    ],
+    'Business / Apartment' => [
+        ['icon' => 'fa-building',             'label' => 'Total Listings',   'value' => $activeListings,            'color' => '#a855f7'],
+        ['icon' => 'fa-store',                'label' => 'Business',         'value' => $bizCountTotal,             'color' => '#6366f1'],
+        ['icon' => 'fa-door-open',             'label' => 'Apartment',        'value' => $aptCountTotal,             'color' => '#0ea5e9'],
+        ['icon' => 'fa-circle-check',         'label' => 'Available Units',  'value' => $availableUnits,            'color' => '#15803d'],
+    ],
+    'Equipment' => [
+        ['icon' => 'fa-hammer',               'label' => 'Borrowed Now',     'value' => $activeBorrowedEquipment,   'color' => '#f59e0b'],
+        ['icon' => 'fa-circle-check',         'label' => 'Borrowed/Returned','value' => $arEquipmentApproved,       'color' => '#15803d'],
+        ['icon' => 'fa-hourglass-half',       'label' => 'Pending',          'value' => $arEquipmentPending,        'color' => '#d97706'],
+        ['icon' => 'fa-circle-xmark',         'label' => 'Rejected',         'value' => $arEquipmentRejected,       'color' => '#dc2626'],
+    ],
+    'Document Requests' => [
+        ['icon' => 'fa-circle-check',         'label' => 'Approved',         'value' => $arDocApproved,             'color' => '#15803d'],
+        ['icon' => 'fa-hourglass-half',       'label' => 'Pending',          'value' => $arDocPending,              'color' => '#d97706'],
+        ['icon' => 'fa-circle-xmark',         'label' => 'Rejected',         'value' => $arDocRejected,             'color' => '#dc2626'],
+        ['icon' => 'fa-clock',                'label' => 'Avg Turnaround',   'value' => $avgTurnaroundHours . 'h',  'color' => '#0ea5e9'],
+    ],
+    'User / Accounts' => [
+        ['icon' => 'fa-users',                'label' => 'Total Accounts',   'value' => $arTotalAccounts,           'color' => '#3b82f6'],
+        ['icon' => 'fa-user-check',           'label' => 'Active',           'value' => $activeAccounts,            'color' => '#15803d'],
+        ['icon' => 'fa-user-slash',           'label' => 'Inactive',         'value' => $inactiveAccounts,          'color' => '#dc2626'],
+    ],
+];
 ?>
 <div class="gf-overlay" id="arOverlay">
   <div class="gf-modal">
@@ -2596,6 +2674,19 @@ $arGroupModuleMap = [
             <?= e($arGroupName) ?>
             <?php if ($arGroupLocked): ?><span class="gf-lock-badge"><i class="fa-solid fa-lock"></i> No access</span><?php endif; ?>
           </p>
+          <?php if (!empty($arGroupStats[$arGroupName])): ?>
+          <div class="ar-stats-row">
+            <?php foreach ($arGroupStats[$arGroupName] as $arStat): ?>
+              <div class="ar-stat-card">
+                <div class="ar-stat-ico" style="background:<?= e($arStat['color']) ?>;"><i class="fa-solid <?= e($arStat['icon']) ?>"></i></div>
+                <div class="ar-stat-text">
+                  <p class="ar-stat-num"><?= is_numeric($arStat['value']) ? number_format((float) $arStat['value']) : e($arStat['value']) ?></p>
+                  <p class="ar-stat-label"><?= e($arStat['label']) ?></p>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <?php endif; ?>
           <div class="ar-check-grid">
             <?php foreach ($arItems as $arKey => $arItem): ?>
               <label class="ar-check-item<?= $arGroupLocked ? ' ar-check-item-locked' : '' ?>">
