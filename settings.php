@@ -663,6 +663,19 @@ $heroImageMax  = 5;
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
+                <label class="field-label">Full Name</label>
+                <input type="text" class="field-input" id="staffNameInput" maxlength="150" placeholder="Juan Dela Cruz">
+              </div>
+              <div>
+                <label class="field-label">Position</label>
+                <select class="field-input" id="staffPositionInput" onchange="applyPositionDefaults(this.value)">
+                  <option value="">Select position</option>
+                  <?php foreach (BARANGAY_POSITIONS as $posKey => $posLabel): ?>
+                  <option value="<?= e($posKey) ?>"><?= e($posLabel) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div>
                 <label class="field-label">Email Address</label>
                 <input type="email" class="field-input" id="staffEmailInput" maxlength="254" placeholder="staff@example.com">
               </div>
@@ -708,13 +721,14 @@ $heroImageMax  = 5;
                 <thead>
                   <tr>
                     <th style="text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:700;color:#6b7280;text-transform:uppercase;background:#f9fafb;border-bottom:1px solid #e5e7eb;">User</th>
+                    <th style="text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:700;color:#6b7280;text-transform:uppercase;background:#f9fafb;border-bottom:1px solid #e5e7eb;">Position</th>
                     <th style="text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:700;color:#6b7280;text-transform:uppercase;background:#f9fafb;border-bottom:1px solid #e5e7eb;">Modules Granted</th>
                     <th style="text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:700;color:#6b7280;text-transform:uppercase;background:#f9fafb;border-bottom:1px solid #e5e7eb;">Granted By</th>
                     <th style="text-align:right;padding:10px 16px;font-size:0.72rem;font-weight:700;color:#6b7280;text-transform:uppercase;background:#f9fafb;border-bottom:1px solid #e5e7eb;">Action</th>
                   </tr>
                 </thead>
                 <tbody id="permUserResults">
-                  <tr><td colspan="4" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
+                  <tr><td colspan="5" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
                     <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators.
                   </td></tr>
                 </tbody>
@@ -749,6 +763,17 @@ $heroImageMax  = 5;
 
       <div style="padding:16px 18px;max-height:60vh;overflow-y:auto;">
         <input type="hidden" id="permUserID">
+
+        <div style="margin-bottom:14px;">
+          <label class="field-label">Position</label>
+          <select class="field-input" id="permPositionInput">
+            <option value="">Select position</option>
+            <?php foreach (BARANGAY_POSITIONS as $posKey => $posLabel): ?>
+            <option value="<?= e($posKey) ?>"><?= e($posLabel) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
         <p class="text-xs text-gray-400 mb-3">Toggle modules on or off - takes effect immediately, no email confirmation is sent. Turn every module off to fully revoke access.</p>
 
         <div id="permModuleList">
@@ -805,31 +830,21 @@ $heroImageMax  = 5;
    that were inside openPermissionModal() and the
    role-option click handler; they all use this one now)
 ?????????????????????????????????????????? */
-const STAFF_DEFAULTS = {
-  barangay_secretary: ['dashboard','manage_residents','manage_beneficiaries','manage_documents','manage_listings','manage_announcements'],
-  barangay_treasurer: ['dashboard','manage_documents','manage_borrowing'],
-};
+const BARANGAY_POSITIONS   = <?= json_encode(BARANGAY_POSITIONS) ?>;
+const STAFF_DEFAULTS       = <?= json_encode(BARANGAY_POSITION_DEFAULTS) ?>;
 
 /* ??????????????????????????????????????????
    CREATE STAFF ACCOUNT
 ?????????????????????????????????????????? */
-function selectStaffPosition(label) {
-  document.querySelectorAll('#staffCreateSection .role-option, .settings-card .role-option[data-role]').forEach(o => {});
-  // Scope to this card only (position radios named "staffPosition")
-  document.querySelectorAll('label.role-option[data-role]').forEach(opt => {
-    if (opt.querySelector('input[name="staffPosition"]')) {
-      opt.classList.remove('selected');
-      opt.querySelector('input').checked = false;
-    }
-  });
-  label.classList.add('selected');
-  label.querySelector('input').checked = true;
 
-  const position = label.dataset.role;
+// Called on <select id="staffPositionInput"> change - pre-checks the
+// modules typically granted to that barangay position. The admin can
+// still flip any module on/off afterward before saving.
+function applyPositionDefaults(position) {
   const moduleList = document.getElementById('staffModuleList');
-  moduleList.style.display = 'block';
+  const defaults = STAFF_DEFAULTS[position] || [];
   moduleList.querySelectorAll('.perm-toggle-track').forEach(track => {
-    track.classList.toggle('on', (STAFF_DEFAULTS[position] || []).includes(track.dataset.permKey));
+    track.classList.toggle('on', defaults.includes(track.dataset.permKey));
   });
 }
 
@@ -838,10 +853,20 @@ function toggleStaffModule(track) {
 }
 
 function handleCreateStaff() {
+  const fullName = document.getElementById('staffNameInput').value.trim();
+  const position = document.getElementById('staffPositionInput').value;
   const email    = document.getElementById('staffEmailInput').value.trim();
   const password = document.getElementById('staffPasswordInput').value;
   const permissions = Array.from(document.querySelectorAll('#staffModuleList .perm-toggle-track.on')).map(t => t.dataset.permKey);
 
+  if (fullName === '') {
+    showToast('error', 'Please enter the staff member\'s full name.');
+    return;
+  }
+  if (position === '') {
+    showToast('error', 'Please select a barangay position.');
+    return;
+  }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showToast('error', 'Please enter a valid email address.');
     return;
@@ -861,6 +886,8 @@ function handleCreateStaff() {
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
   const body = new URLSearchParams();
+  body.append('fullName', fullName);
+  body.append('position', position);
   body.append('email', email);
   body.append('password', password);
   permissions.forEach(p => body.append('permissions[]', p));
@@ -870,6 +897,8 @@ function handleCreateStaff() {
     .then(d => {
       if (d.success) {
         showToast('success', 'Staff account created. They can log in now.');
+        document.getElementById('staffNameInput').value = '';
+        document.getElementById('staffPositionInput').value = '';
         document.getElementById('staffEmailInput').value = '';
         document.getElementById('staffPasswordInput').value = '';
         document.querySelectorAll('#staffModuleList .perm-toggle-track').forEach(t => t.classList.remove('on'));
@@ -1323,10 +1352,6 @@ document.addEventListener('click', (e) => {
     }/* ??????????????????????????????????????????
    USER PERMISSIONS SEARCH + MODAL
 ?????????????????????????????????????????? */
-const STAFF_LABELS = {
-  barangay_secretary: 'Barangay Secretary',
-  barangay_treasurer: 'Barangay Treasurer',
-};
 const PERMISSION_LABELS = <?= json_encode(PERMISSION_MODULES) ?>;
 let permListAbort = null;
 let permUsersCache = {}; // userID -> user object, for re-populating modal
@@ -1337,7 +1362,7 @@ function loadStaffList() {
   permListAbort = new AbortController();
 
   tbody.innerHTML = `
-    <tr><td colspan="4" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
+    <tr><td colspan="5" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">
       <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;color:var(--site-primary);"></i>Loading administrators.
     </td></tr>`;
 
@@ -1346,7 +1371,7 @@ function loadStaffList() {
     .then(d => renderPermUserResults(d.data || []))
     .catch(err => {
       if (err.name !== 'AbortError') {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:28px;color:#dc2626;font-size:0.85rem;">Could not load the staff list.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#dc2626;font-size:0.85rem;">Could not load the staff list.</td></tr>';
       }
     });
 }
@@ -1355,7 +1380,7 @@ function renderPermUserResults(users) {
   const tbody = document.getElementById('permUserResults');
   permUsersCache = {};
  if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">No one has admin access yet. Grant it above, or from Resident Management.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:#9ca3af;font-size:0.85rem;">No one has admin access yet. Grant it above, or from Resident Management.</td></tr>';
     return;
   }
   tbody.innerHTML = users.map(u => {
@@ -1367,12 +1392,17 @@ function renderPermUserResults(users) {
     const grantedByLabel = u.granted_by_name
       ? `${u.granted_by_name}${u.granted_by_email ? ' (' + u.granted_by_email + ')' : ''}`
       : 'Barangay Admin';
+    const positionLabel = u.position ? (BARANGAY_POSITIONS[u.position] || u.position) : '';
+    const positionHtml = positionLabel
+      ? `<span style="display:inline-block;background:var(--site-primary-pale);color:var(--site-primary-dark);font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:999px;">${escHtml(positionLabel)}</span>`
+      : '<span style="color:#9ca3af;font-size:0.78rem;">Not set</span>';
     return `
   <tr style="border-bottom:1px solid #f3f4f6;">
     <td style="padding:12px 16px;">
       <p style="font-weight:700;color:#111827;font-size:0.85rem;">${escHtml(u.fullname)}</p>
       <p style="color:#9ca3af;font-size:0.75rem;">${escHtml(u.email)}</p>
     </td>
+    <td style="padding:12px 16px;">${positionHtml}</td>
     <td style="padding:12px 16px;max-width:260px;">${modulesHtml}</td>
     <td style="padding:12px 16px;font-size:0.82rem;color:#374151;">${escHtml(grantedByLabel)}</td>
     <td style="padding:12px 16px;text-align:right;">
@@ -1488,6 +1518,7 @@ function openPermissionModal(userID) {
   permModalUserID = userID;
   document.getElementById('permModalSubtitle').textContent = u.fullname || u.email || '';
   document.getElementById('permUserID').value = userID;
+  document.getElementById('permPositionInput').value = u.position || '';
 
   const currentPerms = (u.permissions || '').split(',').map(s => s.trim()).filter(Boolean);
   document.querySelectorAll('#permModuleList .perm-toggle-track').forEach(track => {
@@ -1514,6 +1545,7 @@ function handlePermSave() {
 
   const body = new URLSearchParams();
   body.append('userID', permModalUserID);
+  body.append('position', document.getElementById('permPositionInput').value);
   permissions.forEach(p => body.append('permissions[]', p));
 
   fetch('admin/updateStaffPermissions.php', { method: 'POST', body })

@@ -23,6 +23,49 @@ const PERMISSION_MODULES = [
     'manage_announcements'  => 'Announcements',
 ];
 
+// Real-world barangay positions (per the PH Local Government Code / RA 7160,
+// plus the appointed/volunteer roles barangays commonly staff). This is only
+// a LABEL attached to a granted account for record-keeping ("who is this
+// person in the barangay org chart") - it does NOT by itself grant any
+// module access. Module access is still whatever is checked in
+// PERMISSION_MODULES above / tbl_admin_permissions.permissions_csv.
+const BARANGAY_POSITIONS = [
+    'punong_barangay'    => 'Punong Barangay (Barangay Captain)',
+    'barangay_kagawad'   => 'Barangay Kagawad (Sangguniang Barangay Member)',
+    'sk_chairperson'     => 'SK Chairperson',
+    'barangay_secretary' => 'Barangay Secretary',
+    'barangay_treasurer' => 'Barangay Treasurer',
+    'barangay_clerk'     => 'Barangay Clerk / Admin Staff',
+    'lupon_tagapamayapa' => 'Lupon Tagapamayapa Member',
+    'barangay_tanod'     => 'Barangay Tanod (Peace and Order)',
+    'bhw'                => 'Barangay Health Worker (BHW)',
+    'bns'                => 'Barangay Nutrition Scholar (BNS)',
+    'other'              => 'Other Barangay Staff',
+];
+
+// Suggested default module access per position - mirrors what the "Add Admin
+// Account" form pre-checks when a position is picked. Purely a UI shortcut;
+// the admin can still toggle modules individually before saving.
+const BARANGAY_POSITION_DEFAULTS = [
+    'punong_barangay'    => ['dashboard', 'manage_residents', 'manage_beneficiaries', 'manage_documents', 'manage_borrowing', 'manage_listings', 'manage_announcements'],
+    'barangay_secretary' => ['dashboard', 'manage_residents', 'manage_beneficiaries', 'manage_documents', 'manage_listings', 'manage_announcements'],
+    'barangay_treasurer' => ['dashboard', 'manage_documents', 'manage_borrowing'],
+    'barangay_kagawad'   => ['dashboard', 'manage_beneficiaries', 'manage_announcements'],
+    'sk_chairperson'     => ['dashboard', 'manage_announcements'],
+    'barangay_clerk'     => ['dashboard', 'manage_residents', 'manage_documents'],
+    'lupon_tagapamayapa' => ['dashboard'],
+    'barangay_tanod'     => ['dashboard'],
+    'bhw'                => ['dashboard', 'manage_beneficiaries'],
+    'bns'                => ['dashboard', 'manage_beneficiaries'],
+    'other'              => [],
+];
+
+function get_position_label(?string $position): string
+{
+    if (!$position) return '';
+    return BARANGAY_POSITIONS[$position] ?? ucwords(str_replace('_', ' ', $position));
+}
+
 // NOTE: 'manage_users' (account approvals) and permission-granting
 // itself are intentionally NOT in PERMISSION_MODULES - they remain
 // exclusive to the founding admin (account_role === 'admin') so a
@@ -49,7 +92,7 @@ function is_permission_grant_active(?array $grant): bool
 
 function get_staff_grant(mysqli $conn, string $accID): ?array
 {
-    $stmt = $conn->prepare('SELECT accID, permissions_csv, status, granted_by, created_at, updated_at, confirmed_at FROM tbl_admin_permissions WHERE accID = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT accID, permissions_csv, status, granted_by, full_name, position, created_at, updated_at, confirmed_at FROM tbl_admin_permissions WHERE accID = ? LIMIT 1');
     if (!$stmt) return null;
     $stmt->bind_param('s', $accID);
     $stmt->execute();
