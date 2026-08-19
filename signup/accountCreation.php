@@ -117,7 +117,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
     <div class="w-16 h-16 mx-auto rounded-2xl bg-green-700 flex items-center justify-center shadow-lg mb-4">
       <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
     </div>
-    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> Resident Registration</h1>
+    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> Registration</h1>
     <p class="text-gray-500 text-sm mt-2">Create your account to access barangay services online</p>
   </div>
 
@@ -283,7 +283,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
     </div>
 
     <div class="text-center mt-5">
-      <a href="/capstone/login.php" class="text-sm text-green-700 hover:underline">
+      <a href="../login.php" class="text-sm text-green-700 hover:underline">
         <i class="fa-solid fa-arrow-left mr-1"></i> Already have an account? Log in
       </a>
     </div>
