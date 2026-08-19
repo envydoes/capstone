@@ -147,6 +147,20 @@ if (!function_exists('print_report_start')) {
   .mini-badge-overdue { background: #fee2e2; color: #b91c1c; }
   .mini-badge-ontime  { background: #dcfce7; color: #166534; }
 
+  /* ?? Signature section (Name & Position) ?? */
+  .signature-section {
+    display: flex; justify-content: space-between; gap: 40px;
+    margin-top: 56px; page-break-inside: avoid;
+  }
+  .signature-block { flex: 1; }
+  .signature-role-label {
+    font-size: 0.66rem; font-weight: 800; color: var(--site-primary-darker);
+    text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 26px;
+  }
+  .signature-fill-line { border-bottom: 1.3px solid #1f2937; height: 30px; }
+  .signature-caption { font-size: 0.68rem; color: #6b7280; margin: 4px 0 20px; }
+  .signature-block:last-child .signature-caption:last-of-type { margin-bottom: 0; }
+
   /* ?? Analytics report (chart/graph picker) ?? */
   .analytics-section-title {
     font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
@@ -259,6 +273,39 @@ if (!function_exists('print_report_start')) {
 
     <div class="report-title">
       <h1><?= e($reportTitle) ?></h1>
+    </div>
+<?php
+    }
+}
+
+if (!function_exists('print_report_signature')) {
+    /**
+     * Renders a row of blank Name / Position signature blocks for the
+     * person(s) signing off on the printed report. Purely fillable-by-hand
+     * fields (no attempt to pre-fill from the logged-in account) since the
+     * "prepared by" and "approved/noted by" signatories are very often
+     * different people from whoever happened to click Print.
+     *
+     * @param array $roles Role labels to render, left-to-right (2-3 works
+     *        best given the page width). Defaults to the barangay's usual
+     *        two-signatory sign-off.
+     */
+    function print_report_signature(array $roles = ['Prepared By', 'Noted By']): void
+    {
+        if (empty($roles)) {
+            return;
+        }
+        ?>
+    <div class="signature-section">
+      <?php foreach ($roles as $roleLabel): ?>
+        <div class="signature-block">
+          <p class="signature-role-label"><?= e($roleLabel) ?></p>
+          <div class="signature-fill-line">&nbsp;</div>
+          <p class="signature-caption">Name</p>
+          <div class="signature-fill-line">&nbsp;</div>
+          <p class="signature-caption">Position</p>
+        </div>
+      <?php endforeach; ?>
     </div>
 <?php
     }
