@@ -47,7 +47,7 @@ if (!function_exists('gf_run_nonbeneficiaries_query')) {
             while ($r = mysqli_fetch_assoc($result)) {
                 $name = trim(implode(' ', array_filter([
                     $r['firstname'],
-                    $r['middlename'] ? $r['middlename'] . '.' : '',
+                    $r['middlename'] ? $r['middlename']: '',
                     $r['lastname'],
                     $r['suffix'],
                 ])));

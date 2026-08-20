@@ -1755,7 +1755,7 @@ $sidebarSections = [
   const PROG_LABELS = { '4ps':"4P's", senior:'Senior Citizen', scholarship:'Scholarship', pwd:'PWD', kabataan:'Kabataan (SK)', voters:'Registered Voters' };
 
   function escHtml2(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function fullName(u) { return [u.firstname, u.middlename ? u.middlename+'.' : '', u.lastname, u.suffix].filter(Boolean).join(' '); }
+  function fullName(u) { return [u.firstname, u.middlename ? u.middlename : '', u.lastname, u.suffix].filter(Boolean).join(' '); }
 
   /* ──────────────────────────────────────────
      LIVE AJAX SEARCH TABLES

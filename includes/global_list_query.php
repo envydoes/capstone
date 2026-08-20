@@ -230,7 +230,7 @@ if (!function_exists('gf_run_global_list_query')) {
 
             $name = trim(implode(' ', array_filter([
                 $r['firstname'],
-                $r['middlename'] ? $r['middlename'] . '.' : '',
+                $r['middlename'] ? $r['middlename'] : '',
                 $r['lastname'],
                 $r['suffix'],
             ])));
