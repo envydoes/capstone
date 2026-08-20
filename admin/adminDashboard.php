@@ -803,8 +803,8 @@ $sidebarSections = [
     .subpanel-title { font-weight: 700; color: #1a2e1a; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .subpanel-note { font-size: 0.72rem; color: #9ca3af; font-weight: 400; }
     .mini-table-wrap { position: relative; overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; max-height: 320px; overflow-y: auto; }
-    .mini-table { width: 100%; border-collapse: collapse; min-width: 480px; }
-    .mini-table thead th { position: sticky; top: 0; background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 0.68rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+    .mini-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 480px; }
+    .mini-table thead th { position: sticky; top: 0; z-index: 2; background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 0.68rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
     .mini-table tbody td { padding: 9px 12px; font-size: 0.8rem; color: #374151; border-bottom: 1px solid #f3f4f6; }
     .mini-table tbody tr:last-child td { border-bottom: none; }
     .mini-table tbody tr:hover { background: #f0fdf4; }
@@ -1163,7 +1163,7 @@ $sidebarSections = [
         <div class="mini-table-wrap mx-4 mb-4" style="max-height:420px;">
           <div class="mini-loading-overlay" id="globalLoading"><div class="mini-spinner"></div><span class="mini-loading-text">Fetching...</span></div>
           <table class="mini-table">
-            <thead><tr id="globalTableHead"><th>#</th><th>Name</th></tr></thead>
+            <thead><tr id="globalTableHead"><th>#</th><th>Name</th><th>Age</th><th>Birthdate</th><th>Contact Number</th><th>Address</th></tr></thead>
             <tbody id="globalTableBody"></tbody>
           </table>
         </div>
@@ -1897,19 +1897,23 @@ $sidebarSections = [
         printBtn.disabled = (json.data.length === 0);
       }
 
-      thead.innerHTML = '<th>#</th><th>Name</th>' + cols.map(c => `<th>${escHtml2(c.label)}</th>`).join('');
+      thead.innerHTML = '<th>#</th><th>Name</th><th>Age</th><th>Birthdate</th><th>Contact Number</th><th>Address</th>' + cols.map(c => `<th>${escHtml2(c.label)}</th>`).join('');
 
       tbody.innerHTML = json.data.length
         ? json.data.map((r, i) => `
             <tr class="mini-row-fade" style="animation-delay:${i * 15}ms">
               <td>${i + 1}</td>
               <td>${escHtml2(r.name)}</td>
+              <td>${escHtml2(r.age ?? '-')}</td>
+              <td>${escHtml2(r.birthdate ?? '-')}</td>
+              <td>${escHtml2(r.contact_number ?? '-')}</td>
+              <td>${escHtml2(r.address ?? '-')}</td>
               ${cols.map(c => `<td>${escHtml2(r[c.key] ?? '-')}</td>`).join('')}
             </tr>`).join('')
-        : `<tr><td colspan="${2 + cols.length}"><div class="mini-empty">No residents match the selected conditions</div></td></tr>`;
+        : `<tr><td colspan="${6 + cols.length}"><div class="mini-empty">No residents match the selected conditions</div></td></tr>`;
     } catch (err) {
-      thead.innerHTML = '<th>#</th><th>Name</th>';
-      tbody.innerHTML = `<tr><td colspan="2"><div class="mini-empty">Could not load data. Please try again.</div></td></tr>`;
+      thead.innerHTML = '<th>#</th><th>Name</th><th>Age</th><th>Birthdate</th><th>Contact Number</th><th>Address</th>';
+      tbody.innerHTML = `<tr><td colspan="6"><div class="mini-empty">Could not load data. Please try again.</div></td></tr>`;
     
       const printBtn = document.getElementById('printGlobalListBtn');
       if (printBtn) printBtn.disabled = true;
