@@ -986,7 +986,7 @@ function updateBulkVisibility(tab){
 
 /* ════════════════════ HELPERS ════════════════════ */
 function calcAge(dob){const b=new Date(dob),n=new Date();let a=n.getFullYear()-b.getFullYear();if(n<new Date(n.getFullYear(),b.getMonth(),b.getDate()))a--;return a;}
-function getUserNameFromRow(row){if(!row)return'';const u=JSON.parse(row.dataset.user.replace(/&quot;/g,'"'));return[u.firstname,u.middlename?u.middlename+'.':'',u.lastname,u.suffix].filter(Boolean).join(' ');}
+function getUserNameFromRow(row){if(!row)return'';const u=JSON.parse(row.dataset.user.replace(/&quot;/g,'"'));return[u.firstname,u.middlename?u.middlename:'',u.lastname,u.suffix].filter(Boolean).join(' ');}
 
 /* ════════════════════ MODAL ════════════════════ */
 let currentUserID=null,currentUserRow=null,currentFrontID='',currentBackID='',currentUserTab='';
@@ -1027,7 +1027,7 @@ function openModal(row){
   currentUserID=u.userID;currentUserRow=row;currentFrontID=u.frontID||'';currentBackID=u.backID||'';
   currentUserTab=row.dataset.tab||activeTab;
 
-  const fn=[u.firstname,u.middlename?u.middlename+'.':'',u.lastname,u.suffix].filter(Boolean).join(' ');
+  const fn=[u.firstname,u.middlename?u.middlename:'',u.lastname,u.suffix].filter(Boolean).join(' ');
   document.getElementById('mFullName').value=fn;
   document.getElementById('mGender').value=u.gender||'';
   document.getElementById('mAge').value=u.birthday?calcAge(u.birthday):'';
