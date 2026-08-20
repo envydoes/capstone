@@ -1274,11 +1274,11 @@ $sidebarSections = [
               <?php
                   $pct = $totalIncomeCount > 0 ? round(($value / $totalIncomeCount) * 100, 1) : 0;
                   $barColor = [
-                      'Below ?5k/mo' => '#E24B4A',
-                      '?5k - ?10k/mo' => '#BA7517',
-                      '?10k - ?20k/mo' => '#639922',
-                      '?20k - ?40k/mo' => '#1D9E75',
-                      'Above ?40k/mo' => '#378ADD',
+                      'Below ₱5k/mo' => '#E24B4A',
+                      '₱5k - ₱10k/mo' => '#BA7517',
+                      '₱10k - ₱20k/mo' => '#639922',
+                      '₱20k - ₱40k/mo' => '#1D9E75',
+                      'Above ₱40k/mo' => '#378ADD',
                   ][$label];
               ?>
               <div class="flex items-center justify-between">
