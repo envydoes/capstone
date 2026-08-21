@@ -35,15 +35,41 @@ function allowedValue(string $value, array $allowed): string
     return in_array($value, $allowed, true) ? $value : '';
 }
 
+function toProperCase(string $value): string
+{
+    if ($value === '') return $value;
+    $lower = mb_strtolower($value, 'UTF-8');
+    // Capitalize the first letter of every "word" — where a word starts at
+    // the beginning of the string or right after a space, hyphen, or
+    // apostrophe (so "o'brien" -> "O'Brien", "y-dle" -> "Y-Dle").
+    return preg_replace_callback(
+        "/(^|[\s'\-])(\p{L})/u",
+        function (array $m): string {
+            return $m[1] . mb_strtoupper($m[2], 'UTF-8');
+        },
+        $lower
+    );
+}
+
+function normalizePHPhone(string $phone): string
+{
+    $cleaned = preg_replace('/[\s\-()]/', '', $phone);
+    // Accept +639XXXXXXXXX or 639XXXXXXXXX on input, but always normalize
+    // down to the 09XXXXXXXXX format we actually want stored/displayed.
+    if (preg_match('/^\+?639\d{9}$/', $cleaned)) {
+        $cleaned = '0' . substr($cleaned, -10);
+    }
+    return $cleaned;
+}
+
 function isValidPHPhone(string $phone): bool
 {
-    return (bool) preg_match('/^(\+63|0)9\d{9}$/', preg_replace('/[\s\-()\+]/', '', '+' . ltrim(preg_replace('/[\s\-()]/', '', $phone), '+')));
+    return (bool) preg_match('/^09\d{9}$/', $phone);
 }
 
 function isValidPHPhoneLoose(string $phone): bool
 {
-    $cleaned = preg_replace('/[\s\-()]/', '', $phone);
-    return (bool) preg_match('/^(\+63|0)9\d{9}$/', $cleaned);
+    return (bool) preg_match('/^09\d{9}$/', preg_replace('/[\s\-()]/', '', $phone));
 }
 
 function isValidBirthdate(string $date): bool
@@ -110,10 +136,11 @@ unset($_SESSION['id_profile_mismatch']);
 /* ============================================================
    ALLOWED WHITELISTS
    ============================================================ */
-$allowedFamilyRoles      = ['head', 'spouse', 'child', 'parent', 'other'];
-$allowedGenders          = ['male', 'female', 'other'];
+$allowedFamilyRoles = ['head', 'spouse', 'child', 'parent', 'not_applicable'];
+$allowedGenders          = ['male', 'female'];
 $allowedCivilStatus      = ['single', 'married', 'divorced', 'widowed', 'separated'];
-$allowedEmploymentStatus = ['employed', 'self-employed', 'unemployed', 'student', 'retired', 'other'];
+$allowedEmploymentStatus = ['employed', 'self-employed', 'unemployed', 'student', 'retired', 'homemaker', 'unable_to_work'];
+$allowedBloodTypes       = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 /* ============================================================
    PREFILL KEYS
@@ -161,9 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Collect and sanitize
     $data = [
-        'firstname'          => sanitizeText($_POST['firstname']          ?? '', 100),
-        'lastname'           => sanitizeText($_POST['lastname']           ?? '', 100),
-        'middlename'         => sanitizeText($_POST['middlename']         ?? '', 100),
+        'firstname'          => toProperCase(sanitizeText($_POST['firstname']  ?? '', 100)),
+        'lastname'           => toProperCase(sanitizeText($_POST['lastname']   ?? '', 100)),
+        'middlename'         => toProperCase(sanitizeText($_POST['middlename'] ?? '', 100)),
         'suffix'             => sanitizeText($_POST['suffix']             ?? '', 20),
         'family_role'        => allowedValue($_POST['family_role']        ?? '', $allowedFamilyRoles),
         'gender'             => allowedValue($_POST['gender']             ?? '', $allowedGenders),
@@ -190,13 +217,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'city'               => $siteSettings['municipality'],
         'province'           => SITE_PROVINCE,
         'zip'                => sanitizeText($_POST['zip']                ?? '', 10),
-        'phone'              => sanitizeText($_POST['phone']              ?? '', 20),
+        'phone'              => normalizePHPhone(sanitizeText($_POST['phone'] ?? '', 20)),
         'email'              => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'emergency_contact'  => sanitizeText($_POST['emergency_contact']  ?? '', 150),
-        'emergency_phone'    => sanitizeText($_POST['emergency_phone']    ?? '', 20),
-        'health_conditions'  => sanitizeText($_POST['health_conditions']  ?? '', 10),
+        'emergency_phone'    => normalizePHPhone(sanitizeText($_POST['emergency_phone'] ?? '', 20)),
+        'health_conditions'  => allowedValue($_POST['health_conditions']  ?? '', $allowedBloodTypes),
         'employment_status'  => allowedValue($_POST['employment_status']  ?? '', $allowedEmploymentStatus),
-        'job_title'          => sanitizeText($_POST['job_title']          ?? '', 150),
+        'job_title'          => toProperCase(sanitizeText($_POST['job_title'] ?? '', 150)),
         'monthly_income'     => sanitizeText($_POST['monthly_income']     ?? '', 10),
         'voter_id'           => sanitizeText($_POST['voter_id']           ?? '', 50),
         'precinct'           => sanitizeText($_POST['precinct']           ?? '', 50),
@@ -231,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Name character validation
     foreach (['firstname', 'lastname', 'middlename'] as $nf) {
-        if ($data[$nf] !== '' && !preg_match("/^[\p{L}\s'\-\.]+$/u", $data[$nf])) {
+        if ($data[$nf] !== '' && !preg_match("/^[\p{L}\p{N}\s'\-\.]+$/u", $data[$nf])) {
             $errors[$nf] = ucfirst(str_replace('name','  name', $nf)) . ' contains invalid characters.';
         }
     }
@@ -259,12 +286,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['phone'] === '') {
         $errors['phone'] = 'Phone number is required.';
     } elseif (!isValidPHPhoneLoose($data['phone'])) {
-        $errors['phone'] = 'Enter a valid PH mobile number (+639XXXXXXXXX or 09XXXXXXXXX).';
+        $errors['phone'] = 'Enter a valid PH mobile number in 09XXXXXXXXX format.';
     }
 
     // Emergency phone (optional)
     if ($data['emergency_phone'] !== '' && !isValidPHPhoneLoose($data['emergency_phone'])) {
-        $errors['emergency_phone'] = 'Enter a valid emergency phone number.';
+        $errors['emergency_phone'] = 'Enter a valid emergency phone number in 09XXXXXXXXX format.';
     }
 
     // Email
@@ -579,7 +606,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select id="family_role" name="family_role" required
                     class="field-input <?php echo isset($errors['family_role']) ? 'error' : ''; ?>">
               <option value="">Select Family Role</option>
-              <?php foreach (['head'=>'Head of Family','spouse'=>'Spouse','child'=>'Child','parent'=>'Parent','other'=>'Other'] as $v=>$l): ?>
+              <?php foreach (['head'=>'Head of Family','spouse'=>'Spouse','child'=>'Child','parent'=>'Parent','not_applicable'=>'Not Applicable / Lives Alone'] as $v=>$l): ?>
                 <option value="<?php echo e($v); ?>" <?php echo oldValue('family_role')===$v?'selected':''; ?>><?php echo e($l); ?></option>
                  <?php endforeach; ?>
             </select>
@@ -591,7 +618,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select id="gender" name="gender" required
                     class="field-input <?php echo isset($errors['gender']) ? 'error' : ''; ?>">
               <option value="">Select Sex</option>
-              <?php foreach (['male'=>'Male','female'=>'Female','other'=>'Other'] as $v=>$l): ?>
+              <?php foreach (['male'=>'Male','female'=>'Female'] as $v=>$l): ?>
                 <option value="<?php echo e($v); ?>" <?php echo oldValue('gender')===$v?'selected':''; ?>><?php echo e($l); ?></option>
               <?php endforeach; ?>
             </select>
@@ -750,7 +777,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label class="field-label" for="phone">Phone Number <span class="required-star">*</span></label>
             <input type="tel" id="phone" name="phone" required maxlength="20" autocomplete="tel"
                    class="field-input <?php echo isset($errors['phone']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('phone'); ?>" placeholder="+63 912 345 6789">
+                   value="<?php echo oldValue('phone'); ?>" placeholder="09XX XXX XXXX">
             <span class="text-gray-400 text-xs mt-1 block">Format: +639XXXXXXXXX or 09XXXXXXXXX</span>
             <?php if (isset($errors['phone'])): ?><span class="field-error"><?php echo e($errors['phone']); ?></span><?php endif; ?>
           </div>
@@ -779,8 +806,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <div class="md:col-span-2">
             <label class="field-label" for="health_conditions">Blood Type</label>
-            <input type="text" id="health_conditions" name="health_conditions" maxlength="10"
-                   class="field-input" value="<?php echo oldValue('health_conditions'); ?>" placeholder="e.g., O+, A-, B+">
+            <select id="health_conditions" name="health_conditions" class="field-input">
+              <option value="">Select Blood Type</option>
+              <?php foreach (['A+','A-','B+','B-','AB+','AB-','O+','O-'] as $bt): ?>
+                <option value="<?php echo e($bt); ?>" <?php echo oldValue('health_conditions')===$bt?'selected':''; ?>><?php echo e($bt); ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
 
         </div>
@@ -799,7 +830,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select id="employment_status" name="employment_status" required
                     class="field-input <?php echo isset($errors['employment_status']) ? 'error' : ''; ?>">
               <option value="">Select Employment Status</option>
-              <?php foreach (['employed'=>'Employed','self-employed'=>'Self-Employed','unemployed'=>'Unemployed','student'=>'Student','retired'=>'Retired','other'=>'Other'] as $v=>$l): ?>
+              <?php foreach (['employed'=>'Employed','self-employed'=>'Self-Employed','unemployed'=>'Unemployed','student'=>'Student','retired'=>'Retired','homemaker'=>'Homemaker / Household Work','unable_to_work'=>'Unable to Work'] as $v=>$l): ?>
                 <option value="<?php echo e($v); ?>" <?php echo oldValue('employment_status')===$v?'selected':''; ?>><?php echo e($l); ?></option>
               <?php endforeach; ?>
             </select>
@@ -988,10 +1019,11 @@ function syncOtherField(otherInputId, hiddenInputId) {
 /* ============================================================
    WHITELISTS (mirror PHP)
    ============================================================ */
-const ALLOWED_FAMILY_ROLES      = ['head','spouse','child','parent','other'];
-const ALLOWED_GENDERS           = ['male','female','other'];
+const ALLOWED_FAMILY_ROLES      = ['head','spouse','child','parent','not_applicable'];
+const ALLOWED_GENDERS           = ['male','female'];
 const ALLOWED_CIVIL_STATUS      = ['single','married','divorced','widowed','separated'];
-const ALLOWED_EMPLOYMENT_STATUS = ['employed','self-employed','unemployed','student','retired','other'];
+const ALLOWED_EMPLOYMENT_STATUS = ['employed','self-employed','unemployed','student','retired','homemaker','unable_to_work'];
+const ALLOWED_BLOOD_TYPES       = ['A+','A-','B+','B-','AB+','AB-','O+','O-'];
 
 /* ============================================================
    UTILITIES
@@ -1000,8 +1032,22 @@ function isValidEmail(email) {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(email) && email.length <= 254;
 }
 
+function normalizePHPhone(phone) {
+    let cleaned = phone.replace(/[\s\-()]/g, '');
+    if (/^\+?639\d{9}$/.test(cleaned)) {
+        cleaned = '0' + cleaned.slice(-10);
+    }
+    return cleaned;
+}
+
 function isValidPHPhone(phone) {
-    return /^(\+63|0)9\d{9}$/.test(phone.replace(/[\s\-()]/g,''));
+    return /^09\d{9}$/.test(phone.replace(/[\s\-()]/g,''));
+}
+
+function toProperCase(value) {
+    if (!value) return value;
+    const lower = value.toLowerCase();
+    return lower.replace(/(^|[\s'\-])(\p{L})/gu, (m, boundary, letter) => boundary + letter.toUpperCase());
 }
 
 function isValidZip(zip) { return /^[A-Z0-9]{4,10}$/i.test(zip); }
@@ -1059,7 +1105,7 @@ function validateField(el) {
     if (el.required && val === '') { showError(el, `${getLabel(el)} is required.`); return false; }
 
     if (name === 'email'             && val && !isValidEmail(val))        { showError(el, 'Enter a valid email address.'); return false; }
-    if ((name==='phone'||name==='emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
+    if ((name==='phone'||name==='emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number in 09XXXXXXXXX format.'); return false; }
     if (name === 'zip'               && val && !isValidZip(val))          { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
     if (name === 'birthday'          && val && !isValidBirthdate(val))    { showError(el, 'Birthday must be a real past date, and no more than 100 years ago.'); return false; }
     if (name === 'monthly_income'    && val && !isValidIncome(val))       { showError(el, 'Enter a valid income (0-9,999,999).'); return false; }
@@ -1067,7 +1113,7 @@ function validateField(el) {
     if (name === 'voter_id'          && val && !isValidId(val))           { showError(el, 'Voter ID contains invalid characters.'); return false; }
     if (name === 'precinct'          && val && !isValidPrecinct(val))     { showError(el, 'Precinct contains invalid characters.'); return false; }
 
-    if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFFa-zA-Z\s'\-\.]+$/.test(val)) {
+    if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFF0-9a-zA-Z\s'\-\.]+$/.test(val)) {
         showError(el, 'Invalid characters in name.'); return false;
     }
 
@@ -1075,9 +1121,22 @@ function validateField(el) {
     if (name==='gender'             && val && !ALLOWED_GENDERS.includes(val))           { showError(el,'Invalid selection.'); return false; }
     if (name==='civil_status'       && val && !ALLOWED_CIVIL_STATUS.includes(val))      { showError(el,'Invalid selection.'); return false; }
     if (name==='employment_status'  && val && !ALLOWED_EMPLOYMENT_STATUS.includes(val)) { showError(el,'Invalid selection.'); return false; }
+    if (name==='health_conditions'  && val && !ALLOWED_BLOOD_TYPES.includes(val))       { showError(el,'Invalid selection.'); return false; }
 
     return true;
 }
+
+/* ============================================================
+   LIVE AUTO-FORMATTING (runs before validation on blur)
+   ============================================================ */
+['firstname', 'lastname', 'middlename', 'job_title'].forEach(name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.addEventListener('blur', () => { el.value = toProperCase(el.value.trim()); });
+});
+['phone', 'emergency_phone'].forEach(name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.addEventListener('blur', () => { el.value = normalizePHPhone(el.value.trim()); });
+});
 
 /* ============================================================
    LIVE BLUR / INPUT VALIDATION

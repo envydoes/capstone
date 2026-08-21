@@ -38,12 +38,41 @@ function allowedValue(string $value, array $allowed): string
     return in_array($value, $allowed, true) ? $value : '';
 }
 
+function toProperCase(string $value): string
+{
+    if ($value === '') return $value;
+    $lower = mb_strtolower($value, 'UTF-8');
+    // Capitalize the first letter of every "word" — where a word starts at
+    // the beginning of the string or right after a space, hyphen, or
+    // apostrophe (so "o'brien" -> "O'Brien", "y-dle" -> "Y-Dle").
+    return preg_replace_callback(
+        "/(^|[\s'\-])(\p{L})/u",
+        function (array $m): string {
+            return $m[1] . mb_strtoupper($m[2], 'UTF-8');
+        },
+        $lower
+    );
+}
+
 /**
- * Validate a Philippine mobile number (accepts +63 or 0 prefix).
+ * Normalize a Philippine mobile number down to 09XXXXXXXXX, converting
+ * from +639XXXXXXXXX / 639XXXXXXXXX if that's what was entered.
+ */
+function normalizePHPhone(string $phone): string
+{
+    $cleaned = preg_replace('/[\s\-()]/', '', $phone);
+    if (preg_match('/^\+?639\d{9}$/', $cleaned)) {
+        $cleaned = '0' . substr($cleaned, -10);
+    }
+    return $cleaned;
+}
+
+/**
+ * Validate a Philippine mobile number — 09XXXXXXXXX only.
  */
 function isValidPHPhone(string $phone): bool
 {
-    return (bool) preg_match('/^(\+63|0)9\d{9}$/', preg_replace('/[\s\-()]/', '', $phone));
+    return (bool) preg_match('/^09\d{9}$/', $phone);
 }
 
 /**
@@ -138,8 +167,9 @@ function inputClass(string $field, array $highlightFields): string
 /* ============================================================
    ALLOWED OPTION WHITELISTS (used by both server + JS)
    ============================================================ */
-$allowedFamilyRoles  = ['head', 'spouse', 'child', 'parent', 'other'];
-$allowedGenders      = ['male', 'female', 'other'];
+$allowedFamilyRoles  = ['head', 'spouse', 'child', 'parent', 'not_applicable'];
+$allowedGenders      = ['male', 'female'];
+$allowedBloodTypes   = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 $allowedCivilStatus  = ['single', 'married', 'divorced', 'widowed', 'separated'];
 
 /* ============================================================
@@ -194,9 +224,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- Collect and sanitize raw inputs ---
     $data = [
-        'firstname'         => sanitizeText($_POST['firstname']         ?? ''),
-        'lastname'          => sanitizeText($_POST['lastname']          ?? ''),
-        'middlename'        => sanitizeText($_POST['middlename']        ?? ''),
+        'firstname'         => toProperCase(sanitizeText($_POST['firstname'] ?? '')),
+        'lastname'          => toProperCase(sanitizeText($_POST['lastname']  ?? '')),
+        'middlename'        => toProperCase(sanitizeText($_POST['middlename'] ?? '')),
         'suffix'            => sanitizeText($_POST['suffix']            ?? ''),
         'family_role'       => allowedValue($_POST['family_role']       ?? '', $allowedFamilyRoles),
         'gender'            => allowedValue($_POST['gender']            ?? '', $allowedGenders),
@@ -222,11 +252,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'city'              => sanitizeText($_POST['city']              ?? ''),
         'province'          => sanitizeText($_POST['province']          ?? ''),
         'zip'               => sanitizeText($_POST['zip']               ?? ''),
-        'phone'             => sanitizeText($_POST['phone']             ?? ''),
+        'phone'             => normalizePHPhone(sanitizeText($_POST['phone'] ?? '')),
         'email'             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'emergency_contact' => sanitizeText($_POST['emergency_contact'] ?? ''),
-        'emergency_phone'   => sanitizeText($_POST['emergency_phone']   ?? ''),
-        'health_conditions' => sanitizeText($_POST['health_conditions'] ?? ''),
+        'emergency_phone'   => normalizePHPhone(sanitizeText($_POST['emergency_phone'] ?? '')),
+        'health_conditions' => allowedValue($_POST['health_conditions'] ?? '', $allowedBloodTypes),
         'terms'             => ($_POST['terms'] ?? '') === 'agree' ? 'agree' : '',
         'latitude'          => is_numeric($_POST['latitude'] ?? '') ? (string)(float)$_POST['latitude'] : '',
         'longitude'         => is_numeric($_POST['longitude'] ?? '') ? (string)(float)$_POST['longitude'] : '',
@@ -269,9 +299,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $brgyErr = validateAddressLevel($data['barangay'], $brgyRef, 'Barangay');
     if ($brgyErr) $errors['barangay'] = $brgyErr;
 
-    // Name fields: only letters, spaces, hyphens, apostrophes
+    // Name fields: letters, numbers, spaces, hyphens, apostrophes
     foreach (['firstname', 'lastname', 'middlename'] as $nameField) {
-        if ($data[$nameField] !== '' && !preg_match("/^[\p{L}\s'\-\.]+$/u", $data[$nameField])) {
+        if ($data[$nameField] !== '' && !preg_match("/^[\p{L}\p{N}\s'\-\.]+$/u", $data[$nameField])) {
             $errors[$nameField] = ucfirst(str_replace('name', ' name', $nameField)) . ' contains invalid characters.';
         }
     }
@@ -299,12 +329,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['phone'] === '') {
         $errors['phone'] = 'Phone number is required.';
     } elseif (!isValidPHPhone($data['phone'])) {
-        $errors['phone'] = 'Enter a valid Philippine mobile number (e.g., +639171234567 or 09171234567).';
+        $errors['phone'] = 'Enter a valid Philippine mobile number in 09XXXXXXXXX format.';
     }
 
     // Emergency phone (optional but must be valid if provided)
     if ($data['emergency_phone'] !== '' && !isValidPHPhone($data['emergency_phone'])) {
-        $errors['emergency_phone'] = 'Enter a valid emergency phone number.';
+        $errors['emergency_phone'] = 'Enter a valid emergency phone number in 09XXXXXXXXX format.';
     }
 
     // Email
@@ -595,7 +625,7 @@ $siteSettings = site_config_load($conn);
             <input type="text" id="firstname" name="firstname" required maxlength="100" autocomplete="given-name"
                    class="<?php echo inputClass('firstname', $highlightFields) . (isset($errors['firstname']) ? ' error' : ''); ?>"
                    value="<?php echo oldValue('firstname'); ?>" placeholder="Enter your first name"
-                   pattern="^[\p{L}\s'\-\.]+$">
+                   pattern="^[\p{L}\p{N}\s'\-\.]+$">
             <?php if (isset($errors['firstname'])): ?><span class="field-error"><?php echo e($errors['firstname']); ?></span><?php endif; ?>
           </div>
 
@@ -605,7 +635,7 @@ $siteSettings = site_config_load($conn);
             <input type="text" id="lastname" name="lastname" required maxlength="100" autocomplete="family-name"
                    class="<?php echo inputClass('lastname', $highlightFields) . (isset($errors['lastname']) ? ' error' : ''); ?>"
                    value="<?php echo oldValue('lastname'); ?>" placeholder="Enter your last name"
-                   pattern="^[\p{L}\s'\-\.]+$">
+                   pattern="^[\p{L}\p{N}\s'\-\.]+$">
             <?php if (isset($errors['lastname'])): ?><span class="field-error"><?php echo e($errors['lastname']); ?></span><?php endif; ?>
           </div>
 
@@ -633,7 +663,7 @@ $siteSettings = site_config_load($conn);
               <option value="">Select Family Role</option>
               <?php
               $roles = ['head' => 'Head of Family', 'spouse' => 'Spouse', 'child' => 'Child',
-                        'parent' => 'Parent', 'other' => 'Other'];
+                        'parent' => 'Parent', 'not_applicable' => 'Not Applicable / Lives Alone'];
               foreach ($roles as $val => $label):
                 $sel = (oldValue('family_role') === $val) ? 'selected' : '';
               ?>
@@ -650,7 +680,7 @@ $siteSettings = site_config_load($conn);
                     class="field-input <?php echo isset($errors['gender']) ? 'error' : ''; ?>">
               <option value="">Select Sex</option>
               <?php
-              $genders = ['male' => 'Male', 'female' => 'Female', 'other' => 'Other'];
+              $genders = ['male' => 'Male', 'female' => 'Female'];
               foreach ($genders as $val => $label):
                 $sel = (oldValue('gender') === $val) ? 'selected' : '';
               ?>
@@ -893,9 +923,9 @@ $siteSettings = site_config_load($conn);
             <label class="field-label" for="phone">Phone Number <span class="required-star">*</span></label>
             <input type="tel" id="phone" name="phone" required maxlength="20" autocomplete="tel"
                    class="field-input <?php echo isset($errors['phone']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('phone'); ?>" placeholder="+63 912 345 6789"
-                   pattern="^(\+63|0)9\d{9}$">
-            <span class="text-gray-400 text-xs mt-1 block">Format: +639XXXXXXXXX or 09XXXXXXXXX</span>
+                   value="<?php echo oldValue('phone'); ?>" placeholder="09XX XXX XXXX"
+                   pattern="^09\d{9}$">
+            <span class="text-gray-400 text-xs mt-1 block">Format: 09XXXXXXXXX</span>
             <?php if (isset($errors['phone'])): ?><span class="field-error"><?php echo e($errors['phone']); ?></span><?php endif; ?>
           </div>
 
@@ -918,14 +948,18 @@ $siteSettings = site_config_load($conn);
             <input type="tel" id="emergency_phone" name="emergency_phone" maxlength="20"
                    class="field-input <?php echo isset($errors['emergency_phone']) ? 'error' : ''; ?>"
                    value="<?php echo oldValue('emergency_phone'); ?>" placeholder="Emergency contact number"
-                   pattern="^(\+63|0)9\d{9}$">
+                   pattern="^09\d{9}$">
             <?php if (isset($errors['emergency_phone'])): ?><span class="field-error"><?php echo e($errors['emergency_phone']); ?></span><?php endif; ?>
           </div>
 
           <div class="md:col-span-2">
             <label class="field-label" for="health_conditions">Blood Type</label>
-            <input type="text" id="health_conditions" name="health_conditions" maxlength="10"
-                   class="field-input" value="<?php echo oldValue('health_conditions'); ?>" placeholder="e.g., O+, A-, B+">
+            <select id="health_conditions" name="health_conditions" class="field-input">
+              <option value="">Select Blood Type</option>
+              <?php foreach (['A+','A-','B+','B-','AB+','AB-','O+','O-'] as $bt): ?>
+                <option value="<?php echo e($bt); ?>" <?php echo oldValue('health_conditions')===$bt?'selected':''; ?>><?php echo e($bt); ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
 
         </div>
@@ -951,9 +985,10 @@ $siteSettings = site_config_load($conn);
 /* ============================================================
    SAFE WHITELISTS (mirror server-side PHP arrays)
    ============================================================ */
-const ALLOWED_FAMILY_ROLES = ['head','spouse','child','parent','other'];
-const ALLOWED_GENDERS      = ['male','female','other'];
+const ALLOWED_FAMILY_ROLES = ['head','spouse','child','parent','not_applicable'];
+const ALLOWED_GENDERS      = ['male','female'];
 const ALLOWED_CIVIL_STATUS = ['single','married','divorced','widowed','separated'];
+const ALLOWED_BLOOD_TYPES  = ['A+','A-','B+','B-','AB+','AB-','O+','O-'];
 
 /* ============================================================
    UTILITIES
@@ -972,8 +1007,22 @@ function isValidEmail(email) {
         && email.length <= 254;
 }
 
+function normalizePHPhone(phone) {
+    let cleaned = phone.replace(/[\s\-()]/g, '');
+    if (/^\+?639\d{9}$/.test(cleaned)) {
+        cleaned = '0' + cleaned.slice(-10);
+    }
+    return cleaned;
+}
+
 function isValidPHPhone(phone) {
-    return /^(\+63|0)9\d{9}$/.test(phone.replace(/[\s\-()\+]/g, match => match === '+' ? '+' : ''));
+    return /^09\d{9}$/.test(phone.replace(/[\s\-()]/g, ''));
+}
+
+function toProperCase(value) {
+    if (!value) return value;
+    const lower = value.toLowerCase();
+    return lower.replace(/(^|[\s'\-])(\p{L})/gu, (m, boundary, letter) => boundary + letter.toUpperCase());
 }
 
 function isValidZip(zip) {
@@ -995,7 +1044,7 @@ function isValidBirthdate(dateStr) {
     // Reject today itself (age 0 isn't a realistic self-registration) and
     // anything more than 100 years ago (rejects unrealistic ages like a
     // birth year of 1902).
-    return dt <= maxDate && dt >= minDate;
+    return d <= maxDate && d >= minDate;
 }
 
 function showError(inputEl, message) {
@@ -1030,12 +1079,12 @@ function validateField(el) {
     if (required && val === '') { showError(el, `${el.labels?.[0]?.textContent?.replace('*','').trim() || 'This field'} is required.`); return false; }
 
     if (name === 'email'             && val && !isValidEmail(val))    { showError(el, 'Enter a valid email address.'); return false; }
-    if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
+    if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number in 09XXXXXXXXX format.'); return false; }
     if (name === 'zip'               && val && !isValidZip(val))      { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
     if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a real past date, and no more than 100 years ago.'); return false; }
 
     // Name character check
-    if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFFa-zA-Z\s'\-\.]+$/.test(val)) {
+    if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFF0-9a-zA-Z\s'\-\.]+$/.test(val)) {
         showError(el, 'Invalid characters in name.'); return false;
     }
 
@@ -1043,9 +1092,22 @@ function validateField(el) {
     if (name === 'family_role'  && val && !ALLOWED_FAMILY_ROLES.includes(val)) { showError(el, 'Invalid selection.'); return false; }
     if (name === 'gender'       && val && !ALLOWED_GENDERS.includes(val))      { showError(el, 'Invalid selection.'); return false; }
     if (name === 'civil_status' && val && !ALLOWED_CIVIL_STATUS.includes(val)) { showError(el, 'Invalid selection.'); return false; }
+    if (name === 'health_conditions' && val && !ALLOWED_BLOOD_TYPES.includes(val)) { showError(el, 'Invalid selection.'); return false; }
 
     return true;
 }
+
+/* ============================================================
+   LIVE AUTO-FORMATTING (runs before validation on blur)
+   ============================================================ */
+['firstname', 'lastname', 'middlename'].forEach(name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.addEventListener('blur', () => { el.value = toProperCase(el.value.trim()); });
+});
+['phone', 'emergency_phone'].forEach(name => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.addEventListener('blur', () => { el.value = normalizePHPhone(el.value.trim()); });
+});
 
 /* ============================================================
    LIVE BLUR VALIDATION
