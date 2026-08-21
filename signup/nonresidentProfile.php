@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/../includes/normalize_helpers.php';
-
 /* ============================================================
    SERVER-SIDE SECURITY HELPERS
    ============================================================ */
@@ -11,9 +9,6 @@ require_once __DIR__ . '/../includes/normalize_helpers.php';
  * Sanitize a plain-text string: strip tags, normalize whitespace.
  * Returns a UTF-8 clean string safe for storage and HTML output.
  */
-
-require_once __DIR__ . '/../config/db_connection.php';
-require_once __DIR__ . '/../includes/site_config.php';
 
 function sanitizeText(string $value): string
 {
@@ -41,11 +36,13 @@ function allowedValue(string $value, array $allowed): string
 }
 
 /**
- * Validate a Philippine mobile number (accepts +63 or 0 prefix).
+ * Validate a Philippine mobile number. Strict: only 09XXXXXXXXX is
+ * accepted — matches the 09-only format we store (see
+ * includes/normalize_helpers.php).
  */
 function isValidPHPhone(string $phone): bool
 {
-    return (bool) preg_match('/^(\+63|0)9\d{9}$/', preg_replace('/[\s\-()]/', '', $phone));
+    return (bool) preg_match('/^09\d{9}$/', preg_replace('/[\s\-()]/', '', $phone));
 }
 
 /**
@@ -54,17 +51,7 @@ function isValidPHPhone(string $phone): bool
 function isValidBirthdate(string $date): bool
 {
     $d = DateTime::createFromFormat('Y-m-d', $date);
-    if (!$d || $d->format('Y-m-d') !== $date) {
-        return false;
-    }
-
-    $maxDate   = (new DateTime('today'))->modify('-1 year');
-    $minDate = (new DateTime('today'))->modify('-100 years');
-
-    // Must be a real past date (today itself is rejected — an age of 0
-    // isn't a realistic self-registration), and not more than 100 years
-    // ago (rejects unrealistic ages like a birth year of 1902).
-    return $d < $maxDate && $d >= $minDate;
+    return $d && $d->format('Y-m-d') === $date && $d < new DateTime();
 }
 
 /**
@@ -196,10 +183,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- Collect and sanitize raw inputs ---
     $data = [
-        'firstname'         => normalize_person_name(sanitizeText($_POST['firstname']         ?? '')),
-        'lastname'          => normalize_person_name(sanitizeText($_POST['lastname']          ?? '')),
-        'middlename'        => normalize_person_name(sanitizeText($_POST['middlename']        ?? '')),
-        'suffix'            => normalize_name_suffix(sanitizeText($_POST['suffix']            ?? '')),
+        'firstname'         => sanitizeText($_POST['firstname']         ?? ''),
+        'lastname'          => sanitizeText($_POST['lastname']          ?? ''),
+        'middlename'        => sanitizeText($_POST['middlename']        ?? ''),
+        'suffix'            => sanitizeText($_POST['suffix']            ?? ''),
         'family_role'       => allowedValue($_POST['family_role']       ?? '', $allowedFamilyRoles),
         'gender'            => allowedValue($_POST['gender']            ?? '', $allowedGenders),
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
@@ -224,19 +211,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'city'              => sanitizeText($_POST['city']              ?? ''),
         'province'          => sanitizeText($_POST['province']          ?? ''),
         'zip'               => sanitizeText($_POST['zip']               ?? ''),
-        'phone'             => normalize_ph_phone(sanitizeText($_POST['phone']             ?? '')),
+        'phone'             => sanitizeText($_POST['phone']             ?? ''),
         'email'             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
-        'emergency_contact' => normalize_person_name(sanitizeText($_POST['emergency_contact'] ?? '')),
-        'emergency_phone'   => normalize_ph_phone(sanitizeText($_POST['emergency_phone']   ?? '')),
+        'emergency_contact' => sanitizeText($_POST['emergency_contact'] ?? ''),
+        'emergency_phone'   => sanitizeText($_POST['emergency_phone']   ?? ''),
         'health_conditions' => sanitizeText($_POST['health_conditions'] ?? ''),
         'terms'             => ($_POST['terms'] ?? '') === 'agree' ? 'agree' : '',
         'latitude'          => is_numeric($_POST['latitude'] ?? '') ? (string)(float)$_POST['latitude'] : '',
         'longitude'         => is_numeric($_POST['longitude'] ?? '') ? (string)(float)$_POST['longitude'] : '',
     ];
-
-    // Deduplicated against barangay/city/province above, in case someone
-    // pastes a full map address (which already includes them) into street.
-    $data['street'] = normalize_street_address($data['street'], [$data['barangay'], $data['city'], $data['province']]);
 
     // --- Validation rules ---
 
@@ -291,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['birthday'] === '') {
         $errors['birthday'] = 'Birthday is required.';
     } elseif (!isValidBirthdate($data['birthday'])) {
-        $errors['birthday'] = 'Please enter a valid birthday (must be a real past date, and no more than 100 years ago).';
+        $errors['birthday'] = 'Please enter a valid birthday (must be in the past).';
     }
 
     // ZIP
@@ -305,12 +288,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['phone'] === '') {
         $errors['phone'] = 'Phone number is required.';
     } elseif (!isValidPHPhone($data['phone'])) {
-        $errors['phone'] = 'Enter a valid Philippine mobile number (e.g., +639171234567 or 09171234567).';
+        $errors['phone'] = 'Enter a valid PH mobile number starting with 09 (e.g., 09171234567).';
     }
 
     // Emergency phone (optional but must be valid if provided)
     if ($data['emergency_phone'] !== '' && !isValidPHPhone($data['emergency_phone'])) {
-        $errors['emergency_phone'] = 'Enter a valid emergency phone number.';
+        $errors['emergency_phone'] = 'Enter a valid emergency phone number starting with 09 (09XXXXXXXXX).';
     }
 
     // Email
@@ -336,7 +319,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION[$key] = $value;
     }
 }
-$siteSettings = site_config_load($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -344,28 +326,25 @@ $siteSettings = site_config_load($conn);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Personal Information - <?= e($siteSettings['site_title']) ?></title>
-<link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
+<title>Personal Information - SumEste Portal</title>
+<link rel="icon" href="../assets/logo2.png" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<?= site_config_css_vars($siteSettings) ?>
 <style>
   #addressMap.leaflet-container { font-family: 'DM Sans', sans-serif; }
   .map-result-list { position:relative; }
   .map-result-list ul { list-style:none; margin:0; padding:0; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d1d5db; border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
   .map-result-list li { padding:9px 14px; font-size:0.85rem; cursor:pointer; border-bottom:1px solid #f1f5f9; }
   .map-result-list li:last-child { border-bottom:none; }
-  .map-result-list li:hover { background:var(--site-primary-pale); }
-  body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); }
+  .map-result-list li:hover { background:#f0fdf4; }
+  body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; }
 
   .nav-link { position: relative; transition: color 0.2s; }
-  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s ease; }
+  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s ease; }
   .nav-link:hover::after { width: 100%; }
-  .nav-link:hover { color: var(--site-primary-dark); }
-  .step-connector { flex: 1; height: 2px; background: #d1d5db; margin: 0 8px; margin-bottom: 24px; transition: background 0.4s; }
-  .step-connector.active { background: var(--site-primary); }
+  .nav-link:hover { color: #15803d; }
 
   .field-input {
     width: 100%; border: 1.5px solid #d1d5db; border-radius: 10px;
@@ -373,48 +352,48 @@ $siteSettings = site_config_load($conn);
     transition: border-color 0.2s, box-shadow 0.2s; outline: none;
     color: #1f2937;
   }
-  .field-input:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.12); }
+  .field-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
   .field-input.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
 
   .field-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
   .required-star { color: #ef4444; margin-left: 2px; }
 
   .section-card {
-    background: #fff; border: 1px solid var(--site-primary-pale); border-radius: 16px;
+    background: #fff; border: 1px solid #dcfce7; border-radius: 16px;
     padding: 24px; margin-bottom: 20px;
-    box-shadow: 0 1px 6px rgba(var(--site-primary-rgb),0.06);
+    box-shadow: 0 1px 6px rgba(22,101,52,0.06);
   }
   .section-title {
-    font-size: 1rem; font-weight: 700; color: var(--site-primary-darker);
+    font-size: 1rem; font-weight: 700; color: #14532d;
     display: flex; align-items: center; gap: 10px;
     padding-bottom: 14px; margin-bottom: 18px;
-    border-bottom: 1.5px solid var(--site-primary-pale);
+    border-bottom: 1.5px solid #dcfce7;
   }
   .section-icon {
     width: 34px; height: 34px; border-radius: 9px;
-    background: var(--site-primary-pale); display: flex; align-items: center; justify-content: center;
+    background: #dcfce7; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
 
   .submit-btn {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 28px; background: var(--site-primary-dark); color: #fff;
+    padding: 12px 28px; background: #15803d; color: #fff;
     border-radius: 10px; font-weight: 600; font-size: 0.95rem;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(var(--site-primary-rgb),0.25);
+    box-shadow: 0 4px 12px rgba(21,128,61,0.25);
   }
-  .submit-btn:hover { background: var(--site-primary-darker); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(var(--site-primary-rgb),0.3); }
+  .submit-btn:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(21,128,61,0.3); }
   .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
   .terms-box {
-    background: var(--site-primary-pale); border: 1.5px solid var(--site-primary-light); border-radius: 12px;
+    background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px;
     padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px;
     margin-bottom: 24px;
   }
-  .terms-box input[type="checkbox"] { accent-color: var(--site-primary); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+  .terms-box input[type="checkbox"] { accent-color: #16a34a; width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
 
   .role-banner {
-    background: linear-gradient(135deg, var(--site-primary-darker), var(--site-primary-darker));
+    background: linear-gradient(135deg, #052e16, #166534);
     border-radius: 12px; padding: 14px 20px;
     display: flex; align-items: center; gap: 14px;
     margin-bottom: 24px;
@@ -427,34 +406,6 @@ $siteSettings = site_config_load($conn);
   .fade-up-1 { animation-delay: 0.05s; }
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.22s; }
-
-  :root {
-    --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
-    --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
-    --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
-    --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
-  }
-
-  /* Tailwind-green → theme color overrides */
-  .bg-green-50   { background-color: var(--site-primary-pale) !important; }
-  .bg-green-100  { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
-  .bg-green-200  { background-color: color-mix(in srgb, var(--site-primary) 28%, white) !important; }
-  .bg-green-600  { background-color: var(--site-primary) !important; }
-  .bg-green-700  { background-color: var(--site-primary) !important; }
-  .bg-green-800  { background-color: var(--site-primary-dark) !important; }
-  .text-green-300 { color: var(--site-primary-light) !important; }
-  .text-green-400 { color: var(--site-primary-light) !important; }
-  .text-green-600 { color: var(--site-primary) !important; }
-  .text-green-700 { color: var(--site-primary) !important; }
-  .text-green-800 { color: var(--site-primary-darker) !important; }
-  .text-green-900 { color: var(--site-primary-darker) !important; }
-  .text-green-950 { color: var(--site-primary-darker) !important; }
-  .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
-  .border-green-200 { border-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
-  .border-green-300 { border-color: var(--site-primary-light) !important; }
-  .ring-green-200 { --tw-ring-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
-  .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
-  .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="../assets/js/ph-address-picker.js"></script>
@@ -466,11 +417,11 @@ $siteSettings = site_config_load($conn);
   <div class="flex items-center gap-3">
     <a href="../landing.php" class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-green-700 flex items-center justify-center shadow overflow-hidden">
-        <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
+        <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
       </div>
       <div>
-        <h3 class="font-bold text-green-900 text-base leading-tight"><?= e($siteSettings['site_title']) ?></h3>
-        <p class="text-[10px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
+        <h3 class="font-bold text-green-900 text-base leading-tight">SumEste Portal</h3>
+        <p class="text-[10px] text-green-600 tracking-widest uppercase">Sumacab Este</p>
       </div>
     </a>
   </div>
@@ -481,9 +432,9 @@ $siteSettings = site_config_load($conn);
   <!-- Header -->
   <div class="text-center mb-8 fade-up fade-up-1">
     <div class="w-16 h-16 mx-auto rounded-2xl bg-green-700 flex items-center justify-center shadow-lg mb-4">
-      <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
+      <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
     </div>
-    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> Non-Resident Registration</h1>
+    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;">SumEste Non-Resident Registration</h1>
     <p class="text-gray-500 text-sm mt-2">Complete your profile to access barangay services</p>
   </div>
 
@@ -496,12 +447,12 @@ $siteSettings = site_config_load($conn);
         </div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Account Creation</p>
       </div>
-      <div class="step-connector active"></div>
+      <div style="flex:1;height:2px;background:#22c55e;margin:0 8px;margin-bottom:24px;"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm ring-4 ring-green-200">2</div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Personal Info</p>
       </div>
-      <div class="step-connector"></div>
+      <div style="flex:1;height:2px;background:#e5e7eb;margin:0 8px;margin-bottom:24px;"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-white border-2 border-gray-300 text-gray-400 flex items-center justify-center font-bold text-sm">3</div>
         <p class="mt-2 text-xs font-semibold text-gray-400 text-center whitespace-nowrap">Verification</p>
@@ -556,7 +507,7 @@ $siteSettings = site_config_load($conn);
         </div>
         <div>
           <p class="text-white font-semibold text-sm">Non-Resident Account</p>
-          <p class="text-green-300 text-xs mt-0.5">You are registering as a non-resident of <?= e($siteSettings['barangay_name']) ?>. Some services may have limited availability.</p>
+          <p class="text-green-300 text-xs mt-0.5">You are registering as a non-resident of Sumacab Este. Some services may have limited availability.</p>
         </div>
       </div>
 
@@ -670,8 +621,7 @@ $siteSettings = site_config_load($conn);
           <div>
             <label class="field-label" for="birthday">Birthday <span class="required-star">*</span></label>
             <input type="date" id="birthday" name="birthday" required
-                   max="<?php echo date('Y-m-d', strtotime('-1 year')); ?>"
-                   min="<?php echo date('Y-m-d', strtotime('-100 years')); ?>"
+                   max="<?php echo date('Y-m-d'); ?>"
                    class="<?php echo inputClass('birthday', $highlightFields) . (isset($errors['birthday']) ? ' error' : ''); ?>"
                    value="<?php echo oldValue('birthday'); ?>">
             <?php if (isset($errors['birthday'])): ?><span class="field-error"><?php echo e($errors['birthday']); ?></span><?php endif; ?>
@@ -837,7 +787,7 @@ $siteSettings = site_config_load($conn);
         </div>
         <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5 text-sm text-amber-800">
           <i class="fa-solid fa-circle-info text-amber-500 mt-0.5 flex-shrink-0"></i>
-          <span>Please provide your <strong>current residential address</strong>, which may be outside <?= e($siteSettings['barangay_name']) ?>.</span>
+          <span>Please provide your <strong>current residential address</strong>, which may be outside Sumacab Este.</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -897,11 +847,11 @@ $siteSettings = site_config_load($conn);
 
           <div>
             <label class="field-label" for="phone">Phone Number <span class="required-star">*</span></label>
-            <input type="tel" id="phone" name="phone" required maxlength="20" autocomplete="tel"
+            <input type="tel" id="phone" name="phone" required maxlength="13" autocomplete="tel"
                    class="field-input <?php echo isset($errors['phone']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('phone'); ?>" placeholder="+63 912 345 6789"
-                   pattern="^(\+63|0)9\d{9}$">
-            <span class="text-gray-400 text-xs mt-1 block">Format: +639XXXXXXXXX or 09XXXXXXXXX</span>
+                   value="<?php echo oldValue('phone'); ?>" placeholder="0912 345 6789"
+                   pattern="^09\d{9}$">
+            <span class="text-gray-400 text-xs mt-1 block">Format: 09XXXXXXXXX</span>
             <?php if (isset($errors['phone'])): ?><span class="field-error"><?php echo e($errors['phone']); ?></span><?php endif; ?>
           </div>
 
@@ -921,10 +871,10 @@ $siteSettings = site_config_load($conn);
 
           <div>
             <label class="field-label" for="emergency_phone">Emergency Contact Phone</label>
-            <input type="tel" id="emergency_phone" name="emergency_phone" maxlength="20"
+            <input type="tel" id="emergency_phone" name="emergency_phone" maxlength="13"
                    class="field-input <?php echo isset($errors['emergency_phone']) ? 'error' : ''; ?>"
-                   value="<?php echo oldValue('emergency_phone'); ?>" placeholder="Emergency contact number"
-                   pattern="^(\+63|0)9\d{9}$">
+                   value="<?php echo oldValue('emergency_phone'); ?>" placeholder="09XXXXXXXXX"
+                   pattern="^09\d{9}$">
             <?php if (isset($errors['emergency_phone'])): ?><span class="field-error"><?php echo e($errors['emergency_phone']); ?></span><?php endif; ?>
           </div>
 
@@ -979,7 +929,7 @@ function isValidEmail(email) {
 }
 
 function isValidPHPhone(phone) {
-    return /^(\+63|0)9\d{9}$/.test(phone.replace(/[\s\-()\+]/g, match => match === '+' ? '+' : ''));
+    return /^09\d{9}$/.test(phone.replace(/[\s\-()]/g, ''));
 }
 
 function isValidZip(zip) {
@@ -988,20 +938,7 @@ function isValidZip(zip) {
 
 function isValidBirthdate(dateStr) {
     const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return false;
-
-    const maxDate = new Date();
-    maxDate.setHours(0, 0, 0, 0);
-    maxDate.setFullYear(maxDate.getFullYear() - 1);
-
-    const minDate = new Date();
-    minDate.setHours(0, 0, 0, 0);
-    minDate.setFullYear(minDate.getFullYear() - 100);
-
-    // Reject today itself (age 0 isn't a realistic self-registration) and
-    // anything more than 100 years ago (rejects unrealistic ages like a
-    // birth year of 1902).
-    return dt <= maxDate && dt >= minDate;
+    return !isNaN(d.getTime()) && d < new Date();
 }
 
 function showError(inputEl, message) {
@@ -1036,9 +973,9 @@ function validateField(el) {
     if (required && val === '') { showError(el, `${el.labels?.[0]?.textContent?.replace('*','').trim() || 'This field'} is required.`); return false; }
 
     if (name === 'email'             && val && !isValidEmail(val))    { showError(el, 'Enter a valid email address.'); return false; }
-    if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
+    if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number starting with 09 (09XXXXXXXXX).'); return false; }
     if (name === 'zip'               && val && !isValidZip(val))      { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
-    if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a real past date, and no more than 100 years ago.'); return false; }
+    if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a past date.'); return false; }
 
     // Name character check
     if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFFa-zA-Z\s'\-\.]+$/.test(val)) {
