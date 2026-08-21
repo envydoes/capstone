@@ -18,6 +18,7 @@ $sql = "
     SELECT ua.accID AS userID, ua.email,
            TRIM(CONCAT(COALESCE(ui.firstname,''), ' ', COALESCE(ui.lastname,''))) AS fullname,
                      ap.permissions_csv AS permissions,
+                     ap.position AS position,
                      ap.granted_by AS granted_by,
                      TRIM(CONCAT(COALESCE(gui.firstname,''), ' ', COALESCE(gui.lastname,''))) AS granted_by_name,
                      gb.email AS granted_by_email
