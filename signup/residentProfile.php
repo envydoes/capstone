@@ -50,7 +50,17 @@ function isValidPHPhoneLoose(string $phone): bool
 function isValidBirthdate(string $date): bool
 {
     $d = DateTime::createFromFormat('Y-m-d', $date);
-    return $d && $d->format('Y-m-d') === $date && $d < new DateTime();
+    if (!$d || $d->format('Y-m-d') !== $date) {
+        return false;
+    }
+
+    $maxDate = (new DateTime('today'))->modify('-1 year');
+    $minDate = (new DateTime('today'))->modify('-100 years');
+
+    // Must be a real past date (today itself is rejected — an age of 0
+    // isn't a realistic self-registration), and not more than 100 years
+    // ago (rejects unrealistic ages like a birth year of 1902).
+    return $d <= $maxDate && $d >= $minDate;
 }
 
 function isValidZip(string $zip): bool
@@ -241,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['birthday'] === '') {
         $errors['birthday'] = 'Birthday is required.';
     } elseif (!isValidBirthdate($data['birthday'])) {
-        $errors['birthday'] = 'Please enter a valid birthday (must be in the past).';
+        $errors['birthday'] = 'Please enter a valid birthday (must be a real past date, and no more than 100 years ago).';
     }
 
     // ZIP
@@ -318,60 +328,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Personal Information - SumEste Portal</title>
-<link rel="icon" href="../assets/logo2.png" type="image/png">
+<title>Personal Information - <?= e($siteSettings['site_title']) ?></title>
+<link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<?= site_config_css_vars($siteSettings) ?>
 <style>
   #addressMap.leaflet-container { font-family: 'DM Sans', sans-serif; }
   .map-result-list { position:relative; }
   .map-result-list ul { list-style:none; margin:0; padding:0; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d1d5db; border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
   .map-result-list li { padding:9px 14px; font-size:0.85rem; cursor:pointer; border-bottom:1px solid #f1f5f9; }
   .map-result-list li:last-child { border-bottom:none; }
-  .map-result-list li:hover { background:#f0fdf4; }
-  body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; }
+  .map-result-list li:hover { background:var(--site-primary-pale); }
+  body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); }
   .nav-link { position: relative; transition: color 0.2s; }
-  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s ease; }
+  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s ease; }
   .nav-link:hover::after { width: 100%; }
-  .nav-link:hover { color: #15803d; }
+  .nav-link:hover { color: var(--site-primary-dark); }
+  .step-connector { flex: 1; height: 2px; background: #d1d5db; margin: 0 8px; margin-bottom: 24px; transition: background 0.4s; }
+  .step-connector.active { background: var(--site-primary); }
   .field-input {
     width: 100%; border: 1.5px solid #d1d5db; border-radius: 10px;
     padding: 11px 14px; background: #fff; font-size: 0.9rem;
     transition: border-color 0.2s, box-shadow 0.2s; outline: none; color: #1f2937;
   }
-  .field-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
+  .field-input:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.12); }
   .field-input.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
   .field-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
   .required-star { color: #ef4444; margin-left: 2px; }
   .section-card {
-    background: #fff; border: 1px solid #dcfce7; border-radius: 16px;
-    padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 6px rgba(22,101,52,0.06);
+    background: #fff; border: 1px solid var(--site-primary-pale); border-radius: 16px;
+    padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 6px rgba(var(--site-primary-rgb),0.06);
   }
   .section-title {
-    font-size: 1rem; font-weight: 700; color: #14532d;
+    font-size: 1rem; font-weight: 700; color: var(--site-primary-darker);
     display: flex; align-items: center; gap: 10px;
-    padding-bottom: 14px; margin-bottom: 18px; border-bottom: 1.5px solid #dcfce7;
+    padding-bottom: 14px; margin-bottom: 18px; border-bottom: 1.5px solid var(--site-primary-pale);
   }
   .section-icon {
-    width: 34px; height: 34px; border-radius: 9px; background: #dcfce7;
+    width: 34px; height: 34px; border-radius: 9px; background: var(--site-primary-pale);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .submit-btn {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 28px; background: #15803d; color: #fff;
+    padding: 12px 28px; background: var(--site-primary-dark); color: #fff;
     border-radius: 10px; font-weight: 600; font-size: 0.95rem;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(21,128,61,0.25);
+    box-shadow: 0 4px 12px rgba(var(--site-primary-rgb),0.25);
   }
-  .submit-btn:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(21,128,61,0.3); }
+  .submit-btn:hover { background: var(--site-primary-darker); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(var(--site-primary-rgb),0.3); }
   .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
   .terms-box {
-    background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px;
+    background: var(--site-primary-pale); border: 1.5px solid var(--site-primary-light); border-radius: 12px;
     padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px;
   }
-  .terms-box input[type="checkbox"] { accent-color: #16a34a; width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+  .terms-box input[type="checkbox"] { accent-color: var(--site-primary); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
   .field-error { color: #dc2626; font-size: 0.75rem; margin-top: 4px; display: block; }
   .field-locked { display: flex; align-items: center; gap: 8px; }
 
@@ -385,15 +398,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .terms-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; border-top: 1px solid #f3f4f6; flex-shrink: 0; flex-wrap: wrap; }
   .terms-modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f3f4f6; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
   .terms-modal-close:hover { background: #fee2e2; color: #dc2626; }
-  .terms-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; flex-wrap: wrap; }
-  .terms-summary-text { font-size: 0.85rem; color: #14532d; display: flex; align-items: center; gap: 10px; }
-  .terms-view-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1.5px solid #15803d; color: #15803d; background: #fff; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
-  .terms-view-btn:hover { background: #f0fdf4; }
+  .terms-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--site-primary-pale); border: 1.5px solid var(--site-primary-light); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; flex-wrap: wrap; }
+  .terms-summary-text { font-size: 0.85rem; color: var(--site-primary-darker); display: flex; align-items: center; gap: 10px; }
+  .terms-view-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--site-primary-dark); color: var(--site-primary-dark); background: #fff; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .terms-view-btn:hover { background: var(--site-primary-pale); }
   @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
   .fade-up { animation: fadeUp 0.5s ease both; }
   .fade-up-1 { animation-delay: 0.05s; }
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.22s; }
+
+  :root {
+    --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
+    --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
+    --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
+    --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
+  }
+
+  /* Tailwind-green → theme color overrides */
+  .bg-green-50   { background-color: var(--site-primary-pale) !important; }
+  .bg-green-100  { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
+  .bg-green-200  { background-color: color-mix(in srgb, var(--site-primary) 28%, white) !important; }
+  .bg-green-600  { background-color: var(--site-primary) !important; }
+  .bg-green-500  { background-color: var(--site-primary) !important; }
+  .bg-green-700  { background-color: var(--site-primary) !important; }
+  .text-green-300 { color: var(--site-primary-light) !important; }
+  .text-green-400 { color: var(--site-primary-light) !important; }
+  .text-green-600 { color: var(--site-primary) !important; }
+  .text-green-700 { color: var(--site-primary) !important; }
+  .text-green-800 { color: var(--site-primary-darker) !important; }
+  .text-green-900 { color: var(--site-primary-darker) !important; }
+  .text-green-950 { color: var(--site-primary-darker) !important; }
+  .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
+  .border-green-200 { border-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
+  .border-green-300 { border-color: var(--site-primary-light) !important; }
+  .ring-green-200 { --tw-ring-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
+  .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+  .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
@@ -404,11 +445,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="flex items-center gap-3">
     <a href="../landing.php" class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-green-700 flex items-center justify-center shadow overflow-hidden">
-        <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+        <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
       </div>
       <div>
-        <h3 class="font-bold text-green-900 text-base leading-tight">SumEste Portal</h3>
-        <p class="text-[10px] text-green-600 tracking-widest uppercase">Sumacab Este</p>
+        <h3 class="font-bold text-green-900 text-base leading-tight"><?= e($siteSettings['site_title']) ?></h3>
+        <p class="text-[10px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
     </a>
   </div>
@@ -419,9 +460,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Header -->
   <div class="text-center mb-8 fade-up fade-up-1">
     <div class="w-16 h-16 mx-auto rounded-2xl bg-green-700 flex items-center justify-center shadow-lg mb-4">
-      <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+      <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
     </div>
-    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;">SumEste Resident Registration</h1>
+    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> Resident Registration</h1>
     <p class="text-gray-500 text-sm mt-2">Complete your profile to access barangay services</p>
   </div>
 
@@ -434,12 +475,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Account Creation</p>
       </div>
-      <div style="flex:1;height:2px;background:#22c55e;margin:0 8px;margin-bottom:24px;"></div>
+      <div class="step-connector active"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm ring-4 ring-green-200">2</div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Personal Info</p>
       </div>
-      <div style="flex:1;height:2px;background:#e5e7eb;margin:0 8px;margin-bottom:24px;"></div>
+      <div class="step-connector"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-white border-2 border-gray-300 text-gray-400 flex items-center justify-center font-bold text-sm">3</div>
         <p class="mt-2 text-xs font-semibold text-gray-400 text-center whitespace-nowrap">Verification</p>
@@ -566,7 +607,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div>
             <label class="field-label" for="birthday">Birthday <span class="required-star">*</span></label>
             <input type="date" id="birthday" name="birthday" required
-                   max="<?php echo date('Y-m-d'); ?>"
+                   max="<?php echo date('Y-m-d', strtotime('-1 year')); ?>"
+                   min="<?php echo date('Y-m-d', strtotime('-100 years')); ?>"
                    class="<?php echo inputClass('birthday',$highlightFields).(isset($errors['birthday'])?' error':''); ?>"
                    value="<?php echo oldValue('birthday'); ?>">
             <?php if (isset($errors['birthday'])): ?><span class="field-error"><?php echo e($errors['birthday']); ?></span><?php endif; ?>
@@ -921,7 +963,7 @@ function agreeToTerms() {
 
     const statusText = document.getElementById('termsStatusText');
     if (statusText) {
-        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#15803d;"></i> You agreed to the Terms of Service.';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--site-primary-dark);"></i> You agreed to the Terms of Service.';
     }
 
     const errEl = document.getElementById('terms-js-err');
@@ -972,7 +1014,20 @@ function isValidZip(zip) { return /^[A-Z0-9]{4,10}$/i.test(zip); }
 
 function isValidBirthdate(d) {
     const dt = new Date(d);
-    return !isNaN(dt.getTime()) && dt < new Date();
+    if (isNaN(dt.getTime())) return false;
+
+    const maxDate = new Date();
+    maxDate.setHours(0, 0, 0, 0);
+    maxDate.setFullYear(maxDate.getFullYear() - 1);
+
+    const minDate = new Date();
+    minDate.setHours(0, 0, 0, 0);
+    minDate.setFullYear(minDate.getFullYear() - 100);
+
+    // Reject today itself (age 0 isn't a realistic self-registration) and
+    // anything more than 100 years ago (rejects unrealistic ages like a
+    // birth year of 1902).
+    return dt <= maxDate && dt >= minDate;
 }
 
 function isValidIncome(val) {
@@ -1012,7 +1067,7 @@ function validateField(el) {
     if (name === 'email'             && val && !isValidEmail(val))        { showError(el, 'Enter a valid email address.'); return false; }
     if ((name==='phone'||name==='emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number (e.g. +639XXXXXXXXX or 09XXXXXXXXX).'); return false; }
     if (name === 'zip'               && val && !isValidZip(val))          { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
-    if (name === 'birthday'          && val && !isValidBirthdate(val))    { showError(el, 'Birthday must be a past date.'); return false; }
+    if (name === 'birthday'          && val && !isValidBirthdate(val))    { showError(el, 'Birthday must be a real past date, and no more than 100 years ago.'); return false; }
     if (name === 'monthly_income'    && val && !isValidIncome(val))       { showError(el, 'Enter a valid income (0-9,999,999).'); return false; }
     if (name === 'years_resident'    && val && !isValidYears(val))        { showError(el, 'Enter a valid number of years (0-120).'); return false; }
     if (name === 'voter_id'          && val && !isValidId(val))           { showError(el, 'Voter ID contains invalid characters.'); return false; }

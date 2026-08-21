@@ -1,14 +1,23 @@
 <?php
 session_start();
+
+require_once __DIR__ . '/../config/db_connection.php';
+require_once __DIR__ . '/../includes/site_config.php';
+
+$siteSettings = site_config_load($conn);
+
 $accountRoles = $_SESSION['account_role'] ?? [];
 if (is_string($accountRoles)) {
     $accountRoles = [$accountRoles];
 }
 $backHref = 'residentProfile.php';
+$regTypeLabel = 'Registration';
 if (in_array('business', $accountRoles, true) || in_array('non_resident', $accountRoles, true)) {
     $backHref = 'nonresidentProfile.php';
+    $regTypeLabel = 'Non-Resident Registration';
 } elseif (in_array('resident', $accountRoles, true)) {
     $backHref = 'residentProfile.php';
+    $regTypeLabel = 'Resident Registration';
 }
 ?>
 <!DOCTYPE html> 
@@ -17,41 +26,32 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Verification - SumEste Portal</title>
-  <link rel="icon" href="../assets/logo2.png" type="image/png">
+  <title>Verification - <?= e($siteSettings['site_title']) ?></title>
+  <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/tailwind/input.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <?= site_config_css_vars($siteSettings) ?>
   <style>
-    body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); min-height: 100vh; }
 
     /* Navbar */
     .nav-link { position: relative; transition: color 0.2s; }
-    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s; }
     .nav-link:hover::after { width: 100%; }
-    .nav-link:hover { color: #15803d; }
+    .nav-link:hover { color: var(--site-primary-dark); }
 
     /* Progress */
-    .step-circle {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem; transition: all 0.3s;
-      flex-shrink: 0;
-    }
-    .step-done  { background: #15803d; color: #fff; border: 3px solid #15803d; }
-    .step-active{ background: #16a34a; color: #fff; border: 3px solid #16a34a; box-shadow: 0 0 0 5px rgba(22,163,74,0.18); }
-    .step-idle  { background: #fff; color: #9ca3af; border: 3px solid #d1d5db; }
-    .step-line  { flex: 1; height: 3px; border-radius: 2px; }
-    .line-done  { background: #15803d; }
-    .line-idle  { background: #d1d5db; }
+    .step-connector { flex: 1; height: 2px; background: #d1d5db; margin: 0 8px; margin-bottom: 24px; transition: background 0.4s; }
+    .step-connector.active { background: var(--site-primary); }
 
     /* Card */
     .form-card {
       background: #fff;
-      border: 1px solid #d1fae5;
+      border: 1px solid color-mix(in srgb, var(--site-primary) 25%, white);
       border-radius: 24px;
-      box-shadow: 0 8px 40px rgba(21,128,61,0.07);
+      box-shadow: 0 8px 40px rgba(var(--site-primary-rgb),0.07);
     }
 
     /* Section card */
@@ -60,33 +60,33 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
       border-radius: 16px; overflow: hidden;
     }
     .section-header {
-      background: #f0fdf4; border-bottom: 1px solid #dcfce7;
+      background: var(--site-primary-pale); border-bottom: 1px solid var(--site-primary-pale);
       padding: 14px 20px; display: flex; align-items: center; gap: 10px;
     }
 
     /* Upload zone */
     .upload-zone {
-      border: 2px dashed #86efac;
+      border: 2px dashed var(--site-primary-light);
       border-radius: 14px;
-      background: #f0fdf4;
+      background: var(--site-primary-pale);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; transition: border-color 0.2s, background 0.2s;
       position: relative; overflow: hidden;
       min-height: 180px;
     }
-    .upload-zone:hover { border-color: #16a34a; background: #dcfce7; }
-    .upload-zone.has-file { border-style: solid; border-color: #16a34a; background: #fff; }
-    .upload-zone.drag-over { border-color: #15803d; background: #bbf7d0; }
+    .upload-zone:hover { border-color: var(--site-primary); background: var(--site-primary-pale); }
+    .upload-zone.has-file { border-style: solid; border-color: var(--site-primary); background: #fff; }
+    .upload-zone.drag-over { border-color: var(--site-primary-dark); background: color-mix(in srgb, var(--site-primary) 30%, white); }
 
     /* Buttons */
     .btn-upload {
       display: inline-flex; align-items: center; gap: 7px;
-      padding: 9px 20px; background: #15803d; color: #fff;
+      padding: 9px 20px; background: var(--site-primary-dark); color: #fff;
       border-radius: 10px; font-weight: 600; font-size: 0.83rem;
       transition: background 0.2s, transform 0.15s; cursor: pointer;
       border: none;
     }
-    .btn-upload:hover { background: #166534; transform: translateY(-1px); }
+    .btn-upload:hover { background: var(--site-primary-darker); transform: translateY(-1px); }
     .btn-remove {
       display: inline-flex; align-items: center; gap: 7px;
       padding: 9px 20px; background: #fee2e2; color: #dc2626;
@@ -97,28 +97,28 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
 
     .submit-btn {
       display: flex; align-items: center; justify-content: center; gap: 9px;
-      padding: 13px 32px; background: #15803d; color: #fff;
+      padding: 13px 32px; background: var(--site-primary-dark); color: #fff;
       border-radius: 12px; font-weight: 700; font-size: 0.95rem;
       transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
       border: none; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(21,128,61,0.25);
+      box-shadow: 0 4px 14px rgba(var(--site-primary-rgb),0.25);
     }
-    .submit-btn:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(21,128,61,0.3); }
+    .submit-btn:hover { background: var(--site-primary-darker); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(var(--site-primary-rgb),0.3); }
     .submit-btn:disabled { background: #9ca3af; box-shadow: none; transform: none; cursor: not-allowed; }
 
     /* Back link */
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
-      color: #15803d; font-weight: 600; font-size: 0.88rem;
+      color: var(--site-primary-dark); font-weight: 600; font-size: 0.88rem;
       transition: gap 0.2s, color 0.2s; text-decoration: none;
     }
-    .back-link:hover { color: #166534; gap: 10px; }
+    .back-link:hover { color: var(--site-primary-darker); gap: 10px; }
 
     /* Accepted types chip */
     .type-chip {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px; border-radius: 999px;
-      background: #dcfce7; color: #15803d;
+      background: var(--site-primary-pale); color: var(--site-primary-dark);
       font-size: 0.72rem; font-weight: 700;
     }
 
@@ -128,6 +128,38 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
     .fade-2 { animation: fadeUp 0.5s 0.1s ease both; }
     .fade-3 { animation: fadeUp 0.5s 0.2s ease both; }
     .fade-4 { animation: fadeUp 0.5s 0.3s ease both; }
+
+    :root {
+      --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
+      --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
+      --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
+      --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
+    }
+
+    /* Tailwind-green → theme color overrides */
+    .bg-green-50   { background-color: var(--site-primary-pale) !important; }
+    .bg-green-100  { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
+    .bg-green-200  { background-color: color-mix(in srgb, var(--site-primary) 28%, white) !important; }
+    .bg-green-600  { background-color: var(--site-primary) !important; }
+    .bg-green-700  { background-color: var(--site-primary) !important; }
+    .bg-green-800  { background-color: var(--site-primary-dark) !important; }
+    .bg-green-950  { background-color: var(--site-primary-darker) !important; }
+    .text-green-200 { color: color-mix(in srgb, var(--site-primary-light) 60%, white) !important; }
+    .text-green-300 { color: color-mix(in srgb, var(--site-primary-light) 70%, white) !important; }
+    .text-green-400 { color: var(--site-primary-light) !important; }
+    .text-green-500 { color: var(--site-primary) !important; }
+    .text-green-600 { color: var(--site-primary) !important; }
+    .text-green-700 { color: var(--site-primary) !important; }
+    .text-green-800 { color: var(--site-primary-darker) !important; }
+    .text-green-900 { color: var(--site-primary-darker) !important; }
+    .text-green-950 { color: var(--site-primary-darker) !important; }
+    .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
+    .border-green-200 { border-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
+    .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
+    .hover\:bg-green-800:hover { background-color: var(--site-primary-dark) !important; }
+    .hover\:text-white:hover { color: #ffffff !important; }
+    .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
   </style>
 </head>
 <body>
@@ -137,48 +169,48 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
   <div class="flex items-center gap-3">
     <a href="../landing.php" class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-green-700 flex items-center justify-center shadow overflow-hidden">
-        <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+        <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
       </div>
       <div>
-        <p class="font-bold text-green-900 text-base leading-tight">SumEste Portal</p>
-        <p class="text-[10px] text-green-600 tracking-widest uppercase">Sumacab Este</p>
+        <p class="font-bold text-green-900 text-base leading-tight"><?= e($siteSettings['site_title']) ?></p>
+        <p class="text-[10px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
     </a>
   </div>
-  <nav class="ml-auto flex gap-8 text-gray-600 text-sm font-medium items-center">
-    <a href="announcements.php" class="nav-link">Announcements</a>
-    <a href="business.php" class="nav-link">Business</a>
-    <a href="apartment.php" class="nav-link">Apartment</a>
-    <a href="login.php" class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition text-sm font-semibold shadow">Login / Register</a>
-  </nav>
 </header>
 
 <main class="max-w-2xl mx-auto px-4 py-12">
 
   <!-- Title -->
   <div class="text-center mb-10 fade-1">
+    <div class="w-16 h-16 mx-auto rounded-2xl bg-green-700 flex items-center justify-center shadow-lg mb-4">
+      <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
+    </div>
     <p class="text-xs font-semibold text-green-600 uppercase tracking-widest mb-2">Step 3 of 3</p>
-    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;">SumEste Resident Registration</h1>
+    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> <?= e($regTypeLabel) ?></h1>
   </div>
 
   <!-- PROGRESS STEPS -->
-  <div class="flex items-center mb-10 fade-2 px-2">
-    <!-- Step 1 done -->
-    <div class="flex flex-col items-center">
-      <div class="step-circle step-done"><i class="fa-solid fa-check text-sm"></i></div>
-      <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Account Creation</p>
-    </div>
-    <div class="step-line line-done mx-3 mb-5"></div>
-    <!-- Step 2 done -->
-    <div class="flex flex-col items-center">
-      <div class="step-circle step-done"><i class="fa-solid fa-check text-sm"></i></div>
-      <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Personal Information</p>
-    </div>
-    <div class="step-line line-done mx-3 mb-5"></div>
-    <!-- Step 3 active -->
-    <div class="flex flex-col items-center">
-      <div class="step-circle step-active">3</div>
-      <p class="mt-2 text-xs font-bold text-green-800 text-center whitespace-nowrap">Verification</p>
+  <div class="max-w-lg mx-auto mb-10 fade-2">
+    <div class="flex items-center">
+      <div class="flex flex-col items-center">
+        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm">
+          <i class="fa-solid fa-check text-xs"></i>
+        </div>
+        <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Account Creation</p>
+      </div>
+      <div class="step-connector active"></div>
+      <div class="flex flex-col items-center">
+        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm">
+          <i class="fa-solid fa-check text-xs"></i>
+        </div>
+        <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Personal Info</p>
+      </div>
+      <div class="step-connector active"></div>
+      <div class="flex flex-col items-center">
+        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm ring-4 ring-green-200">3</div>
+        <p class="mt-2 text-xs font-bold text-green-800 text-center whitespace-nowrap">Verification</p>
+      </div>
     </div>
   </div>
 
@@ -324,43 +356,6 @@ if (in_array('business', $accountRoles, true) || in_array('non_resident', $accou
   </div>
 
 </main>
-
-<!-- FOOTER -->
-<footer class="mt-16 bg-green-950 text-white pt-14 pb-6 px-4">
-  <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-green-800">
-      <div>
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 rounded-xl bg-green-700 flex items-center justify-center"><i class="fa-solid fa-leaf text-white text-xl"></i></div>
-          <div><h3 class="text-lg font-bold">SumEste Portal</h3><p class="text-green-400 text-xs tracking-widest uppercase">Sumacab Este</p></div>
-        </div>
-        <div class="space-y-2 text-sm text-green-300">
-          <p><i class="fa-solid fa-location-dot mr-2 text-green-500"></i>Sumacab Este, Cabanatuan City</p>
-          <p><i class="fa-solid fa-envelope mr-2 text-green-500"></i>barangaysumacabeste@gmail.com</p>
-          <p><i class="fa-solid fa-phone mr-2 text-green-500"></i>0994-294-6442</p>
-        </div>
-        <a href="https://www.facebook.com/profile.php?id=61572407528959" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm transition"><i class="fab fa-facebook"></i> Facebook Page</a>
-      </div>
-      <div>
-        <h4 class="font-semibold text-green-300 text-xs uppercase tracking-widest mb-4">Legal</h4>
-        <div class="space-y-2">
-          <a href="../infoSecurity/dataProtection.php" class="block text-sm text-green-400 hover:text-white transition">Privacy Policy</a>
-          <a href="../infoSecurity/terms.php" class="block text-sm text-green-400 hover:text-white transition">Terms of Service</a>
-          <a href="../infoSecurity/dataProtection.php" class="block text-sm text-green-400 hover:text-white transition">Data Protection Notice</a>
-        </div>
-      </div>
-      <div>
-        <h4 class="font-semibold text-green-300 text-xs uppercase tracking-widest mb-4">Quick Links</h4>
-        <div class="space-y-2">
-          <a href="#" class="block text-sm text-green-400 hover:text-white transition">Services</a>
-          <a href="#" class="block text-sm text-green-400 hover:text-white transition">Apartments</a>
-          <a href="#" class="block text-sm text-green-400 hover:text-white transition">Business Directory</a>
-        </div>
-      </div>
-    </div>
-    <div class="text-center mt-6 text-green-500 text-sm">© 2026 SumEste Portal. All Rights Reserved. Made with ❤️ for Sumacab Este.</div>
-  </div>
-</footer>
 
 <script>
   /* --- File handling --- */

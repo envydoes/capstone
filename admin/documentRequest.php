@@ -910,7 +910,7 @@ function prettyDocType(type) {
   return map[key] || (key.replace(/[_-]/g,' ').replace(/\b\w/g, c => c.toUpperCase()));
 }
 function getNameFromDoc(d) {
-  return [d.firstname, d.middlename ? d.middlename + '.' : '', d.lastname, d.suffix].filter(Boolean).join(' ');
+  return [d.firstname, d.middlename ? d.middlename : '', d.lastname, d.suffix].filter(Boolean).join(' ');
 }
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
