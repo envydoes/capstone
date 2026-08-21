@@ -131,7 +131,7 @@ if ($list === 'analytics') {
         'Generated On: ' . date('F d, Y') . ' at ' . date('g:i A'),
     ]);
 
-    echo '<style>.analytics-data-table{margin-top:10px;font-size:0.85em;}.analytics-data-table th,.analytics-data-table td{padding:6px 10px;}</style>';
+    echo '<style>.analytics-data-table{margin-top:10px;font-size:0.85em;}.analytics-data-table th,.analytics-data-table td{padding:6px 10px;}.analytics-item-count{font-size:0.8rem;color:#374151;margin:0 0 10px;}.analytics-item-count strong{color:#1a2e1a;}</style>';
 
     if (empty($orderedSelected)) {
         echo '<p class="conditions-empty">No charts or graphs were selected.</p>';
@@ -147,7 +147,37 @@ if ($list === 'analytics') {
             echo '<p class="analytics-item-title">' . e($meta['title']) . '</p>';
             echo '<p class="analytics-item-summary">' . e($meta['summary']) . '</p>';
 
-            if ($meta['type'] === 'image') {
+            if ($meta['type'] === 'roster') {
+                $fn = $ANALYTICS_ROSTER_QUERIES[$key] ?? null;
+                if ($fn && function_exists($fn)) {
+                    $roster = $fn($conn);
+                    echo '<p class="analytics-item-count">Count: <strong>' . number_format($roster['count']) . '</strong></p>';
+
+                    if (empty($roster['rows'])) {
+                        echo '<p class="analytics-item-unavailable">No records found.</p>';
+                    } else {
+                        echo '<table class="report-table analytics-data-table">';
+                        echo '<thead><tr>';
+                        echo '<th style="width: 32px; text-align: center;">#</th>';
+                        echo '<th>Name</th><th>Age</th><th>Birthdate</th><th>Contact Number</th><th>Address</th><th>Role</th>';
+                        echo '</tr></thead><tbody>';
+                        foreach ($roster['rows'] as $i => $row) {
+                            echo '<tr>';
+                            echo '<td style="text-align: center;">' . ($i + 1) . '</td>';
+                            echo '<td>' . e($row['name']) . '</td>';
+                            echo '<td>' . e($row['age']) . '</td>';
+                            echo '<td>' . e($row['birthdate']) . '</td>';
+                            echo '<td>' . e($row['contact_number']) . '</td>';
+                            echo '<td>' . e($row['address']) . '</td>';
+                            echo '<td>' . e($row['role']) . '</td>';
+                            echo '</tr>';
+                        }
+                        echo '</tbody></table>';
+                    }
+                } else {
+                    echo '<p class="analytics-item-unavailable">Roster data unavailable.</p>';
+                }
+            } elseif ($meta['type'] === 'image') {
                 $dataUri = $charts[$key] ?? '';
                 if ($dataUri !== '' && strpos($dataUri, 'data:image') === 0) {
                     echo '<img class="analytics-item-image" src="' . e($dataUri) . '" alt="' . e($meta['title']) . '">';
@@ -212,7 +242,7 @@ if ($list === 'analytics') {
         }
     }
 
-    print_report_signature();
+    print_report_signature($conn);
     print_report_end($siteSettings);
     exit;
 }
@@ -337,5 +367,5 @@ print_report_start($siteSettings, $title, $metaLines, $list === 'global' ? 'land
 
 <?php
 // 9. Signature Section & Footer
-print_report_signature();
+print_report_signature($conn);
 print_report_end($siteSettings);
