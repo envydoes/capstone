@@ -242,7 +242,7 @@ if ($list === 'analytics') {
         }
     }
 
-    print_report_signature();
+    print_report_signature($conn);
     print_report_end($siteSettings);
     exit;
 }
@@ -367,5 +367,5 @@ print_report_start($siteSettings, $title, $metaLines, $list === 'global' ? 'land
 
 <?php
 // 9. Signature Section & Footer
-print_report_signature();
+print_report_signature($conn);
 print_report_end($siteSettings);
