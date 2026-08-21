@@ -42,7 +42,6 @@ if (!function_exists('print_report_start')) {
 
         /* Values baked directly into @page margin-box `content` strings -
            CSS content strings can't contain raw quotes/newlines, so keep these plain. */
-        $footerSiteName   = str_replace('"', "'", $siteSettings['site_title']);
         $footerBarangay   = str_replace('"', "'", 'Barangay ' . $siteSettings['barangay_name']);
         $footerAddress    = str_replace('"', "'", $address);
         $footerContact    = str_replace('"', "'", $siteSettings['contact_number'] ?: '-');
@@ -182,7 +181,7 @@ if (!function_exists('print_report_start')) {
 
   /* ?? On-screen footer preview (mirrors the printed @page footer below) ?? */
   .screen-footer-preview { margin-top: 40px; padding-top: 14px; border-top: 1px solid #1f2937; }
-  .screen-footer-preview .row1 { display: flex; justify-content: space-between; font-size: 0.72rem; color: #6b7280; }
+  .screen-footer-preview .row1 { display: flex; justify-content: flex-end; font-size: 0.72rem; color: #6b7280; }
   .screen-footer-preview .row2 { margin-top: 8px; font-size: 0.68rem; color: #9ca3af; line-height: 1.5; }
 
   /* ?? Print rules ??
@@ -196,7 +195,7 @@ if (!function_exists('print_report_start')) {
     size: <?= $pageSize ?>;
     margin: 0.7in 0.6in 1in 0.6in;
     @bottom-left {
-      content: "This report was generated electronically by <?= $footerSiteName ?>\A\A<?= $footerBarangay ?>\A<?= $footerAddress ?>\AContact: <?= $footerContact ?>\AEmail: <?= $footerEmail ?>";
+      content: "<?= $footerBarangay ?>\A<?= $footerAddress ?>\AContact: <?= $footerContact ?>\AEmail: <?= $footerEmail ?>";
       white-space: pre-line;
       font-family: 'DM Sans', sans-serif;
       font-size: 7.5pt;
@@ -318,7 +317,6 @@ if (!function_exists('print_report_end')) {
         ?>
     <div class="screen-footer-preview no-print">
       <div class="row1">
-        <span>This report was generated electronically by <?= e($siteSettings['site_title']) ?></span>
         <span>Page 1 of 1</span>
       </div>
       <div class="row2">

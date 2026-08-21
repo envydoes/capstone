@@ -1141,16 +1141,6 @@ mysqli_close($conn);
     </div>
   </div>
 </div>
-
-  <div class="modal" style="max-width:480px;">
-    <div class="modal-header">
-      <div class="flex items-center gap-3 min-w-0">
-        <div style="width:36px;height:36px;background:#fdf2f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fa-solid fa-user-shield text-fuchsia-700 text-sm"></i>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Lightbox -->

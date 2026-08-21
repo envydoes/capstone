@@ -9,12 +9,18 @@
  *      the printed report (print_global_list.php, ?list=analytics)
  *
  * type:
- *   'image' - a Google Chart; the browser captures it via chart.getImageURI()
- *             and posts the PNG data URI to the print page.
- *   'bars'  - a plain HTML/CSS bar panel (no chart library involved); the
- *             browser reads the numbers straight out of the DOM and posts
- *             them as small JSON, which the print page redraws as crisp
- *             (non-image) bars.
+ *   'image'  - a Google Chart; the browser captures it via chart.getImageURI()
+ *              and posts the PNG data URI to the print page.
+ *   'bars'   - a plain HTML/CSS bar panel (no chart library involved); the
+ *              browser reads the numbers straight out of the DOM and posts
+ *              them as small JSON, which the print page redraws as crisp
+ *              (non-image) bars.
+ *   'roster' - a count + a name/age/birthdate/contact/address/role table.
+ *              Unlike 'image'/'bars', this is NOT captured from the
+ *              browser DOM - print_global_list.php runs the matching
+ *              query in $ANALYTICS_ROSTER_QUERIES below directly against
+ *              the database at print time, so the roster is always fresh
+ *              as of the moment the report is generated.
  * ------------------------------------------------------------
  */
 
@@ -116,6 +122,30 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'type'    => 'image',
             'summary' => "Tracks new account registrations by month \u{2014} helpful for spotting growth trends and the effect of outreach campaigns.",
         ],
+        'newRegistrationsMonth' => [
+            'title'   => 'New Registrations This Month',
+            'group'   => 'User / Accounts',
+            'type'    => 'roster',
+            'summary' => "Lists every resident and non-resident account registered so far this month, with a running count and each person's identifying details.",
+        ],
+        'accountsRegisteredToday' => [
+            'title'   => 'Accounts Registered Today',
+            'group'   => 'User / Accounts',
+            'type'    => 'roster',
+            'summary' => "Lists every resident and non-resident account registered today, with a running count and each person's identifying details.",
+        ],
+        'newResidentsMonth' => [
+            'title'   => 'New Residents This Month',
+            'group'   => 'Resident Management',
+            'type'    => 'roster',
+            'summary' => "Lists every approved resident account (non-resident accounts excluded) registered so far this month, with a running count and each resident's identifying details.",
+        ],
+        'newBeneficiariesMonth' => [
+            'title'   => 'New Beneficiaries This Month',
+            'group'   => 'Beneficiary Management',
+            'type'    => 'roster',
+            'summary' => "Lists every resident approved as a beneficiary so far this month, with a running count and each beneficiary's identifying details.",
+        ],
     ];
 
     /* Which report tab (if any) needs to be switched-to/drawn before this
@@ -132,5 +162,17 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
         'chartRoleCounts'    => 'accounts',
         'chartAccountStatus' => 'accounts',
         'chartRegTrend'      => 'accounts',
+    ];
+
+    /* Maps each 'roster'-type item key to the report_queries.php function
+       that fetches its count + name/age/birthdate/contact/address/role
+       rows. print_global_list.php calls this directly - roster items are
+       never drawn client-side, so they have no entry in
+       $ANALYTICS_TAB_MAP above. */
+    $ANALYTICS_ROSTER_QUERIES = [
+        'newRegistrationsMonth'   => 'gf_run_new_registrations_month_query',
+        'accountsRegisteredToday' => 'gf_run_accounts_today_query',
+        'newResidentsMonth'       => 'gf_run_new_residents_month_query',
+        'newBeneficiariesMonth'   => 'gf_run_new_beneficiaries_month_query',
     ];
 }

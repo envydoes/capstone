@@ -1,138 +1,148 @@
-<!-- ──────────────────────────────────────────────────────
-           ADDITIONAL REPORTS
-      ─────────────────────────────────────────────────────── -->
-      <div class="panel f3">
-        <div class="panel-head" style="padding-bottom:10px;">
-          <p class="panel-title">Additional Reports</p>
-        </div>
+<?php
+/**
+ * admin/createStaffAccount.php
+ * ------------------------------------------------------------
+ * Creates a brand-new staff login (tbl_useracc, account_role =
+ * 'staff') and grants it module access (tbl_admin_permissions),
+ * exactly like updateStaffPermissions.php does for an existing
+ * account - except this also has to invent a fresh accID and
+ * set a password, since the account doesn't exist yet.
+ * ------------------------------------------------------------
+ */
 
-        <div class="report-tab-bar">
-          <button class="report-tab-btn active" data-tab="resident"    onclick="switchReportTab('resident',this)">Resident Management</button>
-          <button class="report-tab-btn"        data-tab="beneficiary" onclick="switchReportTab('beneficiary',this)">Beneficiary Management</button>
-          <button class="report-tab-btn"        data-tab="business"    onclick="switchReportTab('business',this)">Business / Apartment</button>
-          <button class="report-tab-btn"        data-tab="equipment"   onclick="switchReportTab('equipment',this)">Equipment</button>
-          <button class="report-tab-btn"        data-tab="documents"   onclick="switchReportTab('documents',this)">Document Requests</button>
-          <button class="report-tab-btn"        data-tab="accounts"    onclick="switchReportTab('accounts',this)">User / Accounts</button>
-        </div>
+error_reporting(E_ALL);
+ini_set('display_errors', '0'); // never echo raw PHP errors into a JSON endpoint
+ini_set('log_errors', '1');
 
-        <!-- 👥 RESIDENT MANAGEMENT 👥 -->
-        <div class="report-pane" id="pane-resident">
+session_start();
+header('Content-Type: application/json');
 
-          <div class="subpanel">
-            <p class="subpanel-title">Population by Purok / Zone</p>
-            <div id="chartPurok" class="w-full h-[280px]"></div>
-          </div>
+if (!isset($_SESSION['user_id']) || ($_SESSION['account_role'] ?? '') !== 'admin') {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Only the main admin can create staff accounts.']);
+    exit;
+}
 
-          <div class="subpanel">
-            <p class="subpanel-title">Age Bracket Breakdown</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div id="chartAgeBracket" class="w-full h-[220px]"></div>
-              <div class="flex flex-col justify-center gap-3 text-sm">
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Minors (0-17)</span><strong id="bkMinors">0</strong></div>
-                <div class="flex justify-between border-b border-gray-100 pb-2"><span>Working Age (18-59)</span><strong id="bkWorking">0</strong></div>
-                <div class="flex justify-between"><span>Seniors (60+)</span><strong id="bkSeniors">0</strong></div>
-              </div>
-            </div>
-          </div>
+require_once __DIR__ . '/../includes/check_permissions.php';
+require_once __DIR__ . '/../config/db_connection.php';
 
-        </div>
+$fullName = trim((string) ($_POST['fullName'] ?? ''));
+$position = trim((string) ($_POST['position'] ?? ''));
+$email    = trim((string) ($_POST['email'] ?? ''));
+$password = (string) ($_POST['password'] ?? '');
+$permissions = $_POST['permissions'] ?? [];
 
-        <!-- 🤝 BENEFICIARY MANAGEMENT 🤝 -->
-        <div class="report-pane hidden" id="pane-beneficiary">
+// ---- validation (mirrors the JS checks in settings.php, but
+// enforced server-side since the client can't be trusted) ----
 
-          <div class="subpanel">
-            <p class="subpanel-title">Approved Beneficiaries by Category</p>
-            <div id="chartBenPrograms" class="w-full h-[280px]"></div>
-          </div>
+if ($fullName === '') {
+    echo json_encode(['success' => false, 'message' => 'Full name is required.']);
+    exit;
+}
+$fullName = mb_substr($fullName, 0, 150);
 
-     
-          <div class="subpanel">
-            <p class="subpanel-title">Residents NOT Yet Registered as Beneficiaries <span class="subpanel-note">(outreach list)</span></p>
-            <div class="mini-filter-row">
-              <div class="mini-search-wrap" style="flex:1;min-width:200px;">
-                <input type="text" id="nonBenSearch" placeholder="Search name or purok..." style="width:100%;" oninput="nonBenTable.debounced()">
-                <span class="mini-search-spinner" id="nonBenSearchSpinner"></span>
-              </div>
-              <span class="mini-stat-inline"><span class="num" id="nonBenCount">0</span><span class="text-xs text-gray-400 ml-1">residents</span></span>
-              <button type="button" class="btn-print-list" onclick="printOutreachList()">
-                <i class="fa-solid fa-print"></i> Print This List
-              </button>
-            </div>
-            <div class="mini-table-wrap">
-              <div class="mini-loading-overlay" id="nonBenLoading"><div class="mini-spinner"></div><span class="mini-loading-text">Fetching...</span></div>
-            <table class="mini-table">
-                <thead><tr><th>Name</th><th>Purok / Street</th><th>Phone</th><th>Email</th></tr></thead>
-                <tbody id="nonBenTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+if ($position === '' || !array_key_exists($position, BARANGAY_POSITIONS)) {
+    echo json_encode(['success' => false, 'message' => 'Please select a valid barangay position.']);
+    exit;
+}
 
-        <!-- 🏢 BUSINESS / APARTMENT MANAGEMENT 🏢 -->
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
+    exit;
+}
+$email = mb_substr($email, 0, 254);
 
-        <div class="report-pane hidden" id="pane-business">
+if (strlen($password) < 8) {
+    echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters.']);
+    exit;
+}
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="subpanel">
-              <p class="subpanel-title">Active Listings by Type</p>
-              <div id="chartListingType" class="w-full h-[240px]"></div>
-            </div>
-            <div class="subpanel">
-              <p class="subpanel-title">Apartment Occupancy</p>
-              <div id="chartOccupancy" class="w-full h-[240px]"></div>
-            </div>
-          </div>
+$permissions = array_values(array_intersect((array) $permissions, array_keys(PERMISSION_MODULES)));
+if (count($permissions) === 0) {
+    echo json_encode(['success' => false, 'message' => 'Select at least one module to grant access to.']);
+    exit;
+}
+$permCsv = implode(',', $permissions);
 
-          <div class="subpanel">
-            <p class="subpanel-title">Owner Directory <span class="subpanel-note">(who owns what)</span></p>
-            <div class="mini-filter-row">
-              <div class="mini-search-wrap" style="flex:1;min-width:200px;">
-                <input type="text" id="ownerSearch" placeholder="Search owner..." style="width:100%;" oninput="ownerTable.debounced()">
-                <span class="mini-search-spinner" id="ownerSearchSpinner"></span>
-              </div>
-              <span class="mini-stat-inline"><span class="num" id="ownerCount">0</span><span class="text-xs text-gray-400 ml-1">owners</span></span>
-              <button type="button" class="btn-print-list" onclick="printOwnerDirectory()">
-                <i class="fa-solid fa-print"></i> Print This List
-              </button>
-            </div>
-            <div class="mini-table-wrap">
-              <div class="mini-loading-overlay" id="ownerLoading"><div class="mini-spinner"></div><span class="mini-loading-text">Fetching...</span></div>
-              <table class="mini-table">
-                <thead><tr><th>Owner</th><th>Total Listings</th><th>Apartments</th><th>Businesses</th></tr></thead>
-                <tbody id="ownerTableBody"></tbody>
-              </table>
-            </div>
-          </div>
+// ---- email must not already be in use ----
 
-        </div>
+$stmt = $conn->prepare('SELECT accID FROM tbl_useracc WHERE email = ? LIMIT 1');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$existing = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-        <!-- 🔧 EQUIPMENT 🔧 -->
-        <div class="report-pane hidden" id="pane-equipment">
+if ($existing) {
+    echo json_encode(['success' => false, 'message' => 'An account with that email already exists.']);
+    exit;
+}
 
-          <div class="subpanel">
-            <p class="subpanel-title">Most-Borrowed Equipment <span class="subpanel-note">(top 5)</span></p>
-            <div id="chartMostBorrowed" class="w-full h-[260px]"></div>
-          </div>
+// ---- generate a real, unique accID -----------------------------------
+// NOT mysqli insert_id (accID is a varchar PK, not AUTO_INCREMENT - that's
+// what was producing the '' / '0' accounts seen in the DB backup). Use a
+// random hex id, same shape as the accounts that already work correctly
+// (e.g. '261fff222b7b11fd'), and confirm it's actually free before using it.
 
-          <div class="subpanel">
-            <p class="subpanel-title">Currently Borrowed / Overdue Items <span class="subpanel-note">(borrowers list)</span></p>
-            <div class="mini-filter-row">
-              <div class="mini-search-wrap" style="flex:1;min-width:200px;">
-                <input type="text" id="borrowedSearch" placeholder="Search item or borrower..." style="width:100%;" oninput="borrowedTable.debounced()">
-                <span class="mini-search-spinner" id="borrowedSearchSpinner"></span>
-              </div>
-              <span class="mini-stat-inline"><span class="num" id="borrowedCount">0</span><span class="text-xs text-gray-400 ml-1">out</span></span>
-              <button type="button" class="btn-print-list" onclick="printBorrowedList()">
-                <i class="fa-solid fa-print"></i> Print This List
-              </button>
-            </div>
-            <div class="mini-table-wrap">
-              <div class="mini-loading-overlay" id="borrowedLoading"><div class="mini-spinner"></div><span class="mini-loading-text">Fetching...</span></div>
-              <table class="mini-table">
-                <thead><tr><th>Item</th><th>Qty</th><th>Borrower</th><th>Return Date</th><th>Status</th></tr></thead>
-                <tbody id="borrowedTableBody"></tbody>
-              </table>
-            </div>
-          </div>
+function generate_unique_acc_id(mysqli $conn): ?string
+{
+    for ($i = 0; $i < 5; $i++) {
+        $candidate = bin2hex(random_bytes(8)); // 16 hex chars
+        $check = $conn->prepare('SELECT 1 FROM tbl_useracc WHERE accID = ? LIMIT 1');
+        $check->bind_param('s', $candidate);
+        $check->execute();
+        $taken = $check->get_result()->fetch_assoc();
+        $check->close();
+        if (!$taken) {
+            return $candidate;
+        }
+    }
+    return null; // exceedingly unlikely, but don't loop forever
+}
 
-        </div>
+$accID = generate_unique_acc_id($conn);
+if ($accID === null) {
+    echo json_encode(['success' => false, 'message' => 'Could not generate a unique account ID. Please try again.']);
+    exit;
+}
+
+$passwordHash = password_hash($password, PASSWORD_DEFAULT);
+$grantedBy    = $_SESSION['acc_id'] ?? ($_SESSION['user_id'] ?? null);
+
+// ---- insert both rows atomically --------------------------------------
+
+$conn->begin_transaction();
+
+try {
+    $stmt1 = $conn->prepare('INSERT INTO tbl_useracc (accID, email, password, account_role) VALUES (?, ?, ?, ?)');
+    $role = 'staff';
+    $stmt1->bind_param('ssss', $accID, $email, $passwordHash, $role);
+    if (!$stmt1->execute()) {
+        throw new Exception('Failed to create the login account.');
+    }
+    $stmt1->close();
+
+    $status = 'active';
+    $stmt2 = $conn->prepare('INSERT INTO tbl_admin_permissions (accID, permissions_csv, status, granted_by, full_name, position, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())');
+    $stmt2->bind_param('ssssss', $accID, $permCsv, $status, $grantedBy, $fullName, $position);
+    if (!$stmt2->execute()) {
+        throw new Exception('Failed to grant module access.');
+    }
+    $stmt2->close();
+
+    $conn->commit();
+} catch (Throwable $e) {
+    $conn->rollback();
+    error_log('createStaffAccount.php failed: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Could not create the account. Please try again.']);
+    exit;
+}
+
+mysqli_close($conn);
+
+echo json_encode([
+    'success'        => true,
+    'accID'          => $accID,
+    'full_name'      => $fullName,
+    'position'       => $position,
+    'position_label' => get_position_label($position),
+]);
