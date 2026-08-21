@@ -96,19 +96,32 @@ if (!$accId) {
     $password_error = 'Session expired or not logged in. Please log in again.';
 }
 
+// CSRF token for the password-change form
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) && $accId) {
     $current_password = $_POST['current_password'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
+    $submittedToken = $_POST['csrf_token'] ?? '';
 
-    if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $submittedToken)) {
+        $password_error = 'Invalid or expired form submission. Please refresh the page and try again.';
+    } elseif (empty($current_password) || empty($new_password) || empty($confirm_password)) {
         $password_error = 'All fields are required.';
     } elseif ($new_password !== $confirm_password) {
         $password_error = 'New password and confirm password do not match.';
     } elseif (strlen($new_password) < 8) {
         $password_error = 'Password must be at least 8 characters long.';
+    } elseif (strlen($new_password) > 128) {
+        $password_error = 'Password must be no more than 128 characters long.';
     } elseif (!preg_match('/[A-Z]/', $new_password)) {
         $password_error = 'Password must contain at least one uppercase letter.';
+    } elseif (!preg_match('/[a-z]/', $new_password)) {
+        $password_error = 'Password must contain at least one lowercase letter.';
     } elseif (!preg_match('/[0-9]/', $new_password)) {
         $password_error = 'Password must contain at least one number.';
     } elseif ($current_password === $new_password) {
@@ -370,6 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
                     <?php endif; ?>
 
                     <form method="POST" id="changePasswordForm" class="space-y-6">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
                         <!-- Current Password -->
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Current Password</label>
