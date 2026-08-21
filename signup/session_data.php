@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/db_connection.php';
+require_once __DIR__ . '/../includes/normalize_helpers.php';
 
 // Retrieve account session data
 $email = $_SESSION['email'] ?? '';
@@ -13,10 +14,17 @@ if (is_string($accountRoles)) $accountRoles = [$accountRoles];
 $accountRolesCsv = implode(',', $accountRoles);
 
 // Retrieve personal profile session data
-$firstname        = $_SESSION['firstname'] ?? '';
-$lastname         = $_SESSION['lastname'] ?? '';
-$middlename       = $_SESSION['middlename'] ?? '';
-$suffix           = $_SESSION['suffix'] ?? '';
+//
+// Names/phone/street are re-normalized here (on top of whatever
+// residentProfile.php / nonresidentProfile.php already did) as a final
+// safety net right before the actual DB insert — this is the one choke
+// point every registration path goes through, so it's also the
+// guarantee that admin listings and printed reports (which just read
+// tbl_userinfo as-is) always see consistent formatting.
+$firstname        = normalize_person_name((string) ($_SESSION['firstname'] ?? ''));
+$lastname         = normalize_person_name((string) ($_SESSION['lastname'] ?? ''));
+$middlename       = normalize_person_name((string) ($_SESSION['middlename'] ?? ''));
+$suffix           = normalize_name_suffix((string) ($_SESSION['suffix'] ?? ''));
 $familyRole       = $_SESSION['family_role'] ?? '';
 $gender           = $_SESSION['gender'] ?? '';
 $birthday         = !empty($_SESSION['birthday']) ? $_SESSION['birthday'] : null;
@@ -25,14 +33,14 @@ $civilStatus      = $_SESSION['civil_status'] ?? '';
 $citizenship      = $_SESSION['citizenship'] ?? '';
 $religion         = $_SESSION['religion'] ?? '';
 $ethnicity        = $_SESSION['ethnicity'] ?? '';
-$street           = $_SESSION['street'] ?? '';
 $barangay         = $_SESSION['barangay'] ?? '';
 $city             = $_SESSION['city'] ?? '';
 $province         = $_SESSION['province'] ?? '';
+$street           = normalize_street_address((string) ($_SESSION['street'] ?? ''), [$barangay, $city, $province]);
 $zip              = $_SESSION['zip'] ?? '';
-$phone            = $_SESSION['phone'] ?? '';
-$emergencyContact = $_SESSION['emergency_contact'] ?? '';
-$emergencyPhone   = $_SESSION['emergency_phone'] ?? '';
+$phone            = normalize_ph_phone((string) ($_SESSION['phone'] ?? ''));
+$emergencyContact = normalize_person_name((string) ($_SESSION['emergency_contact'] ?? ''));
+$emergencyPhone   = normalize_ph_phone((string) ($_SESSION['emergency_phone'] ?? ''));
 $healthConditions = $_SESSION['health_conditions'] ?? '';
 $employmentStatus = $_SESSION['employment_status'] ?? '';
 $jobTitle         = $_SESSION['job_title'] ?? '';

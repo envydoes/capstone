@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../includes/normalize_helpers.php';
+
 /* ============================================================
    SERVER-SIDE SECURITY HELPERS
    ============================================================ */
@@ -181,10 +183,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- Collect and sanitize raw inputs ---
     $data = [
-        'firstname'         => sanitizeText($_POST['firstname']         ?? ''),
-        'lastname'          => sanitizeText($_POST['lastname']          ?? ''),
-        'middlename'        => sanitizeText($_POST['middlename']        ?? ''),
-        'suffix'            => sanitizeText($_POST['suffix']            ?? ''),
+        'firstname'         => normalize_person_name(sanitizeText($_POST['firstname']         ?? '')),
+        'lastname'          => normalize_person_name(sanitizeText($_POST['lastname']          ?? '')),
+        'middlename'        => normalize_person_name(sanitizeText($_POST['middlename']        ?? '')),
+        'suffix'            => normalize_name_suffix(sanitizeText($_POST['suffix']            ?? '')),
         'family_role'       => allowedValue($_POST['family_role']       ?? '', $allowedFamilyRoles),
         'gender'            => allowedValue($_POST['gender']            ?? '', $allowedGenders),
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
@@ -209,15 +211,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'city'              => sanitizeText($_POST['city']              ?? ''),
         'province'          => sanitizeText($_POST['province']          ?? ''),
         'zip'               => sanitizeText($_POST['zip']               ?? ''),
-        'phone'             => sanitizeText($_POST['phone']             ?? ''),
+        'phone'             => normalize_ph_phone(sanitizeText($_POST['phone']             ?? '')),
         'email'             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
-        'emergency_contact' => sanitizeText($_POST['emergency_contact'] ?? ''),
-        'emergency_phone'   => sanitizeText($_POST['emergency_phone']   ?? ''),
+        'emergency_contact' => normalize_person_name(sanitizeText($_POST['emergency_contact'] ?? '')),
+        'emergency_phone'   => normalize_ph_phone(sanitizeText($_POST['emergency_phone']   ?? '')),
         'health_conditions' => sanitizeText($_POST['health_conditions'] ?? ''),
         'terms'             => ($_POST['terms'] ?? '') === 'agree' ? 'agree' : '',
         'latitude'          => is_numeric($_POST['latitude'] ?? '') ? (string)(float)$_POST['latitude'] : '',
         'longitude'         => is_numeric($_POST['longitude'] ?? '') ? (string)(float)$_POST['longitude'] : '',
     ];
+
+    // Deduplicated against barangay/city/province above, in case someone
+    // pastes a full map address (which already includes them) into street.
+    $data['street'] = normalize_street_address($data['street'], [$data['barangay'], $data['city'], $data['province']]);
 
     // --- Validation rules ---
 

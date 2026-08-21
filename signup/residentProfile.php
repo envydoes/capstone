@@ -3,6 +3,7 @@ session_start();
 
 require_once __DIR__ . '/../config/db_connection.php';
 require_once __DIR__ . '/../includes/site_config.php';
+require_once __DIR__ . '/../includes/normalize_helpers.php';
 
 $siteSettings = site_config_load($conn);
 
@@ -151,10 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Collect and sanitize
     $data = [
-        'firstname'          => sanitizeText($_POST['firstname']          ?? '', 100),
-        'lastname'           => sanitizeText($_POST['lastname']           ?? '', 100),
-        'middlename'         => sanitizeText($_POST['middlename']         ?? '', 100),
-        'suffix'             => sanitizeText($_POST['suffix']             ?? '', 20),
+        'firstname'          => normalize_person_name(sanitizeText($_POST['firstname']          ?? '', 100)),
+        'lastname'           => normalize_person_name(sanitizeText($_POST['lastname']           ?? '', 100)),
+        'middlename'         => normalize_person_name(sanitizeText($_POST['middlename']         ?? '', 100)),
+        'suffix'             => normalize_name_suffix(sanitizeText($_POST['suffix']             ?? '', 20)),
         'family_role'        => allowedValue($_POST['family_role']        ?? '', $allowedFamilyRoles),
         'gender'             => allowedValue($_POST['gender']             ?? '', $allowedGenders),
         'birthday'           => sanitizeText($_POST['birthday']           ?? '', 10),
@@ -174,16 +175,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                      100
                                  ),
         'ethnicity'          => sanitizeText($_POST['ethnicity']          ?? '', 100),
-        'street'             => sanitizeText($_POST['street']             ?? '', 200),
+        // Deduplicated against the locked barangay/city/province below, in case
+        // someone pastes a full map address (which already includes them) here.
+        'street'             => normalize_street_address(
+                                     sanitizeText($_POST['street'] ?? '', 200),
+                                     [$siteSettings['barangay_name'], $siteSettings['municipality'], SITE_PROVINCE]
+                                 ),
         // Locked fields — always the site's own barangay/city, never trust POST here.
         'barangay'           => $siteSettings['barangay_name'],
         'city'               => $siteSettings['municipality'],
         'province'           => SITE_PROVINCE,
         'zip'                => sanitizeText($_POST['zip']                ?? '', 10),
-        'phone'              => sanitizeText($_POST['phone']              ?? '', 20),
+        'phone'              => normalize_ph_phone(sanitizeText($_POST['phone']              ?? '', 20)),
         'email'              => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
-        'emergency_contact'  => sanitizeText($_POST['emergency_contact']  ?? '', 150),
-        'emergency_phone'    => sanitizeText($_POST['emergency_phone']    ?? '', 20),
+        'emergency_contact'  => normalize_person_name(sanitizeText($_POST['emergency_contact']  ?? '', 150)),
+        'emergency_phone'    => normalize_ph_phone(sanitizeText($_POST['emergency_phone']    ?? '', 20)),
         'health_conditions'  => sanitizeText($_POST['health_conditions']  ?? '', 10),
         'employment_status'  => allowedValue($_POST['employment_status']  ?? '', $allowedEmploymentStatus),
         'job_title'          => sanitizeText($_POST['job_title']          ?? '', 150),
