@@ -157,10 +157,6 @@ if (!function_exists('print_report_start')) {
     text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 26px;
   }
   .signature-fill-line { border-bottom: 1.3px solid #1f2937; height: 30px; }
-  .signature-fill-line.is-filled {
-    display: flex; align-items: flex-end; padding-bottom: 3px;
-    font-size: 0.85rem; font-weight: 600; color: #1f2937;
-  }
   .signature-caption { font-size: 0.68rem; color: #6b7280; margin: 4px 0 20px; }
   .signature-block:last-child .signature-caption:last-of-type { margin-bottom: 0; }
 
@@ -282,72 +278,33 @@ if (!function_exists('print_report_start')) {
 }
 
 if (!function_exists('print_report_signature')) {
-    /** Position keys stored in tbl_admin_permissions -> printable labels. */
-    const PRINT_REPORT_POSITION_LABELS = [
-        'sk_chairperson'     => 'SK Chairperson',
-        'barangay_secretary' => 'Barangay Secretary',
-        'barangay_treasurer' => 'Barangay Treasurer',
-        'barangay_clerk'     => 'Barangay Clerk / Admin Staff',
-        'lupon_tagapamayapa' => 'Lupon Tagapamayapa Member',
-        'barangay_tanod'     => 'Barangay Tanod (Peace and Order)',
-        'bhw'                => 'Barangay Health Worker (BHW)',
-        'bns'                => 'Barangay Nutrition Scholar (BNS)',
-        'other'              => 'Other Barangay Staff',
-    ];
-
     /**
-     * Renders the "Prepared By" signature block. ("Noted By" was removed —
-     * this report only carries a single signatory now.)
+     * Renders a row of blank Name / Position signature blocks for the
+     * person(s) signing off on the printed report. Purely fillable-by-hand
+     * fields (no attempt to pre-fill from the logged-in account) since the
+     * "prepared by" and "approved/noted by" signatories are very often
+     * different people from whoever happened to click Print.
      *
-     * Name/Position are auto-filled from the current staff account's row in
-     * tbl_admin_permissions (full_name, position) when available. Falls
-     * back to a blank fillable-by-hand line when that data isn't there —
-     * e.g. the founder admin account (account_role === 'admin') has no row
-     * in tbl_admin_permissions at all, and some existing staff grants have
-     * full_name left NULL.
-     *
-     * @param mysqli|null $conn Pass the active connection to enable
-     *        auto-fill. Omitting it (or passing null) always renders the
-     *        blank fillable line, same as before this change.
+     * @param array $roles Role labels to render, left-to-right (2-3 works
+     *        best given the page width). Defaults to the barangay's usual
+     *        two-signatory sign-off.
      */
-    function print_report_signature(?mysqli $conn = null): void
+    function print_report_signature(array $roles = ['Prepared By', 'Noted By']): void
     {
-        $preparedName     = '';
-        $preparedPosition = '';
-
-        if ($conn !== null) {
-            $accID = $_SESSION['acc_id'] ?? ($_SESSION['user_id'] ?? '');
-            if ($accID !== '') {
-                $stmt = $conn->prepare('SELECT full_name, position FROM tbl_admin_permissions WHERE accID = ? LIMIT 1');
-                if ($stmt) {
-                    $stmt->bind_param('s', $accID);
-                    $stmt->execute();
-                    $row = $stmt->get_result()->fetch_assoc();
-                    $stmt->close();
-                    if ($row) {
-                        $preparedName     = trim((string) ($row['full_name'] ?? ''));
-                        $preparedPosition = PRINT_REPORT_POSITION_LABELS[$row['position'] ?? ''] ?? '';
-                    }
-                }
-            }
+        if (empty($roles)) {
+            return;
         }
         ?>
     <div class="signature-section">
-      <div class="signature-block">
-        <p class="signature-role-label">Prepared By</p>
-        <?php if ($preparedName !== ''): ?>
-          <div class="signature-fill-line is-filled"><?= e($preparedName) ?></div>
-        <?php else: ?>
+      <?php foreach ($roles as $roleLabel): ?>
+        <div class="signature-block">
+          <p class="signature-role-label"><?= e($roleLabel) ?></p>
           <div class="signature-fill-line">&nbsp;</div>
-        <?php endif; ?>
-        <p class="signature-caption">Name</p>
-        <?php if ($preparedPosition !== ''): ?>
-          <div class="signature-fill-line is-filled"><?= e($preparedPosition) ?></div>
-        <?php else: ?>
+          <p class="signature-caption">Name</p>
           <div class="signature-fill-line">&nbsp;</div>
-        <?php endif; ?>
-        <p class="signature-caption">Position</p>
-      </div>
+          <p class="signature-caption">Position</p>
+        </div>
+      <?php endforeach; ?>
     </div>
 <?php
     }
