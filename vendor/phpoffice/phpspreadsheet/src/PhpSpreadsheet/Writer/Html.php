@@ -498,7 +498,8 @@ class Html extends BaseWriter
 
         $html .= $includeStyles ? $this->generateStyles(true) : $this->generatePageDeclarations(true);
 
-        $html .= '  </head>' . $this->lineEnding;
+        $html .= '      <link rel="stylesheet" href="dist/output.css">
+</head>' . $this->lineEnding;
         $html .= '' . $this->lineEnding;
         $html .= '  <body>' . $this->lineEnding;
 

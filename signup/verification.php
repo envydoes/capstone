@@ -160,6 +160,7 @@ if (in_array('non-resident', $accountRoles, true)) {
     .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
     .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

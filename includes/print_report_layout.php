@@ -230,6 +230,7 @@ if (!function_exists('print_report_start')) {
     .analytics-item { page-break-inside: avoid; }
   }
 </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

@@ -383,6 +383,7 @@ flush();
   --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
 }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

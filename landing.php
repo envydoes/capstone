@@ -279,6 +279,7 @@ footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
 .w-px.bg-green-700 { background-color: color-mix(in srgb, var(--site-primary-light) 40%, transparent) !important; }
   </style> 
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="bg-gray-50">
 

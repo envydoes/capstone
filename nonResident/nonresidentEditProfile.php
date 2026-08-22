@@ -375,6 +375,7 @@ $pendingRole = $resident['pending_role'] ?? '';
         .hover\:bg-emerald-700:hover { background-color: var(--site-primary-dark) !important; }
         .focus\:ring-emerald-500:focus { --tw-ring-color: var(--site-primary) !important; }
     </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="page-bg text-slate-800">
 

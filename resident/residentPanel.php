@@ -419,6 +419,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .f4 { animation: fadeUp 0.45s 0.26s ease both; }
     .f5 { animation: fadeUp 0.45s 0.33s ease both; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 <div class="min-h-screen">

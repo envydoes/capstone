@@ -12,6 +12,7 @@ session_start();
   <link rel="stylesheet" href="/tailwind/input.css">
   <link rel="stylesheet" href="/tailwind/input.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="bg-green-50 min-h-screen">
   <div class="max-w-4xl mx-auto px-4 py-8">

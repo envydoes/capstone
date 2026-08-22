@@ -313,6 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
     .border-green-500\/30 { border-color: color-mix(in srgb, var(--site-primary-light) 30%, transparent) !important; }
     .bg-green-800\/60 { background-color: color-mix(in srgb, var(--site-primary-darker) 60%, transparent) !important; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 
 <body class="min-h-screen flex flex-col md:flex-row">

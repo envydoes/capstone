@@ -199,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
     body { font-family: 'DM Sans', sans-serif; }
     code { font-family: ui-monospace, monospace; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
   <div class="max-w-lg w-full">

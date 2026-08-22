@@ -436,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="../assets/js/ph-address-picker.js"></script>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

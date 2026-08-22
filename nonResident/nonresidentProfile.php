@@ -198,6 +198,7 @@ $fullName = $userName ?: trim($userData['firstname'] . ' ' . $userData['middlena
         .hover\:text-emerald-900:hover { color: var(--site-primary-darker) !important; }
         .hover\:bg-emerald-100:hover { background-color: color-mix(in srgb, var(--site-primary) 22%, white) !important; }
     </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="page-bg text-slate-800">
   <div class="min-h-screen">

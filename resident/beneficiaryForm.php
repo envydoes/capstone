@@ -443,6 +443,7 @@ $saved = $_SESSION['beneficiary_form'] ?? [];
     footer .hover\:text-white:hover { color: #ffffff !important; }
     footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 <div class="min-h-screen">

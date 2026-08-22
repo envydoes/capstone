@@ -252,6 +252,7 @@ function prettyDocumentType($type) {
     @media(max-width:380px){.btn-approve .btn-label,.btn-reject .btn-label{display:none}.btn-approve,.btn-reject{padding:5px 8px}}
   
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

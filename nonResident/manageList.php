@@ -427,6 +427,7 @@ require_once __DIR__ . '/../includes/verification_modal.php';
       .mobile-menu-btn { display: flex; }
     }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

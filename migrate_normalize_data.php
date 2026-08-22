@@ -218,6 +218,7 @@ $totalAffectedFields = array_sum(array_map(fn($r) => count($r['changes']), $prev
   .apply-btn:hover { background: #166534; }
   .no-changes { padding: 40px; text-align: center; color: #6b7280; background: #fff; border-radius: 12px; }
 </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 <div class="wrap">

@@ -152,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     @keyframes countdown { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 113; } }
     #ring { stroke-dasharray: 113; stroke-dashoffset: 0; animation: countdown 5s linear forwards; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="min-h-screen bg-green-50 flex items-center justify-center p-6">
 <div class="w-full max-w-md bg-white rounded-2xl border border-green-100 shadow-lg overflow-hidden">

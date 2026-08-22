@@ -145,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .hero-bg { background: linear-gradient(135deg, #052e16 0%, #14532d 40%, #166534 75%, #15803d 100%); }
     h1 { font-family: 'Playfair Display', serif; }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="min-h-screen bg-green-50 flex items-center justify-center p-6">
   <div class="w-full max-w-md bg-white rounded-2xl border border-green-100 shadow-lg overflow-hidden">

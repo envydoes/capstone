@@ -93,6 +93,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .pw-req-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; padding: 3px 0; line-height: 1.3; transition: color 0.2s; }
   .pw-req-item i { font-size: 0.7rem; width: 14px; text-align: center; flex-shrink: 0; }
 </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

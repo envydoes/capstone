@@ -416,6 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .fade-up-3 { animation-delay: 0.22s; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

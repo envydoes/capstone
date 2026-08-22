@@ -383,6 +383,7 @@ if (isset($_GET['deleted'])) { $toastType = 'warning'; $toastMsg = 'Listing dele
       .listing-grid { grid-template-columns: 1fr; }
     }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

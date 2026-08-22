@@ -231,6 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
         .hover\:bg-emerald-700:hover { background-color: var(--site-primary-dark) !important; }
         .focus\:ring-emerald-500:focus { --tw-ring-color: var(--site-primary) !important; }
     </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body class="page-bg text-slate-800">
   <div class="min-h-screen">

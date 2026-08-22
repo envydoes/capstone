@@ -378,6 +378,7 @@ mysqli_close($conn);
       .grid-2col { grid-template-columns: 1fr !important; }
     }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

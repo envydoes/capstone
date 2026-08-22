@@ -511,6 +511,7 @@ if (strpos($upload_path, '//') === 0) { $upload_path = '/' . ltrim($upload_path,
   --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
 }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 

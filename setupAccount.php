@@ -92,6 +92,7 @@ if ($accID && $_SERVER['REQUEST_METHOD'] === 'POST') {
   .alert { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 16px; }
   .success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; padding: 12px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 16px; }
 </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
   <div class="card">

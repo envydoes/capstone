@@ -870,6 +870,7 @@ while ($r = mysqli_fetch_assoc($regTrendRes)) { $regTrend[] = [$r['month_key'], 
     }
     .gf-btn-apply:hover { background: var(--site-primary-dark); }
   </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
 <body>
 <!-- Page Loader -->
