@@ -1008,6 +1008,7 @@ $sidebarSections = [
     .gf-btn-apply:hover { background: var(--site-primary-dark); }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 <!-- Page Loader -->

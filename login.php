@@ -314,6 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $error === null) {
     .bg-green-800\/60 { background-color: color-mix(in srgb, var(--site-primary-darker) 60%, transparent) !important; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 
 <body class="min-h-screen flex flex-col md:flex-row">

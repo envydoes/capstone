@@ -289,6 +289,7 @@ $heroImageMax  = 5;
 .perm-toggle-track.on .perm-toggle-thumb { transform: translateX(18px); }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
   <div id="pageLoader" class="fixed inset-0 bg-green-900/40 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">

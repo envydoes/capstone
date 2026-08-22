@@ -161,6 +161,7 @@ if (in_array('non-resident', $accountRoles, true)) {
     .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 

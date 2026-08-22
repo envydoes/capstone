@@ -419,6 +419,7 @@ function buildRow($u, $tab) {
 }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 

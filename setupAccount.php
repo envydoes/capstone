@@ -93,6 +93,7 @@ if ($accID && $_SERVER['REQUEST_METHOD'] === 'POST') {
   .success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; padding: 12px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 16px; }
 </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
   <div class="card">

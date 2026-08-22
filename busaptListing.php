@@ -342,6 +342,7 @@ function getAptTypeLabel(string $type): string {
     footer .border-green-800 { border-color: rgba(255,255,255,0.12) !important; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 

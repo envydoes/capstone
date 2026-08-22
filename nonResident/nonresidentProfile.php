@@ -199,6 +199,7 @@ $fullName = $userName ?: trim($userData['firstname'] . ' ' . $userData['middlena
         .hover\:bg-emerald-100:hover { background-color: color-mix(in srgb, var(--site-primary) 22%, white) !important; }
     </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body class="page-bg text-slate-800">
   <div class="min-h-screen">

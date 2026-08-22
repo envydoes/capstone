@@ -146,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     h1 { font-family: 'Playfair Display', serif; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body class="min-h-screen bg-green-50 flex items-center justify-center p-6">
   <div class="w-full max-w-md bg-white rounded-2xl border border-green-100 shadow-lg overflow-hidden">

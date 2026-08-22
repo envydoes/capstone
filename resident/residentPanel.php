@@ -420,6 +420,7 @@ foreach (array_merge($documentRequests, $equipmentRequests, $beneficiaryRequests
     .f5 { animation: fadeUp 0.45s 0.33s ease both; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 <div class="min-h-screen">

@@ -219,6 +219,7 @@ $totalAffectedFields = array_sum(array_map(fn($r) => count($r['changes']), $prev
   .no-changes { padding: 40px; text-align: center; color: #6b7280; background: #fff; border-radius: 12px; }
 </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 <div class="wrap">

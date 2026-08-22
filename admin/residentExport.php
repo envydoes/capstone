@@ -34,6 +34,7 @@ function exportErrorPage(): void
 {
     http_response_code(500);
     echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Export Failed</title><style>body{font-family:Arial,sans-serif;background:#f8fafc;color:#111827;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:24px}.box{max-width:520px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.08)}h1{margin:0 0 8px;font-size:1.25rem}p{margin:0;line-height:1.6;color:#4b5563}</style>    <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head><body><div class="box"><h1>Export unavailable</h1><p>Please try again later.</p></div></body></html>';
 }
 

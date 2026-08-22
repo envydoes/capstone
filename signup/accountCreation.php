@@ -94,6 +94,7 @@ unset($_SESSION['reg_error_field'], $_SESSION['reg_error_message'],
   .pw-req-item i { font-size: 0.7rem; width: 14px; text-align: center; flex-shrink: 0; }
 </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 

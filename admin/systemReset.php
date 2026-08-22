@@ -200,6 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_phrase'])) {
     code { font-family: ui-monospace, monospace; }
   </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
   <div class="max-w-lg w-full">

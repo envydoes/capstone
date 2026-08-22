@@ -285,6 +285,7 @@ $fullName = $userName ?: trim($userData['firstname'] . ' ' . $userData['middlena
         .focus\:ring-emerald-500:focus { --tw-ring-color: var(--site-primary) !important; }
     </style>
     <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body class="page-bg text-slate-800">
   <div class="min-h-screen">
