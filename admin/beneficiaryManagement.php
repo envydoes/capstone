@@ -151,12 +151,17 @@ $sidebarSections = [
 ];
 
 /* ─── Fetch pending applications ─── */
+// Same account-status guard as the approved list below - in normal
+// operation a pending application should already block archiving/disabling
+// (see includes/pending_checks.php), but this keeps the queue correct even
+// if that ever changes.
 $sql_req = "
     SELECT b.*, ui.firstname, ui.lastname, ui.middlename, ui.suffix,
            ui.birthday, ui.phone, ui.email, ui.street, ui.barangay, ui.city, ui.province
     FROM tbl_beneficiary b
     JOIN tbl_userinfo ui ON b.userID = ui.userID
     WHERE b.status = 'pending'
+      AND LOWER(ui.userStatus) = 'approved'
     ORDER BY b.submitted_at DESC
 ";
 $res_req = mysqli_query($conn, $sql_req);
@@ -170,12 +175,18 @@ require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
 /* ─── Fetch approved beneficiaries (already ranked by prio_score DESC) ─── */
+// Only shows beneficiaries whose account is currently in good standing -
+// if a resident's account gets archived or disabled, their tbl_beneficiary
+// row is untouched (still status='approved'), but they drop off this list
+// until the account is re-enabled, at which point they reappear with no
+// further action needed.
 $sql_ben = "
     SELECT b.*, ui.firstname, ui.lastname, ui.middlename, ui.suffix,
            ui.birthday, ui.phone, ui.email, ui.street, ui.barangay, ui.city, ui.province
     FROM tbl_beneficiary b
     JOIN tbl_userinfo ui ON b.userID = ui.userID
     WHERE b.status = 'approved'
+      AND LOWER(ui.userStatus) = 'approved'
     ORDER BY b.prio_score DESC, b.submitted_at ASC
 ";
 $res_ben = mysqli_query($conn, $sql_ben);

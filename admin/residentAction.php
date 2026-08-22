@@ -38,6 +38,21 @@ if (!in_array($action, ['archive', 'unarchive'], true)) {
     exit;
 }
 
+// ==== Block archiving if the resident has anything pending ====
+// (unarchive/restore is never blocked - only the archive action itself)
+if ($action === 'archive') {
+    require_once __DIR__ . '/../includes/pending_checks.php';
+    $blockers = get_pending_blockers($conn, $userID);
+    if (!empty($blockers)) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Cannot archive - this resident still has ' . implode(', ', $blockers) . '. Resolve these first.',
+        ]);
+        mysqli_close($conn);
+        exit;
+    }
+}
+
 // ==== Map action  ->  new status ====
 $newStatus     = $action === 'archive' ? 'archived' : 'approved';
 $currentStatus = $action === 'archive' ? 'approved'  : 'archived';
