@@ -46,7 +46,7 @@ $userEmail = $_SESSION['user_id'] ?? '';
 $accId     = $_SESSION['acc_id']  ?? '';
 
 $roleLabel = match($role) {
-    'admin'        => 'Admin',
+    'admin'        => 'System Administrator',
     'custom_admin' => 'Limited Admin',
     'resident'     => 'Resident',
     'non-resident' => 'Non-Resident',
