@@ -12,7 +12,7 @@ if (is_string($accountRoles)) {
 }
 $backHref = 'residentProfile.php';
 $regTypeLabel = 'Registration';
-if (in_array('business', $accountRoles, true) || in_array('non_resident', $accountRoles, true)) {
+if (in_array('non-resident', $accountRoles, true)) {
     $backHref = 'nonresidentProfile.php';
     $regTypeLabel = 'Non-Resident Registration';
 } elseif (in_array('resident', $accountRoles, true)) {

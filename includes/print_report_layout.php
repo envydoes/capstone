@@ -148,17 +148,17 @@ if (!function_exists('print_report_start')) {
 
   /* ?? Signature section (Name & Position) ?? */
   .signature-section {
-    display: flex; justify-content: space-between; gap: 40px;
+    display: flex;
     margin-top: 56px; page-break-inside: avoid;
   }
-  .signature-block { flex: 1; }
+  .signature-block { width: 260px; flex: none; }
   .signature-role-label {
     font-size: 0.66rem; font-weight: 800; color: var(--site-primary-darker);
     text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 26px;
   }
-  .signature-fill-line { border-bottom: 1.3px solid #1f2937; height: 30px; }
-  .signature-caption { font-size: 0.68rem; color: #6b7280; margin: 4px 0 20px; }
-  .signature-block:last-child .signature-caption:last-of-type { margin-bottom: 0; }
+  .signature-fill-line { border-bottom: 1.3px solid #1f2937; height: 26px; }
+  .signature-name { font-size: 0.8rem; font-weight: 700; color: #1f2937; margin: 6px 0 0; }
+  .signature-position { font-size: 0.72rem; color: #6b7280; margin: 2px 0 0; }
 
   /* ?? Analytics report (chart/graph picker) ?? */
   .analytics-section-title {
@@ -195,7 +195,7 @@ if (!function_exists('print_report_start')) {
     size: <?= $pageSize ?>;
     margin: 0.7in 0.6in 1in 0.6in;
     @bottom-left {
-      content: "<?= $footerBarangay ?>\A<?= $footerAddress ?>\AContact: <?= $footerContact ?>\AEmail: <?= $footerEmail ?>";
+      content: "<?= $footerBarangay ?>\A <?= $footerAddress ?>\A Contact: <?= $footerContact ?>\A Email: <?= $footerEmail ?>";
       white-space: pre-line;
       font-family: 'DM Sans', sans-serif;
       font-size: 7.5pt;
@@ -279,32 +279,65 @@ if (!function_exists('print_report_start')) {
 
 if (!function_exists('print_report_signature')) {
     /**
-     * Renders a row of blank Name / Position signature blocks for the
-     * person(s) signing off on the printed report. Purely fillable-by-hand
-     * fields (no attempt to pre-fill from the logged-in account) since the
-     * "prepared by" and "approved/noted by" signatories are very often
-     * different people from whoever happened to click Print.
+     * Renders the "Prepared By" signature block. ("Noted By" was removed —
+     * this report only carries a single signatory now.)
      *
-     * @param array $roles Role labels to render, left-to-right (2-3 works
-     *        best given the page width). Defaults to the barangay's usual
-     *        two-signatory sign-off.
+     * Name/Position are auto-filled from the current staff account's row in
+     * tbl_admin_permissions (full_name, position) when available. Falls
+     * back to a blank fillable-by-hand line when that data isn't there —
+     * e.g. the founder admin account (account_role === 'admin') has no row
+     * in tbl_admin_permissions at all, and some existing staff grants have
+     * full_name left NULL.
+     *
+     * @param mysqli|null $conn Pass the active connection to enable
+     *        auto-fill. Omitting it (or passing null) always renders the
+     *        blank fillable line, same as before this change.
      */
-    function print_report_signature(array $roles = ['Prepared By', 'Noted By']): void
+    function print_report_signature(?mysqli $conn = null): void
     {
-        if (empty($roles)) {
-            return;
+        // NOTE: this is a plain array, not a top-level `const` — PHP does
+        // not allow `const` declarations inside a conditional block (the
+        // `if (!function_exists(...))` wrapper above), which was a fatal
+        // compile-time error that broke this entire file on every request.
+        $positionLabels = [
+            'sk_chairperson'     => 'SK Chairperson',
+            'barangay_secretary' => 'Barangay Secretary',
+            'barangay_treasurer' => 'Barangay Treasurer',
+            'barangay_clerk'     => 'Barangay Clerk / Admin Staff',
+            'lupon_tagapamayapa' => 'Lupon Tagapamayapa Member',
+            'barangay_tanod'     => 'Barangay Tanod (Peace and Order)',
+            'bhw'                => 'Barangay Health Worker (BHW)',
+            'bns'                => 'Barangay Nutrition Scholar (BNS)',
+            'other'              => 'Other Barangay Staff',
+        ];
+
+        $preparedName     = '';
+        $preparedPosition = '';
+
+        if ($conn !== null) {
+            $accID = $_SESSION['acc_id'] ?? ($_SESSION['user_id'] ?? '');
+            if ($accID !== '') {
+                $stmt = $conn->prepare('SELECT full_name, position FROM tbl_admin_permissions WHERE accID = ? LIMIT 1');
+                if ($stmt) {
+                    $stmt->bind_param('s', $accID);
+                    $stmt->execute();
+                    $row = $stmt->get_result()->fetch_assoc();
+                    $stmt->close();
+                    if ($row) {
+                        $preparedName     = trim((string) ($row['full_name'] ?? ''));
+                        $preparedPosition = $positionLabels[$row['position'] ?? ''] ?? '';
+                    }
+                }
+            }
         }
         ?>
     <div class="signature-section">
-      <?php foreach ($roles as $roleLabel): ?>
-        <div class="signature-block">
-          <p class="signature-role-label"><?= e($roleLabel) ?></p>
-          <div class="signature-fill-line">&nbsp;</div>
-          <p class="signature-caption">Name</p>
-          <div class="signature-fill-line">&nbsp;</div>
-          <p class="signature-caption">Position</p>
-        </div>
-      <?php endforeach; ?>
+      <div class="signature-block">
+        <p class="signature-role-label">PREPARED BY:</p>
+        <div class="signature-fill-line">&nbsp;</div>
+        <p class="signature-name"><?= $preparedName !== '' ? e($preparedName) : '&nbsp;' ?></p>
+        <p class="signature-position"><?= $preparedPosition !== '' ? e($preparedPosition) : '&nbsp;' ?></p>
+      </div>
     </div>
 <?php
     }
