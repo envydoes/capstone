@@ -52,7 +52,7 @@ if ($action === 'disable') {
     }
 }
 
-$sql  = "UPDATE tbl_userinfo SET userStatus = ? WHERE userID = ?";
+$sql  = "UPDATE tbl_userinfo SET userStatus = ?, statusUpdatedAt = NOW() WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     echo json_encode(['success' => false, 'message' => 'Database error']);
