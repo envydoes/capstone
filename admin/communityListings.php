@@ -37,6 +37,7 @@ $listingsSQL = "
         CONCAT(u.firstname, ' ', IF(u.middlename != '' AND u.middlename IS NOT NULL, CONCAT(LEFT(u.middlename,1), '. '), ''), u.lastname) AS owner_name
     FROM tbl_busaptlisting l
     LEFT JOIN tbl_userinfo u ON l.userId = u.accID
+    WHERE u.userStatus = 'approved'
     ORDER BY l.createdAt DESC
 ";
 require_once '../includes/site_config.php';

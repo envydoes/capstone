@@ -17,10 +17,17 @@
  *              (non-image) bars.
  *   'roster' - a count + a name/age/birthdate/contact/address/role table.
  *              Unlike 'image'/'bars', this is NOT captured from the
- *              browser DOM - print_global_list.php runs the matching
- *              query in $ANALYTICS_ROSTER_QUERIES below directly against
- *              the database at print time, so the roster is always fresh
- *              as of the moment the report is generated.
+ *              browser DOM - print_global_list.php looks up the matching
+ *              query function via $ANALYTICS_ROSTER_QUERIES below and runs
+ *              it directly against the database at print time, so the
+ *              roster is always fresh as of the moment the report is
+ *              generated.
+ *   'list'   - like 'roster', but with its own custom columns instead of
+ *              the fixed Age/Birthdate/Contact/Address/Role shape. The
+ *              query function is given directly on the item via its
+ *              'query' key (see the Business/Apartment, Equipment, and
+ *              Document Requests items below) rather than through a
+ *              separate lookup table.
  * ------------------------------------------------------------
  */
 
@@ -62,6 +69,7 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'type'    => 'image',
             'summary' => "Cross-references income bracket against age group to reveal which age segments are most represented at each income level.",
         ],
+
         'chartPurok' => [
             'title'   => 'Population by Purok / Zone',
             'group'   => 'Resident Management',
@@ -74,12 +82,26 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'type'    => 'image',
             'summary' => "A proportional view of the same age-bracket data as a pie chart, for at-a-glance comparison of generational segments.",
         ],
+        'newResidentsMonth' => [
+            'title'   => 'New Residents This Month',
+            'group'   => 'Resident Management',
+            'type'    => 'roster',
+            'summary' => "Lists every approved resident account (non-resident accounts excluded) registered so far this month, with a running count and each resident's identifying details.",
+        ],
+
         'chartBenPrograms' => [
             'title'   => 'Approved Beneficiaries by Category',
             'group'   => 'Beneficiary Management',
             'type'    => 'image',
             'summary' => "Shows how many residents are approved under each social welfare program category, such as 4Ps, PWD, Senior Citizen, and Solo Parent.",
         ],
+        'newBeneficiariesMonth' => [
+            'title'   => 'New Beneficiaries This Month',
+            'group'   => 'Beneficiary Management',
+            'type'    => 'roster',
+            'summary' => "Lists every resident approved as a beneficiary so far this month, with a running count and each beneficiary's identifying details.",
+        ],
+
         'chartListingType' => [
             'title'   => 'Active Listings by Type',
             'group'   => 'Business / Apartment',
@@ -92,18 +114,56 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'type'    => 'image',
             'summary' => "Shows the proportion of registered apartment units that are currently occupied versus available.",
         ],
+        'listingsNewThisMonth' => [
+            'title'   => 'New Listings This Month',
+            'group'   => 'Business / Apartment',
+            'type'    => 'list',
+            'query'   => 'gf_run_new_listings_this_month_query',
+            'summary' => "Lists residents and non-resident business/apartment owners with new listings created this month, showing the listing's title, address, and business type in place of age, birthdate, and address.",
+        ],
+
         'chartMostBorrowed' => [
             'title'   => 'Most-Borrowed Equipment (Top 5)',
             'group'   => 'Equipment',
             'type'    => 'image',
             'summary' => "Ranks the five most frequently borrowed equipment items \u{2014} useful for inventory and procurement planning.",
         ],
+        'equipBorrowThisMonth' => [
+            'title'   => 'Borrow Requests This Month',
+            'group'   => 'Equipment',
+            'type'    => 'list',
+            'query'   => 'gf_run_equip_borrow_this_month_query',
+            'summary' => "Lists every resident who requested to borrow equipment this month, with the item and its current status in place of role.",
+        ],
+        'equipRepeatBorrowers' => [
+            'title'   => 'Repeat Borrowers',
+            'group'   => 'Equipment',
+            'type'    => 'list',
+            'query'   => 'gf_run_equip_repeat_borrowers_query',
+            'summary' => "Lists residents who borrowed 3 or more pieces of equipment this month, with the items borrowed and how many times, in place of role.",
+        ],
+
         'chartDocMonthly' => [
             'title'   => 'Document Request Volume Trend',
             'group'   => 'Document Requests',
             'type'    => 'image',
             'summary' => "Tracks the monthly volume of document requests over time to help identify seasonal demand patterns.",
         ],
+        'docRequestsThisMonth' => [
+            'title'   => 'Requests This Month',
+            'group'   => 'Document Requests',
+            'type'    => 'list',
+            'query'   => 'gf_run_doc_requests_this_month_query',
+            'summary' => "Lists every resident and non-resident who filed a document request this month, with the document type(s) they requested in place of role.",
+        ],
+        'docRepeatRequesters' => [
+            'title'   => 'Repeat Requesters',
+            'group'   => 'Document Requests',
+            'type'    => 'list',
+            'query'   => 'gf_run_doc_repeat_requesters_query',
+            'summary' => "Lists residents and non-residents who have filed 2 or more document requests, with the document type(s) they've requested in place of role.",
+        ],
+
         'chartRoleCounts' => [
             'title'   => 'Accounts by Role',
             'group'   => 'User / Accounts',
@@ -134,23 +194,12 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'type'    => 'roster',
             'summary' => "Lists every resident and non-resident account registered today, with a running count and each person's identifying details.",
         ],
-        'newResidentsMonth' => [
-            'title'   => 'New Residents This Month',
-            'group'   => 'Resident Management',
-            'type'    => 'roster',
-            'summary' => "Lists every approved resident account (non-resident accounts excluded) registered so far this month, with a running count and each resident's identifying details.",
-        ],
-        'newBeneficiariesMonth' => [
-            'title'   => 'New Beneficiaries This Month',
-            'group'   => 'Beneficiary Management',
-            'type'    => 'roster',
-            'summary' => "Lists every resident approved as a beneficiary so far this month, with a running count and each beneficiary's identifying details.",
-        ],
     ];
 
     /* Which report tab (if any) needs to be switched-to/drawn before this
        item's chart exists in the DOM. Items not listed here are always
-       available (drawn once on initial page load). */
+       available (drawn once on initial page load, or - for 'roster'/'list'
+       items - fetched straight from the database at print time). */
     $ANALYTICS_TAB_MAP = [
         'chartPurok'         => 'resident',
         'chartAgeBracket'    => 'resident',
@@ -168,7 +217,9 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
        that fetches its count + name/age/birthdate/contact/address/role
        rows. print_global_list.php calls this directly - roster items are
        never drawn client-side, so they have no entry in
-       $ANALYTICS_TAB_MAP above. */
+       $ANALYTICS_TAB_MAP above.
+       ('list'-type items don't need an entry here - their query function
+       is given inline via each item's own 'query' key above.) */
     $ANALYTICS_ROSTER_QUERIES = [
         'newRegistrationsMonth'   => 'gf_run_new_registrations_month_query',
         'accountsRegisteredToday' => 'gf_run_accounts_today_query',

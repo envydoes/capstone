@@ -1141,6 +1141,16 @@ mysqli_close($conn);
     </div>
   </div>
 </div>
+
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="flex items-center gap-3 min-w-0">
+        <div style="width:36px;height:36px;background:#fdf2f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-user-shield text-fuchsia-700 text-sm"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Lightbox -->
@@ -1733,9 +1743,19 @@ function bulkArchive(triggerBtn = null) {
   if (!rows.length) return;
   showDialog('Archive Selected', `Are you sure you want to archive ${rows.length} resident${rows.length>1?'s':''}?`, null, 'Yes, Archive', async () => {
     const resetBtn = setActionButtonLoading(triggerBtn, 'Archiving...');
-    for (const r of rows) await doAction(+r.dataset.uid, 'archive', r, '', null, false);
+    let succeeded = 0, blocked = 0;
+    for (const r of rows) {
+      const result = await doAction(+r.dataset.uid, 'archive', r, '', null, false, true);
+      if (result.success) succeeded++; else blocked++;
+    }
     if (resetBtn) resetBtn();
-    showToast('warning', `${rows.length} Archived`, 'Moved to Archived tab.');
+    if (succeeded > 0 && blocked === 0) {
+      showToast('warning', `${succeeded} Archived`, 'Moved to Archived tab.');
+    } else if (succeeded > 0 && blocked > 0) {
+      showToast('warning', `${succeeded} of ${rows.length} Archived`, `${blocked} skipped - they still have pending requests/applications/borrowings.`);
+    } else {
+      showToast('error', 'None Archived', 'All selected residents still have pending requests/applications/borrowings.');
+    }
     document.getElementById('checkAll').checked = false;
     reloadAfterSuccess();
   }, true);
@@ -1752,7 +1772,7 @@ function bulkUnarchive(triggerBtn = null) {
     reloadAfterSuccess();
   });
 }
-function doAction(uid, action, row, name, triggerBtn = null, shouldReload = true) {
+function doAction(uid, action, row, name, triggerBtn = null, shouldReload = true, silent = false) {
   const resetBtn = setActionButtonLoading(triggerBtn, action === 'archive' ? 'Archiving...' : 'Restoring...');
   return fetch('residentAction.php', {
     method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -1765,10 +1785,15 @@ function doAction(uid, action, row, name, triggerBtn = null, shouldReload = true
         action==='archive'?'Archived':'Restored',
         action==='archive'?`${name} has been archived.`:`${name} is now active.`);
       if (shouldReload) reloadAfterSuccess();
+    } else if (!silent) {
+      showToast('error', action==='archive'?'Cannot Archive':'Cannot Restore', d.message || 'Something went wrong.');
     }
     if (resetBtn) resetBtn();
+    return { success: d.success, message: d.message || '' };
   }).catch(() => {
+    if (!silent) showToast('error', 'Network Error', 'Please try again.');
     if (resetBtn) resetBtn();
+    return { success: false, message: 'Network error.' };
   });
 }
 

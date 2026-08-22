@@ -34,7 +34,10 @@ require_once __DIR__ . '/includes/site_config.php';
 $siteSettings = site_config_load($conn);
 
 $listings = [];
-$sql = "SELECT * FROM tbl_busaptlisting ORDER BY createdAt DESC";
+$sql = "SELECT l.* FROM tbl_busaptlisting l
+        JOIN tbl_userinfo u ON l.userId = u.accID
+        WHERE LOWER(u.userStatus) = 'approved'
+        ORDER BY l.createdAt DESC";
 $result = $conn->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {

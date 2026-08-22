@@ -38,6 +38,20 @@ $statusMap = [
 ];
 $newStatus = $statusMap[$action];
 
+// ==== Block disabling if the account has anything pending ====
+// (approve/reject/revert are never blocked - only disable itself)
+if ($action === 'disable') {
+    require_once __DIR__ . '/../includes/pending_checks.php';
+    $blockers = get_pending_blockers($conn, (int) $userID);
+    if (!empty($blockers)) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Cannot disable - this account still has ' . implode(', ', $blockers) . '. Resolve these first.',
+        ]);
+        exit;
+    }
+}
+
 $sql  = "UPDATE tbl_userinfo SET userStatus = ? WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {

@@ -129,7 +129,7 @@ if (!function_exists('print_report_start')) {
   .conditions-empty { font-size: 0.78rem; color: #6b7280; font-style: italic; }
 
   /* ?? Table ?? */
-  .report-summary { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .report-summary { display: flex; justify-content: end; align-items: baseline; margin-bottom: 8px; }
   .report-summary .count { font-size: 0.8rem; color: #4b5563; }
   .report-summary .count strong { color: #1a2e1a; }
   table.report-table { width: 100%; border-collapse: collapse; }
