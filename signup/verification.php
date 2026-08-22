@@ -19,6 +19,10 @@ if (in_array('non-resident', $accountRoles, true)) {
     $backHref = 'residentProfile.php';
     $regTypeLabel = 'Resident Registration';
 }
+
+// Populated by process_verification.php's redirectWithError() on failure.
+$status       = $_GET['status']  ?? '';
+$errorMessage = $_GET['message'] ?? '';
 ?>
 <!DOCTYPE html> 
 <html lang="en">
@@ -28,6 +32,7 @@ if (in_array('non-resident', $accountRoles, true)) {
   <link rel="stylesheet" href="../assets/responsive-global.css">
   <title>Verification - <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/tailwind/input.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -252,9 +257,9 @@ if (in_array('non-resident', $accountRoles, true)) {
       </div>
 
       <!-- Error message (PHP-driven, shown when $status === 'error') -->
-      <div id="errorBanner" class="hidden border border-red-200 bg-red-50 text-red-700 p-4 rounded-xl text-sm flex items-start gap-3">
+      <div id="errorBanner" class="<?php echo $status === 'error' ? '' : 'hidden'; ?> border border-red-200 bg-red-50 text-red-700 p-4 rounded-xl text-sm flex items-start gap-3">
         <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5"></i>
-        <span id="errorText"></span>
+        <span id="errorText"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?></span>
       </div>
 
       <!-- FRONT SIDE -->

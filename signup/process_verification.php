@@ -7,6 +7,34 @@ function redirectWithError(string $message): void
     exit;
 }
 
+/**
+ * Translates PHP's UPLOAD_ERR_* codes into a specific, actionable reason
+ * instead of a generic "failed to upload" message that hides what's
+ * actually wrong (size limit vs. server misconfiguration vs. partial
+ * upload, etc. all need different fixes).
+ */
+function uploadErrorReason(int $code): string
+{
+    switch ($code) {
+        case UPLOAD_ERR_INI_SIZE:
+            return 'the file exceeds the server\'s upload_max_filesize limit (php.ini)';
+        case UPLOAD_ERR_FORM_SIZE:
+            return 'the file exceeds the form\'s MAX_FILE_SIZE limit';
+        case UPLOAD_ERR_PARTIAL:
+            return 'the file was only partially uploaded (connection interrupted)';
+        case UPLOAD_ERR_NO_FILE:
+            return 'no file was actually received by the server';
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return 'the server has no temporary folder configured for uploads';
+        case UPLOAD_ERR_CANT_WRITE:
+            return 'the server failed to write the file to disk (permissions or disk space)';
+        case UPLOAD_ERR_EXTENSION:
+            return 'a server extension blocked the upload';
+        default:
+            return 'unknown upload error (code ' . $code . ')';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     session_destroy();
     header('Location: accountCreation.php');
@@ -45,7 +73,7 @@ $savedFiles = [];
 foreach (['front' => $_FILES['id_front'], 'back' => $_FILES['id_back']] as $side => $file) {
     $uploadError = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
     if ($uploadError !== UPLOAD_ERR_OK) {
-        redirectWithError('Failed to upload ' . $side . ' ID file.');
+        redirectWithError('Failed to upload ' . $side . ' ID file: ' . uploadErrorReason($uploadError) . '.');
     }
 
     $size = (int)($file['size'] ?? 0);
