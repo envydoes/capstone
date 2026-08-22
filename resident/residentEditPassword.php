@@ -5,6 +5,7 @@
 session_start();
 require_once __DIR__ . '/../config/db_connection.php';
 require_once __DIR__ . '/../includes/site_config.php';
+require_once __DIR__ . '/../includes/password_rules.php';
 $siteSettings = site_config_load($conn);
 
 $accId = $_SESSION['acc_id'] ?? null;
@@ -114,6 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
         $password_error = 'Password must contain at least one lowercase letter.';
     } elseif (!preg_match('/[0-9]/', $new_password)) {
         $password_error = 'Password must contain at least one number.';
+    } elseif (!preg_match('/[^A-Za-z0-9]/', $new_password)) {
+        $password_error = 'Password must include at least one special character (e.g. !@#$%^&*).';
+    } elseif (isCommonPassword($new_password)) {
+        $password_error = 'This password is too common and not allowed (e.g. "password1234"). Please choose something more unique.';
+    } elseif (isPwnedPassword($new_password)) {
+        $password_error = 'This password has appeared in known data breaches. Please choose a different password.';
     } elseif ($current_password === $new_password) {
         $password_error = 'Current password and new password cannot be the same.';
     } else {
@@ -453,6 +460,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
                                     <span class="mr-3">&bull;</span>
                                     <span>At least one number</span>
                                 </li>
+                                <li class="flex items-center">
+                                    <span class="mr-3">&bull;</span>
+                                    <span>At least one special character (e.g. !@#$%^&amp;*)</span>
+                                </li>
                             </ul>
                         </div>
 
@@ -484,6 +495,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
       if (!/[A-Z]/.test(pw)) errors.push('an uppercase letter');
       if (!/[a-z]/.test(pw)) errors.push('a lowercase letter');
       if (!/[0-9]/.test(pw)) errors.push('a number');
+      if (!/[^A-Za-z0-9]/.test(pw)) errors.push('a special character');
       return errors;
     }
 
@@ -502,6 +514,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
       if (pw.length >= 12) score++;
       if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
       if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
       return Math.min(score, 4);
     }
 
