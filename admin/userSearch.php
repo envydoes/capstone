@@ -16,7 +16,10 @@ $q = trim($_GET['q'] ?? '');
 // shown here — this section is exclusively for managing granted access.
 $sql = "
     SELECT ua.accID AS userID, ua.email,
-           TRIM(CONCAT(COALESCE(ui.firstname,''), ' ', COALESCE(ui.lastname,''))) AS fullname,
+           COALESCE(
+               NULLIF(TRIM(CONCAT(COALESCE(ui.firstname,''), ' ', COALESCE(ui.lastname,''))), ''),
+               ap.full_name
+           ) AS fullname,
                      ap.permissions_csv AS permissions,
                      ap.position AS position,
                      ap.granted_by AS granted_by,
