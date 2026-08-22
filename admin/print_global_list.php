@@ -148,10 +148,11 @@ if ($list === 'analytics') {
             echo '<p class="analytics-item-summary">' . e($meta['summary']) . '</p>';
 
             if ($meta['type'] === 'roster') {
+                // Fixed Name/Age/Birthdate/Contact/Address/Role shape —
+                // query function looked up via $ANALYTICS_ROSTER_QUERIES.
                 $fn = $ANALYTICS_ROSTER_QUERIES[$key] ?? null;
                 if ($fn && function_exists($fn)) {
                     $roster = $fn($conn);
-                    echo '<p class="analytics-item-count">Count: <strong>' . number_format($roster['count']) . '</strong></p>';
 
                     if (empty($roster['rows'])) {
                         echo '<p class="analytics-item-unavailable">No records found.</p>';
@@ -173,6 +174,8 @@ if ($list === 'analytics') {
                             echo '</tr>';
                         }
                         echo '</tbody></table>';
+                        echo '<p class="analytics-item-count" style="text-align:right;">Count: <strong>' . number_format($roster['count']) . '</strong></p>';
+
                     }
                 } else {
                     echo '<p class="analytics-item-unavailable">Roster data unavailable.</p>';
@@ -204,6 +207,41 @@ if ($list === 'analytics') {
                         echo '</tr>';
                     }
                     echo '</tbody></table>';
+                }
+            } elseif ($meta['type'] === 'list') {
+                // Custom columns alongside Name — query function given
+                // directly on the item via its own 'query' key.
+                $queryFn = $meta['query'] ?? null;
+                if ($queryFn && function_exists($queryFn)) {
+                    $listResult  = $queryFn($conn);
+                    $listColumns = $listResult['columns'] ?? [];
+                    $listRows    = $listResult['data'] ?? [];
+                    $listCount   = $listResult['count'] ?? 0;
+
+                    echo '<div class="report-summary" style="margin-bottom:8px;"><span class="count">Total: <strong>' . number_format($listCount) . '</strong></span></div>';
+
+                    if (empty($listRows)) {
+                        echo '<p class="analytics-item-unavailable">No records found.</p>';
+                    } else {
+                        echo '<table class="report-table analytics-data-table">';
+                        echo '<thead><tr><th>Name</th>';
+                        foreach ($listColumns as $c) {
+                            echo '<th>' . e($c['label']) . '</th>';
+                        }
+                        echo '</tr></thead><tbody>';
+                        foreach ($listRows as $row) {
+                            echo '<tr>';
+                            echo '<td style="font-weight:600;color:#111827;">' . e($row['name'] ?? '-') . '</td>';
+                            foreach ($listColumns as $c) {
+                                $val = $row[$c['key']] ?? '-';
+                                echo '<td>' . (!empty($c['raw']) ? $val : e($val)) . '</td>';
+                            }
+                            echo '</tr>';
+                        }
+                        echo '</tbody></table>';
+                    }
+                } else {
+                    echo '<p class="analytics-item-unavailable">Report data unavailable.</p>';
                 }
             } else { // 'bars'
                 $rows = $bars[$key] ?? [];
