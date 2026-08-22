@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../config/db_connection.php';
 session_start();
 
@@ -81,7 +81,7 @@ $roleBadgeClass = match($role) {
 };
 $initials = strtoupper(substr($userName, 0, 2));
 
-// ─── Fetch listings for this user from tbl_busaptlisting ───
+// --- Fetch listings for this user from tbl_busaptlisting ---
 $apartmentListings = [];
 $businessListings  = [];
 
@@ -106,7 +106,7 @@ if ($listStmt) {
         $lr['listingSubtype'] = $isApartment ? $lr['aptStatus'] : $lr['bussStatus'];
         $displayName = $isApartment ? ($lr['aptTitle'] ?: 'Apartment Listing') : ($lr['bussName'] ?: 'Business Listing');
         $lr['display_name'] = $displayName;
-        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : ' – ';
+        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : ' � ';
         if ($isApartment) {
             $apartmentListings[] = $lr;
         } else {
@@ -134,7 +134,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Manage Listings  –  <?= e($siteSettings['site_title']) ?></title>
+  <title>Manage Listings  �  <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -465,7 +465,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </nav>
 </header>
 
-<!-- ──────────── MOBILE SIDEBAR ──────────── -->
+<!-- ------------ MOBILE SIDEBAR ------------ -->
 <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 <div id="mobile-sidebar" class="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[70] flex flex-col">
   <div class="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -602,7 +602,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     <div class="form-card f3">
       <div class="form-header">
-        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?>  –  Listing Form</p>
+        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?>  �  Listing Form</p>
         <p class="text-green-200 text-xs mt-1">Fill in your listing details below</p>
       </div>
 
@@ -615,7 +615,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
           <input type="hidden" name="slots_available" id="fld_key"     value="">
 
           <!-- STEP 1: TYPE -->
-          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1  –  What are you listing?</span></div>
+          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1  �  What are you listing?</span></div>
           <div style="display:flex;gap:12px;">
             <div class="type-card" id="tc-apt" onclick="chooseType('apt')">
               <span class="tc-icon"><i class="fa-solid fa-building"></i></span>
@@ -660,7 +660,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               </div>
             </div>
             <div class="g2 fg">
-              <div><label class="fl"><span class="req">*</span>Monthly Rent:</label><div class="price-wrap"><span class="price-pfx">₱</span><input type="text" name="apt_price" class="price-in" placeholder="e.g. 3,500"></div></div>
+              <div><label class="fl"><span class="req">*</span>Monthly Rent:</label><div class="price-wrap"><span class="price-pfx">?</span><input type="text" name="apt_price" class="price-in" placeholder="e.g. 3,500"></div></div>
               <div><label class="fl">Floor / Level: <span class="hint">(optional)</span></label><input type="text" name="apt_floor" class="fi" placeholder="e.g. 2nd Floor"></div>
             </div>
             <div class="sdiv"><span><i class="fa-solid fa-bed"></i> Room Specifications</span></div>
@@ -713,7 +713,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
             </div></div>
             <div class="fg">
               <label class="fl">Description: <span class="hint">(optional)</span></label>
-              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit  –  surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
+              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit  �  surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
               <div class="cc" id="cc-apt-d">0 / 500</div>
             </div>
           </div><!-- /panel-apt -->
@@ -731,7 +731,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
                 <label class="po"><input type="radio" name="buss_cat" value="laundry"   onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-shirt"></i> Laundry Shop</label>
                 <label class="po"><input type="radio" name="buss_cat" value="pharmacy"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-pills"></i> Pharmacy</label>
                 <label class="po"><input type="radio" name="buss_cat" value="printing"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-print"></i> Printing / Computer Shop</label>
-                <label class="po"><input type="radio" name="buss_cat" value="bakery"    onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-bread-slice"></i> Bakery / Café</label>
+                <label class="po"><input type="radio" name="buss_cat" value="bakery"    onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-bread-slice"></i> Bakery / Caf�</label>
                 <label class="po"><input type="radio" name="buss_cat" value="hardware"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-screwdriver-wrench"></i> Hardware</label>
                 <label class="po"><input type="radio" name="buss_cat" value="other"     onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-ellipsis"></i> Other</label>
               </div>
@@ -751,14 +751,14 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               </div>
             </div>
             <div class="g2 fg">
-              <div><label class="fl">Starting Price / Rate: <span class="hint">(optional)</span></label><div class="price-wrap"><span class="price-pfx">₱</span><input type="text" name="buss_price" class="price-in" placeholder="e.g. 30 per load"></div></div>
+              <div><label class="fl">Starting Price / Rate: <span class="hint">(optional)</span></label><div class="price-wrap"><span class="price-pfx">?</span><input type="text" name="buss_price" class="price-in" placeholder="e.g. 30 per load"></div></div>
               <div><label class="fl">Years in Business: <span class="hint">(optional)</span></label>
                 <select name="buss_years" class="fs">
                   <option value="">-- Select --</option>
                   <option value="new">Just opened</option>
                   <option value="1">1 year</option>
-                  <option value="2-5">2 – 5 years</option>
-                  <option value="5-10">5 – 10 years</option>
+                  <option value="2-5">2 � 5 years</option>
+                  <option value="5-10">5 � 10 years</option>
                   <option value="10+">10+ years</option>
                 </select>
               </div>
@@ -833,13 +833,13 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               <div class="uzone" id="uzone" onclick="document.getElementById('photoInput').click()" ondrop="dropPh(event)" ondragover="dovPh(event)" ondragleave="dlvPh(event)">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.6rem;color:#d1d5db;display:block;margin-bottom:6px;"></i>
                 <p style="font-size:0.875rem;font-weight:700;color:#6b7280;margin:0 0 3px;">Click to upload or drag &amp; drop</p>
-                <p style="font-size:0.72rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP · max 5 MB each · up to <strong>4 photos</strong></p>
+                <p style="font-size:0.72rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP � max 5 MB each � up to <strong>4 photos</strong></p>
               </div>
               <!-- ==== KEY FIX: name must be photos[] for $_FILES['photos'] to work ==== -->
               <input type="file" id="photoInput" name="photos[]" multiple accept="image/*" class="hidden" onchange="addPh(this)">
               <div class="pgrid4" id="pgrid" style="display:none;"></div>
               <p style="font-size:0.72rem;color:#9ca3af;margin-top:6px;display:none;" id="phlabel"></p>
-              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos  –  extra files were skipped.</p>
+              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos  �  extra files were skipped.</p>
             </div>
             <div style="display:flex;justify-content:flex-end;margin-top:28px;">
               <button type="submit" class="submit-btn" onclick="return validateForm()">
@@ -854,7 +854,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
 </main>
 
-<!-- ──────────── VIEW MODAL ──────────── -->
+<!-- ------------ VIEW MODAL ------------ -->
 <div class="modal-overlay" id="viewModalOverlay" onclick="closeViewModalOnOverlay(event)">
   <div class="modal" id="viewModal" style="max-width:640px;">
     <div class="modal-header">
@@ -877,7 +877,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </div>
 </div>
 
-<!-- ──────────── EDIT MODAL ──────────── -->
+<!-- ------------ EDIT MODAL ------------ -->
 <div class="modal-overlay" id="editModalOverlay" onclick="closeEditModalOnOverlay(event)">
   <div class="modal" id="editModal" style="max-width:640px;">
     <div class="modal-header">
@@ -908,7 +908,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   </div>
 </div>
 
-<!-- ──────────── CONFIRM DIALOG ──────────── -->
+<!-- ------------ CONFIRM DIALOG ------------ -->
 <div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog-box">
     <div class="dialog-body-inner">
@@ -974,13 +974,13 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        © 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.
+        � 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.
       </div>
     </div>
   </footer>
 
 <script>
-/* ─── TOAST SYSTEM ─── */
+/* --- TOAST SYSTEM --- */
 function showToast(type, title, desc) {
   const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
   const container = document.getElementById('toastContainer');
@@ -1007,7 +1007,7 @@ function escHtml(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ─── Active listings tab ─── */
+/* --- Active listings tab --- */
 function switchTab(t) {
   ['apartment','business'].forEach(x => {
     document.getElementById('tab-'+x).classList.toggle('active', x===t);
@@ -1015,7 +1015,7 @@ function switchTab(t) {
   });
 }
 
-/* ─── Type chooser ─── */
+/* --- Type chooser --- */
 let curType = '';
 function chooseType(t) {
   curType = t;
@@ -1029,17 +1029,17 @@ function chooseType(t) {
   document.getElementById('err-type').classList.remove('on');
 }
 
-/* ─── Radio pills ─── */
+/* --- Radio pills --- */
 function pickRadio(radio, errId) {
   document.querySelectorAll(`[name="${radio.name}"]`).forEach(r => r.closest('.po').classList.toggle('sel', r.checked));
   document.getElementById('fld_subtype').value = radio.value;
   document.getElementById(errId).classList.remove('on');
 }
 
-/* ─── Checkbox pills ─── */
+/* --- Checkbox pills --- */
 function toggleCb(cb) { cb.closest('.po').classList.toggle('sel', cb.checked); }
 
-/* ─── Slots ─── */
+/* --- Slots --- */
 let aptKey = 0;
 function updateSlotKey(value) {
   const n = parseInt(value, 10);
@@ -1055,7 +1055,7 @@ function updateSlotKey(value) {
   document.getElementById('err-apt-key').classList.remove('on');
 }
 
-/* ─── Char counter ─── */
+/* --- Char counter --- */
 function charCount(el, cId, max) {
   const n = el.value.length;
   const d = document.getElementById(cId);
@@ -1133,12 +1133,12 @@ function renderGrid() {
 }
 
 /* ====
-   FORM SUBMIT  –  sync JS files[] into the
+   FORM SUBMIT  �  sync JS files[] into the
    real <input type="file"> via DataTransfer
    so PHP receives them in $_FILES['photos']
 ==== */
 document.getElementById('listingForm').addEventListener('submit', function(e) {
-  // Run validation first  –  validateForm() returns false to cancel
+  // Run validation first  �  validateForm() returns false to cancel
   // (the onclick on the button already calls validateForm; this is a
   //  belt-and-suspenders sync of the file list)
   if (!files.length) return; // nothing to sync, let the form go
@@ -1148,7 +1148,7 @@ document.getElementById('listingForm').addEventListener('submit', function(e) {
   document.getElementById('photoInput').files = dt.files;
 });
 
-/* ─── Validation ─── */
+/* --- Validation --- */
 function validateForm() {
   let ok = true;
   if (!curType) { document.getElementById('err-type').classList.add('on'); ok = false; }
@@ -1173,7 +1173,7 @@ function validateForm() {
       files.forEach(f => dt.items.add(f));
       document.getElementById('photoInput').files = dt.files;
     } catch(e) {
-      // DataTransfer not supported in some older browsers  –  files still in input from addPh()
+      // DataTransfer not supported in some older browsers  �  files still in input from addPh()
     }
   }
 
@@ -1181,7 +1181,7 @@ function validateForm() {
 }
 
 /* ............................................
-   HELPERS  –  parse stored JSON arrays
+   HELPERS  �  parse stored JSON arrays
 ............................................ */
 function parseArr(val) {
   if (!val) return [];
@@ -1199,14 +1199,14 @@ const STATUS_LABELS_BIZ = { 'open': 'Open / Operating', 'new': 'Newly Opened', '
 const BUSS_CAT_LABELS = {
   'food': 'Food & Dining', 'water': 'Water Station', 'sari-sari': 'Sari-Sari Store',
   'salon': 'Salon / Barber', 'laundry': 'Laundry Shop', 'pharmacy': 'Pharmacy',
-  'printing': 'Printing / Computer Shop', 'bakery': 'Bakery / Café', 'hardware': 'Hardware', 'other': 'Other'
+  'printing': 'Printing / Computer Shop', 'bakery': 'Bakery / Caf�', 'hardware': 'Hardware', 'other': 'Other'
 };
 const INC_LABELS   = { 'electric': 'Electricity', 'water': 'Water', 'wifi': 'WiFi', 'cable': 'Cable TV' };
 const AMN_LABELS   = { 'aircon': 'Aircon', 'fan': 'Electric Fan', 'parking': 'Parking', 'laundry': 'Laundry Area', 'cctv': 'CCTV', 'security': 'Security', 'kitchen': 'Shared Kitchen', 'gate': 'Gated Compound' };
 const RULES_LABELS = { 'no-smoking': 'No Smoking', 'no-pets': 'No Pets', 'no-visitors': 'No Overnight Visitors', 'curfew': 'Curfew Policy', 'no-cooking': 'No Cooking Inside' };
 const FEAT_LABELS  = { 'delivery': 'Delivery', 'pickup': 'Pick-up', 'dine-in': 'Dine-in', 'parking': 'Parking', 'gcash': 'GCash', 'maya': 'Maya', 'wifi': 'Free WiFi', 'aircon': 'Aircon' };
 const DAYS_LABELS  = { 'mon': 'Mon', 'tue': 'Tue', 'wed': 'Wed', 'thu': 'Thu', 'fri': 'Fri', 'sat': 'Sat', 'sun': 'Sun', 'holiday': 'Holidays' };
-const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2 – 5 years', '5-10': '5 – 10 years', '10+': '10+ years' };
+const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2 � 5 years', '5-10': '5 � 10 years', '10+': '10+ years' };
 
 function tagList(arr, labelObj) {
   if (!arr || !arr.length) return '<span style="color:#9ca3af;font-style:italic;font-size:0.82rem;">None specified</span>';
@@ -1215,7 +1215,7 @@ function tagList(arr, labelObj) {
 
 function vrow(label, val) {
   const v = (val && String(val).trim()) ? String(val) : null;
-  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : ' – '}</span></div>`;
+  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : ' � '}</span></div>`;
 }
 
 function fmt12(t) {
@@ -1227,7 +1227,7 @@ function fmt12(t) {
   return `${hr}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
-/* ─── VIEW MODAL ─── */
+/* --- VIEW MODAL --- */
 let currentViewListing = null;
 
 function openViewModal(row) {
@@ -1246,7 +1246,7 @@ function openViewModal(row) {
   const photos = l.photos_arr || [];
 
   const title = isApt
-    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + '  –  ' : '') + (l.aptAddress || 'Apartment Listing'))
+    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + '  �  ' : '') + (l.aptAddress || 'Apartment Listing'))
     : (l.bussName || 'Business Listing');
 
   document.getElementById('viewModalTitle').textContent = title;
@@ -1261,7 +1261,7 @@ function openViewModal(row) {
 
   let html = '';
 
-  /* ─── PHOTOS ─── */
+  /* --- PHOTOS --- */
   if (photos.length) {
     html += `<div class="section-card">
       <div class="sc-title"><div class="sc-icon"><i class="fa-solid fa-camera text-green-700 text-xs"></i></div>Photos <span style="font-weight:400;font-size:0.68rem;color:#9ca3af;text-transform:none;letter-spacing:0;">(click to zoom)</span></div>
@@ -1275,7 +1275,7 @@ function openViewModal(row) {
     html += `</div></div>`;
   }
 
-  /* ─── APARTMENT VIEW ─── */
+  /* --- APARTMENT VIEW --- */
   if (isApt) {
     html += `
     <div class="section-card">
@@ -1284,7 +1284,7 @@ function openViewModal(row) {
         ${vrow('Listing Title', l.aptTitle || '')}
         ${vrow('Room Type', APT_TYPE_LABELS[l.aptType] || l.aptType || '')}
         ${vrow('Availability', STATUS_LABELS_APT[l.aptStatus] || l.aptStatus || '')}
-        ${vrow('Monthly Rent', l.aptPrice ? '₱ ' + Number(l.aptPrice).toLocaleString() : '')}
+        ${vrow('Monthly Rent', l.aptPrice ? '? ' + Number(l.aptPrice).toLocaleString() : '')}
         ${vrow('Floor / Level', l.aptFloor || '')}
         ${vrow('No. of Rooms', l.aptRooms || '')}
         ${vrow('Max Occupants', l.aptOccupants || '')}
@@ -1309,7 +1309,7 @@ function openViewModal(row) {
       <p style="font-size:0.875rem;color:#374151;line-height:1.7;white-space:pre-wrap;margin:0;">${l.aptDesc ? escHtml(l.aptDesc) : '<span style="color:#9ca3af;font-style:italic;">No description provided.</span>'}</p>
     </div>`;
 
-  /* ─── BUSINESS VIEW ─── */
+  /* --- BUSINESS VIEW --- */
   } else {
     html += `
     <div class="section-card">
@@ -1318,7 +1318,7 @@ function openViewModal(row) {
         ${vrow('Business Name', l.bussName)}
         ${vrow('Category', BUSS_CAT_LABELS[l.bussCat] || l.bussCat || '')}
         ${vrow('Status', STATUS_LABELS_BIZ[l.bussStatus] || l.bussStatus || '')}
-        ${vrow('Starting Price', l.bussPrice ? '₱ ' + l.bussPrice : '')}
+        ${vrow('Starting Price', l.bussPrice ? '? ' + l.bussPrice : '')}
         ${vrow('Years in Business', YEARS_LABELS[l.bussYears] || l.bussYears || '')}
       </div>
     </div>`;
@@ -1392,7 +1392,7 @@ function switchViewToEdit() {
   }
 }
 
-/* ─── EDIT MODAL HELPERS ─── */
+/* --- EDIT MODAL HELPERS --- */
 let currentEditListing = null;
 let editRemovedPhotos  = [];
 let editNewFiles       = [];
@@ -1423,7 +1423,7 @@ function editToggleCb(cb) {
   checkEditChanges();
 }
 
-/* ─── APARTMENT EDIT FIELDS ─── */
+/* --- APARTMENT EDIT FIELDS --- */
 function buildAptEditFields(l) {
   const inc   = parseArr(l.aptIncluded);
   const amn   = parseArr(l.aptAmenities);
@@ -1446,7 +1446,7 @@ function buildAptEditFields(l) {
         ${buildSelect('edit_aptStatus', [['','-- Select --'],['available','Available'],['occupied','Fully Occupied'],['inquire','Inquire First']], l.aptStatus || '')}
       </div>
       <div>
-        <label class="field-label">Monthly Rent (₱)</label>
+        <label class="field-label">Monthly Rent (?)</label>
         <input type="number" id="edit_aptPrice" class="field-input" value="${escHtml(String(l.aptPrice || ''))}" placeholder="e.g. 3500" data-orig="${escHtml(String(l.aptPrice || ''))}" oninput="checkEditChanges()">
       </div>
       <div>
@@ -1499,7 +1499,7 @@ function buildAptEditFields(l) {
   </div>`;
 }
 
-/* ─── BUSINESS EDIT FIELDS ─── */
+/* --- BUSINESS EDIT FIELDS --- */
 function buildBizEditFields(l) {
   const feat = parseArr(l.bussFeatures);
   const days = parseArr(l.bussDays);
@@ -1514,19 +1514,19 @@ function buildBizEditFields(l) {
       </div>
       <div>
         <label class="field-label">Category</label>
-        ${buildSelect('edit_bussCat', [['','-- Select --'],['food','Food & Dining'],['water','Water Station'],['sari-sari','Sari-Sari Store'],['salon','Salon / Barber'],['laundry','Laundry Shop'],['pharmacy','Pharmacy'],['printing','Printing / Computer Shop'],['bakery','Bakery / Café'],['hardware','Hardware'],['other','Other']], l.bussCat || '')}
+        ${buildSelect('edit_bussCat', [['','-- Select --'],['food','Food & Dining'],['water','Water Station'],['sari-sari','Sari-Sari Store'],['salon','Salon / Barber'],['laundry','Laundry Shop'],['pharmacy','Pharmacy'],['printing','Printing / Computer Shop'],['bakery','Bakery / Caf�'],['hardware','Hardware'],['other','Other']], l.bussCat || '')}
       </div>
       <div>
         <label class="field-label">Status</label>
         ${buildSelect('edit_bussStatus', [['','-- Select --'],['open','Open / Operating'],['new','Newly Opened'],['temp-closed','Temporarily Closed'],['for-rent','Space for Rent']], l.bussStatus || '')}
       </div>
       <div>
-        <label class="field-label">Starting Price / Rate (₱)</label>
+        <label class="field-label">Starting Price / Rate (?)</label>
         <input type="text" id="edit_bussPrice" class="field-input" value="${escHtml(l.bussPrice || '')}" placeholder="e.g. 30 per load" data-orig="${escHtml(l.bussPrice || '')}" oninput="checkEditChanges()">
       </div>
       <div>
         <label class="field-label">Years in Business</label>
-        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2 – 5 years'],['5-10','5 – 10 years'],['10+','10+ years']], l.bussYears || '')}
+        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2 � 5 years'],['5-10','5 � 10 years'],['10+','10+ years']], l.bussYears || '')}
       </div>
     </div>
   </div>
@@ -1562,7 +1562,7 @@ function buildBizEditFields(l) {
   </div>`;
 }
 
-/* ─── SHARED EDIT FIELDS ─── */
+/* --- SHARED EDIT FIELDS --- */
 function buildEditSharedFields(l) {
   const isApt  = (l.listingType === 'apt' || l.listingType === 'apartment');
   const addr   = isApt ? (l.aptAddress  || '') : (l.bussAddress  || '');
@@ -1622,16 +1622,16 @@ function buildEditSharedFields(l) {
     <div class="uzone" id="edit_uzone" onclick="document.getElementById('editPhotoInput').click()" ondrop="editDropPh(event)" ondragover="editDovPh(event)" ondragleave="editDlvPh(event)">
       <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.4rem;color:#d1d5db;display:block;margin-bottom:5px;"></i>
       <p style="font-size:0.82rem;font-weight:700;color:#6b7280;margin:0 0 2px;">Add new photos</p>
-      <p style="font-size:0.7rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP · max 5 MB · up to <strong>4 total</strong></p>
+      <p style="font-size:0.7rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP � max 5 MB � up to <strong>4 total</strong></p>
     </div>
     <input type="file" id="editPhotoInput" multiple accept="image/*" class="hidden" onchange="editAddPh(this)">
     <div class="edit-pgrid" id="edit_new_pgrid" style="display:none;margin-top:8px;"></div>
-    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total  –  extra files skipped.</p>
+    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total  �  extra files skipped.</p>
     <input type="hidden" id="edit_removed_photos" value="[]">
   </div>`;
 }
 
-/* ─── Photo management in edit modal ─── */
+/* --- Photo management in edit modal --- */
 function removeExistingPhoto(idx, url) {
   const cell = document.getElementById('editcp_' + idx);
   if (cell) cell.remove();
@@ -1679,7 +1679,7 @@ function editRemoveNewPh(i) {
   checkEditChanges();
 }
 
-/* ─── OPEN / CLOSE EDIT MODAL ─── */
+/* --- OPEN / CLOSE EDIT MODAL --- */
 function openEditModal(row) {
   const raw = row.getAttribute('data-listing');
   if (!raw) return;
@@ -1757,7 +1757,7 @@ function closeEditModalOnOverlay(e) {
   if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
 }
 
-/* ─── SAVE EDIT ─── */
+/* --- SAVE EDIT --- */
 function handleEditSave() {
   if (!currentEditListing) return;
   const listingId   = document.getElementById('edit_listing_id')?.value || '';
@@ -1836,7 +1836,7 @@ function handleEditSave() {
   });
 }
 
-/* ─── CONFIRM DIALOG ─── */
+/* --- CONFIRM DIALOG --- */
 let dialogCallback = null;
 
 function showDialog(title, desc, nameBadge, confirmLabel, confirmIcon, isDanger, onConfirm) {
@@ -1889,7 +1889,7 @@ function confirmDelete(id, name) {
   );
 }
 
-/* ─── Lightbox ─── */
+/* --- Lightbox --- */
 function openLightbox(src) {
   if (!src) return;
   document.getElementById('lightboxImg').src = src;
@@ -1900,7 +1900,7 @@ function closeLightbox() {
   document.getElementById('lightboxImg').src = '';
 }
 
-/* ─── Profile dropdown ─── */
+/* --- Profile dropdown --- */
 function toggleProfileMenu() {
   const dd = document.getElementById('profile-dropdown');
   const ch = document.getElementById('profile-chevron');
@@ -1925,7 +1925,7 @@ if (aptSlotsEl) {
   });
 }
 
-/* ─── Mobile sidebar ─── */
+/* --- Mobile sidebar --- */
 const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
 const mobileSidebar = document.getElementById('mobile-sidebar');
 const mobileOpenBtn = document.getElementById('mobile-menu-btn');

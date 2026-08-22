@@ -9,7 +9,6 @@ session_start();
   <link rel="stylesheet" href="../assets/responsive-global.css">
   <title>Terms and Conditions - SumEste Portal</title>
   <link rel="icon" href="../assets/logo2.png" type="image/png">
-  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="/tailwind/input.css">
   <link rel="stylesheet" href="/tailwind/input.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

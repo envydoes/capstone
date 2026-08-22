@@ -81,7 +81,6 @@ if ($accID && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Set Up Your Account - <?= e($siteSettings['site_title']) ?></title>
 <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '')) ?>" type="image/png">
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <?= site_config_css_vars($siteSettings) ?>
 <style>
   body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
