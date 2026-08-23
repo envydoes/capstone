@@ -86,7 +86,7 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'title'   => 'New Residents This Month',
             'group'   => 'Resident Management',
             'type'    => 'roster',
-            'summary' => "Lists every approved resident account (non-resident accounts excluded) registered so far this month, with a running count and each resident's identifying details.",
+            'summary' => "Lists every approved resident account (non-resident accounts excluded) registered so far this month.",
         ],
 
         'chartBenPrograms' => [
@@ -99,7 +99,7 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'title'   => 'New Beneficiaries This Month',
             'group'   => 'Beneficiary Management',
             'type'    => 'roster',
-            'summary' => "Lists every resident approved as a beneficiary so far this month, with a running count and each beneficiary's identifying details.",
+            'summary' => "Lists every resident approved as a beneficiary so far this month.",
         ],
 
         'chartListingType' => [
@@ -119,7 +119,7 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'group'   => 'Business / Apartment',
             'type'    => 'list',
             'query'   => 'gf_run_new_listings_this_month_query',
-            'summary' => "Lists residents and non-resident business/apartment owners with new listings created this month, showing the listing's title, address, and business type in place of age, birthdate, and address.",
+            'summary' => "Lists residents and non-resident business/apartment owners with new listings created this month.",
         ],
 
         'chartMostBorrowed' => [
@@ -186,13 +186,13 @@ if (!isset($ANALYTICS_REPORT_ITEMS)) {
             'title'   => 'New Registrations This Month',
             'group'   => 'User / Accounts',
             'type'    => 'roster',
-            'summary' => "Lists every resident and non-resident account registered so far this month, with a running count and each person's identifying details.",
+            'summary' => "Lists every resident and non-resident account registered so far this month.",
         ],
         'accountsRegisteredToday' => [
             'title'   => 'Accounts Registered Today',
             'group'   => 'User / Accounts',
             'type'    => 'roster',
-            'summary' => "Lists every resident and non-resident account registered today, with a running count and each person's identifying details.",
+            'summary' => "Lists every resident and non-resident account registered today.",
         ],
     ];
 
