@@ -29,7 +29,7 @@ require_once __DIR__ . '/../includes/check_permissions.php';
 require_permission($conn, 'manage_residents'); // swap the key per page — see table above
 function fetchGroup($conn, $status) {
     $sql = "SELECT userID,accID,account_role_csv,firstname,lastname,middlename,suffix,
-                   family_role,gender,birthday,birthplace,civil_status,citizenship,
+                   email,family_role,gender,birthday,birthplace,civil_status,citizenship,
                    religion,ethnicity,street,barangay,city,province,zip,phone,
                    emergency_contact,emergency_phone,health_conditions,employment_status,
                    job_title,monthly_income,years_resident,resident_birth,voter_id,
