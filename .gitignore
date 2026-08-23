@@ -1,5 +1,8 @@
 node_modules/
 vendor/
 composer.phar
-uploads/
 .env
+
+# Ignore user uploads, but keep ID verification assets tracked
+uploads/*
+!uploads/id_verification/
