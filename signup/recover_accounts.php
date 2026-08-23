@@ -23,10 +23,9 @@
  *   - Hashes the password with password_hash() (PASSWORD_DEFAULT),
  *     identical to what session_data.php does on real signups.
  *   - Inserts into tbl_useracc and tbl_userinfo.
- *   - Marks the account as already verified (is_verified = 1,
- *     userStatus = 'active') since these are seed/test accounts on
- *     @example.com addresses that can never receive a real
- *     verification email.
+ *   - Marks the account as already verified (userStatus = 'active')
+ *     since these are seed/test accounts on @example.com addresses
+ *     that can never receive a real verification email.
  *
  * ASSUMPTIONS — CHECK BEFORE RUNNING:
  *   - Resident-required fields (street/barangay/city/province/zip/
@@ -91,14 +90,9 @@ if (!date_default_timezone_get()) {
 $dateRegistered = date('Y-m-d H:i:s');
 
 // ── Placeholder ID image generator (GD) ─────────────────────────────
-// Produces a plain "SAMPLE ID - TEST ACCOUNT" image so nothing in the
-// app breaks if it tries to render an ID photo for these seed accounts.
-// Returns the RELATIVE path to store in tbl_userinfo (same format
-// session_data.php derives: "../uploads/id_verification/xxxx.jpg"),
-// or '' if GD isn't available / the write failed.
 function makePlaceholderIdImage(string $accID, string $side, string $label): string {
     if (!function_exists('imagecreatetruecolor')) {
-        return ''; // GD not installed — leave blank rather than fail the whole run
+        return '';
     }
 
     $uploadDir = dirname(__DIR__) . '/uploads/id_verification';
@@ -110,8 +104,8 @@ function makePlaceholderIdImage(string $accID, string $side, string $label): str
     $fullPath = $uploadDir . '/' . $filename;
 
     $img = imagecreatetruecolor(600, 380);
-    $bg  = imagecolorallocate($img, 236, 253, 245); // light green
-    $fg  = imagecolorallocate($img, 21, 128, 61);   // green text
+    $bg  = imagecolorallocate($img, 236, 253, 245);
+    $fg  = imagecolorallocate($img, 21, 128, 61);
     $border = imagecolorallocate($img, 187, 247, 208);
     imagefill($img, 0, 0, $bg);
     imagerectangle($img, 4, 4, 595, 375, $border);
@@ -121,7 +115,6 @@ function makePlaceholderIdImage(string $accID, string $side, string $label): str
     imagejpeg($img, $fullPath, 85);
     imagedestroy($img);
 
-    // Match the relative-path convention used by session_data.php
     $basePath = str_replace('\\', '/', dirname(__DIR__));
     $absSaved = str_replace('\\', '/', $fullPath);
     return str_replace($basePath . '/', '../', $absSaved);
@@ -150,7 +143,7 @@ foreach ($accounts as $acc) {
         mysqli_begin_transaction($conn);
 
         try {
-            // Skip if email already exists (don't duplicate)
+            // Skip if email already exists
             $chk = $conn->prepare('SELECT 1 FROM tbl_useracc WHERE email = ? LIMIT 1');
             $chk->bind_param('s', $email);
             $chk->execute();
@@ -164,7 +157,7 @@ foreach ($accounts as $acc) {
                 break;
             }
 
-            // Locked, self-healing accID counter (same logic as session_data.php)
+            // Locked, self-healing accID counter
             $countResult = mysqli_query($conn, "SELECT count FROM tbl_count LIMIT 1 FOR UPDATE");
             if (!$countResult) throw new Exception("Error reading tbl_count: " . mysqli_error($conn));
             $countRow = mysqli_fetch_assoc($countResult);
@@ -184,8 +177,8 @@ foreach ($accounts as $acc) {
             $updateResult = mysqli_query($conn, "UPDATE tbl_count SET count = $newCount");
             if (!$updateResult) throw new Exception("Error updating count: " . mysqli_error($conn));
 
-            // Insert into tbl_useracc — pre-verified, active
-            $sqlAcc = "INSERT INTO tbl_useracc (accID, email, password, account_role, is_verified) VALUES (?, ?, ?, ?, 1)";
+            // Insert into tbl_useracc
+            $sqlAcc = "INSERT INTO tbl_useracc (accID, email, password, account_role) VALUES (?, ?, ?, ?)";
             $stmtAcc = $conn->prepare($sqlAcc);
             if (!$stmtAcc) throw new Exception("Error preparing account insert: " . $conn->error);
             $stmtAcc->bind_param("ssss", $accID, $email, $hashedPassword, $accountRolesCsv);
@@ -203,8 +196,6 @@ foreach ($accounts as $acc) {
             $civilStatus = 'Single';
             $userStatus  = 'active';
 
-            // Placeholder front/back ID images — generated fresh per account
-            // now that we have the real accID to label/name them with.
             $frontIdImage = makePlaceholderIdImage($accID, 'front', $firstname . ' ' . $lastname . ' - Front ID');
             $backIdImage  = makePlaceholderIdImage($accID, 'back',  $firstname . ' ' . $lastname . ' - Back ID');
 
