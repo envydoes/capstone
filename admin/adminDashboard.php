@@ -104,7 +104,8 @@ $nonResidentUsers = (int) mysqli_fetch_assoc(
     mysqli_query($conn, "
         SELECT COUNT(*) AS total
         FROM tbl_userinfo
-        WHERE account_role_csv LIKE '%non-resident%'
+        WHERE LOWER(userStatus) = 'approved'
+          AND account_role_csv LIKE '%non-resident%'
     ")
 )['total'];
 
@@ -361,6 +362,8 @@ $purokRes = mysqli_query($conn, "
     SELECT COALESCE(NULLIF(TRIM(street), ''), 'Unspecified') AS purok, COUNT(*) AS total
     FROM tbl_userinfo
     WHERE LOWER(userStatus) = 'approved'
+      AND account_role_csv LIKE '%resident%'
+      AND NOT account_role_csv LIKE '%non-resident%'
     GROUP BY purok
     ORDER BY purok
 ");
@@ -475,7 +478,20 @@ $docMonthly = [];
 while ($r = mysqli_fetch_assoc($docMonthlyRes)) { $docMonthly[] = [$r['month_key'], (int) $r['total']]; }
 
 // ---- ACCOUNTS: by role, active/inactive, registration trend ----
-$roleCountRes = mysqli_query($conn, "SELECT account_role, COUNT(*) AS total FROM tbl_useracc GROUP BY account_role");
+// Excludes: blank/NULL account_role (data-entry gaps), 'admin' (not a
+// resident/non-resident category this chart is meant to compare), and a
+// lone 'business/apartment owner' with no resident/non-resident pairing
+// (an account that bypassed that required selection — shouldn't exist,
+// but the chart shouldn't surface it as its own slice either way).
+$roleCountRes = mysqli_query($conn, "
+    SELECT account_role, COUNT(*) AS total
+    FROM tbl_useracc
+    WHERE account_role IS NOT NULL
+      AND TRIM(account_role) != ''
+      AND account_role != 'admin'
+      AND account_role != 'business/apartment owner'
+    GROUP BY account_role
+");
 $roleCounts = [];
 while ($r = mysqli_fetch_assoc($roleCountRes)) { $roleCounts[] = [$r['account_role'], (int) $r['total']]; }
 
