@@ -1352,14 +1352,12 @@ const FIELD_MAP = [
 ];
 
 let originalData = {}, currentFront = '', currentBack = '', currentModalUID = null;
-
 function buildIdUploadUrl(filename) {
   if (!filename) return '';
   const escaped = filename.split('/').map(encodeURIComponent).join('/');
-  const basePath = window.location.pathname.replace(/\/[^\/]*$/, '/');
-  return new URL(`${escaped}`, window.location.origin + basePath).href;
+  const basePath = window.location.pathname.replace(/\/admin\/.*$/, '/uploads/id_verification/');
+  return window.location.origin + basePath + escaped;
 }
-
 function buildIdUploadUrlFallback(filename) {
   if (!filename) return '';
   const escaped = filename.split('/').map(encodeURIComponent).join('/');
