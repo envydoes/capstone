@@ -2,16 +2,34 @@
 /**
  * includes/report_queries.php
  * ------------------------------------------------------------
- * Query builders for the three non-"Global List" printable reports.
- * These mirror the exact logic already used by:
+ * Query builders for the three non-"Global List" printable reports,
+ * plus every "roster"/"list" analytics-picker report on
+ * adminDashboard.php's "Print Report" feature.
+ *
+ * The first three (gf_run_nonbeneficiaries_query, gf_run_owners_query,
+ * gf_run_borrowed_query) mirror the exact logic already used by:
  *   ajax/search_nonbeneficiaries.php
  *   ajax/search_owners.php
  *   ajax/search_borrowed.php
  * so the printed reports always match what's on screen. Kept in this
  * shared include (rather than duplicated inside the ajax files) so
  * print_global_list.php can reuse them directly.
+ *
+ * The rest back the analytics-picker items defined in
+ * includes/analytics_report_items.php:
+ *   - 'roster' items look up their query fn via $ANALYTICS_ROSTER_QUERIES
+ *     and always render the same Name/Age/Birthdate/Contact/Address/Role
+ *     shape (see gf_roster_row()).
+ *   - 'list' items carry their query fn inline (the item's own 'query'
+ *     key) and render whatever custom columns that query returns
+ *     alongside Name (see the per-report 'columns' arrays below).
  * ------------------------------------------------------------
  */
+
+/* ============================================================
+ * Shared helpers - "roster" shape (Name/Age/Birthdate/Contact/
+ * Address/Role), used by the 4 $ANALYTICS_ROSTER_QUERIES reports.
+ * ============================================================ */
 
 if (!function_exists('gf_roster_row')) {
     /**
@@ -86,6 +104,76 @@ if (!function_exists('gf_roster_result')) {
         ];
     }
 }
+
+/* ============================================================
+ * Shared helpers - custom-column shape, used by the 5 "list"-type
+ * analytics-picker reports further down (each swaps in its own
+ * extra columns alongside Name).
+ * ============================================================ */
+
+if (!function_exists('gf_calc_age')) {
+    function gf_calc_age(?string $birthday): string
+    {
+        if (empty($birthday)) return '-';
+        try {
+            $age = (new DateTime($birthday))->diff(new DateTime('now'))->y;
+            return (string) $age;
+        } catch (Exception $e) {
+            return '-';
+        }
+    }
+}
+
+if (!function_exists('gf_format_birthdate')) {
+    function gf_format_birthdate(?string $birthday): string
+    {
+        if (empty($birthday)) return '-';
+        $ts = strtotime($birthday);
+        return $ts ? date('F j, Y', $ts) : '-';
+    }
+}
+
+if (!function_exists('gf_format_address')) {
+    function gf_format_address(?string $street, ?string $barangay, ?string $city, ?string $province): string
+    {
+        $parts = array_filter([$street, $barangay, $city, $province]);
+        return $parts ? implode(', ', $parts) : '-';
+    }
+}
+
+if (!function_exists('gf_format_name')) {
+    function gf_format_name(?string $first, ?string $middle, ?string $last, ?string $suffix): string
+    {
+        $name = trim(implode(' ', array_filter([
+            $first,
+            $middle ? $middle . '.' : '',
+            $last,
+            $suffix,
+        ])));
+        return $name !== '' ? $name : '(No name on file)';
+    }
+}
+
+if (!function_exists('gf_role_label')) {
+    function gf_role_label(?string $csv): string
+    {
+        if (empty($csv)) return '-';
+        $roles = array_filter(array_map('trim', explode(',', $csv)));
+        $labels = array_map(function ($r) {
+            return match ($r) {
+                'resident' => 'Resident',
+                'non-resident' => 'Non-Resident',
+                'business/apartment owner' => 'Owner',
+                default => ucfirst($r),
+            };
+        }, $roles);
+        return $labels ? implode(' / ', $labels) : '-';
+    }
+}
+
+/* ============================================================
+ * "Roster" queries - Name/Age/Birthdate/Contact/Address/Role
+ * ============================================================ */
 
 if (!function_exists('gf_run_new_registrations_month_query')) {
     /**
@@ -173,6 +261,10 @@ if (!function_exists('gf_run_new_beneficiaries_month_query')) {
         return gf_roster_result($conn, $sql);
     }
 }
+
+/* ============================================================
+ * Base list-page queries (Outreach / Owner Directory / Borrowed)
+ * ============================================================ */
 
 if (!function_exists('gf_run_nonbeneficiaries_query')) {
     function gf_run_nonbeneficiaries_query(mysqli $conn, array $get): array
@@ -349,6 +441,234 @@ if (!function_exists('gf_run_borrowed_query')) {
                 ['key' => 'borrower',    'label' => 'Borrower'],
                 ['key' => 'return_date', 'label' => 'Return Date'],
                 ['key' => 'status',      'label' => 'Status', 'raw' => true],
+            ],
+            'data' => $out,
+        ];
+    }
+}
+
+/* ============================================================
+ * "List" queries - Name + Age/Birthdate/Contact/Address, each
+ * swapping in its own extra column(s) in place of Role.
+ * ============================================================ */
+
+if (!function_exists('gf_run_doc_requests_this_month_query')) {
+    function gf_run_doc_requests_this_month_query(mysqli $conn): array
+    {
+        $sql = "
+            SELECT u.firstname, u.middlename, u.lastname, u.suffix, u.birthday, u.phone,
+                   u.street, u.barangay, u.city, u.province, a.account_role,
+                   GROUP_CONCAT(DISTINCT d.document_type ORDER BY d.document_type SEPARATOR ', ') AS doc_types
+            FROM tbl_requestdocs d
+            JOIN tbl_userinfo u ON d.userId = u.userID
+            JOIN tbl_useracc a ON u.accID = a.accID
+            WHERE d.submitted_at >= DATE_FORMAT(NOW(), '%Y-%m-01')
+              AND d.submitted_at <  DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+            GROUP BY u.userID
+            ORDER BY u.lastname ASC
+        ";
+        $out = [];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            while ($r = mysqli_fetch_assoc($result)) {
+                $out[] = [
+                    'name'            => gf_format_name($r['firstname'], $r['middlename'], $r['lastname'], $r['suffix']),
+                    'age'             => gf_calc_age($r['birthday']),
+                    'birthdate'       => gf_format_birthdate($r['birthday']),
+                    'contact_number'  => $r['phone'] ?: '-',
+                    'address'         => gf_format_address($r['street'], $r['barangay'], $r['city'], $r['province']),
+                    'document_type'   => $r['doc_types'] ?: '-',
+                ];
+            }
+        }
+        return [
+            'count'   => count($out),
+            'columns' => [
+                ['key' => 'age',            'label' => 'Age'],
+                ['key' => 'birthdate',      'label' => 'Birthdate'],
+                ['key' => 'contact_number', 'label' => 'Contact Number'],
+                ['key' => 'address',        'label' => 'Address'],
+                ['key' => 'document_type',  'label' => 'Document Type'],
+            ],
+            'data' => $out,
+        ];
+    }
+}
+
+if (!function_exists('gf_run_doc_repeat_requesters_query')) {
+    function gf_run_doc_repeat_requesters_query(mysqli $conn): array
+    {
+        $sql = "
+            SELECT u.firstname, u.middlename, u.lastname, u.suffix, u.birthday, u.phone,
+                   u.street, u.barangay, u.city, u.province, a.account_role,
+                   COUNT(d.id) AS req_count,
+                   GROUP_CONCAT(DISTINCT d.document_type ORDER BY d.document_type SEPARATOR ', ') AS doc_types
+            FROM tbl_requestdocs d
+            JOIN tbl_userinfo u ON d.userId = u.userID
+            JOIN tbl_useracc a ON u.accID = a.accID
+            GROUP BY u.userID
+            HAVING COUNT(d.id) >= 2
+            ORDER BY req_count DESC, u.lastname ASC
+        ";
+        $out = [];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            while ($r = mysqli_fetch_assoc($result)) {
+                $out[] = [
+                    'name'            => gf_format_name($r['firstname'], $r['middlename'], $r['lastname'], $r['suffix']),
+                    'age'             => gf_calc_age($r['birthday']),
+                    'birthdate'       => gf_format_birthdate($r['birthday']),
+                    'contact_number'  => $r['phone'] ?: '-',
+                    'address'         => gf_format_address($r['street'], $r['barangay'], $r['city'], $r['province']),
+                    'document_type'   => $r['doc_types'] ?: '-',
+                ];
+            }
+        }
+        return [
+            'count'   => count($out),
+            'columns' => [
+                ['key' => 'age',            'label' => 'Age'],
+                ['key' => 'birthdate',      'label' => 'Birthdate'],
+                ['key' => 'contact_number', 'label' => 'Contact Number'],
+                ['key' => 'address',        'label' => 'Address'],
+                ['key' => 'document_type',  'label' => 'Document Type(s)'],
+            ],
+            'data' => $out,
+        ];
+    }
+}
+
+if (!function_exists('gf_run_equip_borrow_this_month_query')) {
+    function gf_run_equip_borrow_this_month_query(mysqli $conn): array
+    {
+        $sql = "
+            SELECT u.firstname, u.middlename, u.lastname, u.suffix, u.birthday, u.phone,
+                   u.street, u.barangay, u.city, u.province, a.account_role,
+                   e.equipmentName, r.status
+            FROM tbl_equipmentrequest r
+            JOIN tbl_equipmentlist e ON r.equipmentId = e.equipmentId
+            JOIN tbl_userinfo u ON r.userId = u.userID
+            JOIN tbl_useracc a ON u.accID = a.accID
+            WHERE r.requestDate >= DATE_FORMAT(NOW(), '%Y-%m-01')
+              AND r.requestDate <  DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+            ORDER BY r.requestDate DESC
+        ";
+        $out = [];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            while ($r = mysqli_fetch_assoc($result)) {
+                $out[] = [
+                    'name'            => gf_format_name($r['firstname'], $r['middlename'], $r['lastname'], $r['suffix']),
+                    'age'             => gf_calc_age($r['birthday']),
+                    'birthdate'       => gf_format_birthdate($r['birthday']),
+                    'contact_number'  => $r['phone'] ?: '-',
+                    'address'         => gf_format_address($r['street'], $r['barangay'], $r['city'], $r['province']),
+                    'item'            => $r['equipmentName'] ?: '-',
+                    'status'          => $r['status'] ?: '-',
+                ];
+            }
+        }
+        return [
+            'count'   => count($out),
+            'columns' => [
+                ['key' => 'age',            'label' => 'Age'],
+                ['key' => 'birthdate',      'label' => 'Birthdate'],
+                ['key' => 'contact_number', 'label' => 'Contact Number'],
+                ['key' => 'address',        'label' => 'Address'],
+                ['key' => 'item',           'label' => 'Item'],
+                ['key' => 'status',         'label' => 'Status'],
+            ],
+            'data' => $out,
+        ];
+    }
+}
+
+if (!function_exists('gf_run_equip_repeat_borrowers_query')) {
+    function gf_run_equip_repeat_borrowers_query(mysqli $conn): array
+    {
+        // "3+ equipment in a month" — evaluated against the current calendar
+        // month, matching the sibling "this month" report above.
+        $sql = "
+            SELECT u.firstname, u.middlename, u.lastname, u.suffix, u.birthday, u.phone,
+                   u.street, u.barangay, u.city, u.province, a.account_role,
+                   COUNT(r.id) AS borrow_count,
+                   GROUP_CONCAT(DISTINCT e.equipmentName ORDER BY e.equipmentName SEPARATOR ', ') AS items
+            FROM tbl_equipmentrequest r
+            JOIN tbl_equipmentlist e ON r.equipmentId = e.equipmentId
+            JOIN tbl_userinfo u ON r.userId = u.userID
+            JOIN tbl_useracc a ON u.accID = a.accID
+            WHERE r.requestDate >= DATE_FORMAT(NOW(), '%Y-%m-01')
+              AND r.requestDate <  DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+            GROUP BY u.userID
+            HAVING COUNT(r.id) >= 3
+            ORDER BY borrow_count DESC, u.lastname ASC
+        ";
+        $out = [];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            while ($r = mysqli_fetch_assoc($result)) {
+                $out[] = [
+                    'name'            => gf_format_name($r['firstname'], $r['middlename'], $r['lastname'], $r['suffix']),
+                    'age'             => gf_calc_age($r['birthday']),
+                    'birthdate'       => gf_format_birthdate($r['birthday']),
+                    'contact_number'  => $r['phone'] ?: '-',
+                    'address'         => gf_format_address($r['street'], $r['barangay'], $r['city'], $r['province']),
+                    'item'            => $r['items'] ?: '-',
+                    'borrow_count'    => (string) $r['borrow_count'],
+                ];
+            }
+        }
+        return [
+            'count'   => count($out),
+            'columns' => [
+                ['key' => 'age',            'label' => 'Age'],
+                ['key' => 'birthdate',      'label' => 'Birthdate'],
+                ['key' => 'contact_number', 'label' => 'Contact Number'],
+                ['key' => 'address',        'label' => 'Address'],
+                ['key' => 'item',           'label' => 'Item(s) Borrowed'],
+                ['key' => 'borrow_count',   'label' => 'Times Borrowed'],
+            ],
+            'data' => $out,
+        ];
+    }
+}
+
+if (!function_exists('gf_run_new_listings_this_month_query')) {
+    function gf_run_new_listings_this_month_query(mysqli $conn): array
+    {
+        $sql = "
+            SELECT u.firstname, u.middlename, u.lastname, u.suffix, u.phone, a.account_role,
+                   bl.listingType, bl.aptTitle, bl.bussName, bl.aptAddress, bl.bussAddress, bl.bussCat
+            FROM tbl_busaptlisting bl
+            JOIN tbl_userinfo u ON bl.userId = u.accID
+            JOIN tbl_useracc a ON u.accID = a.accID
+            WHERE bl.createdAt >= DATE_FORMAT(NOW(), '%Y-%m-01')
+              AND bl.createdAt <  DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+            ORDER BY bl.createdAt DESC
+        ";
+        $out = [];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            while ($r = mysqli_fetch_assoc($result)) {
+                $isBusiness = ($r['listingType'] === 'business');
+                $out[] = [
+                    'name'            => gf_format_name($r['firstname'], $r['middlename'], $r['lastname'], $r['suffix']),
+                    'listing_title'   => ($isBusiness ? $r['bussName'] : $r['aptTitle']) ?: '-',
+                    'listing_address' => ($isBusiness ? $r['bussAddress'] : $r['aptAddress']) ?: '-',
+                    'contact_number'  => $r['phone'] ?: '-',
+                    'business_type'   => $isBusiness ? ($r['bussCat'] ?: 'Business') : 'Apartment',
+                    'role'            => gf_role_label($r['account_role']),
+                ];
+            }
+        }
+        return [
+            'count'   => count($out),
+            'columns' => [
+                ['key' => 'listing_title',   'label' => 'Listing Title'],
+                ['key' => 'listing_address', 'label' => 'Listing Address'],
+                ['key' => 'contact_number',  'label' => 'Contact Number'],
+                ['key' => 'business_type',   'label' => 'Business Type'],
+                ['key' => 'role',            'label' => 'Role'],
             ],
             'data' => $out,
         ];

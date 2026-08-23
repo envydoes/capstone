@@ -153,6 +153,7 @@ if ($list === 'analytics') {
                 $fn = $ANALYTICS_ROSTER_QUERIES[$key] ?? null;
                 if ($fn && function_exists($fn)) {
                     $roster = $fn($conn);
+                    echo '<p class="analytics-item-count">Count: <strong>' . number_format($roster['count']) . '</strong></p>';
 
                     if (empty($roster['rows'])) {
                         echo '<p class="analytics-item-unavailable">No records found.</p>';
