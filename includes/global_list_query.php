@@ -114,7 +114,7 @@ if (!function_exists('gf_run_global_list_query')) {
         $types  = '';
         $params = [];
 
-        if ($accountRole !== '') { $where[] = "a.account_role LIKE ?"; $types .= 's'; $params[] = '%' . $accountRole . '%'; }
+        if ($accountRole !== '') { $where[] = "FIND_IN_SET(?, a.account_role)"; $types .= 's'; $params[] = $accountRole; }
         if ($dateFrom !== '')    { $where[] = "u.dateRegistered >= ?"; $types .= 's'; $params[] = $dateFrom . ' 00:00:00'; }
         if ($dateTo !== '')      { $where[] = "u.dateRegistered <= ?"; $types .= 's'; $params[] = $dateTo . ' 23:59:59'; }
         if ($sex !== '')         { $where[] = "LOWER(u.gender) = ?"; $types .= 's'; $params[] = strtolower($sex); }
