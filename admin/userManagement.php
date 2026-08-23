@@ -26,7 +26,8 @@ ob_start();
 require_once '../includes/site_config.php';
 $siteSettings = site_config_load($conn);
 require_once __DIR__ . '/../includes/check_permissions.php';
-require_permission($conn, 'manage_residents'); // swap the key per page — see table above
+require_permission($conn, 'manage_residents');
+
 function fetchGroup($conn, $status) {
     $sql = "SELECT userID,accID,account_role_csv,firstname,lastname,middlename,suffix,
                    email,family_role,gender,birthday,birthplace,civil_status,citizenship,
@@ -57,7 +58,6 @@ $cnt_rejected = count($rejected_users);
 
 // ── Stat cards: Accounts Overview ───────────────────────────────────────
 
-// New Registrations This Month, vs Last Month
 $regTrendRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT
         SUM(CASE WHEN dateRegistered >= DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN 1 ELSE 0 END) AS this_month,
@@ -74,14 +74,10 @@ if ($regLastMonth > 0) {
 }
 $regTrendDir = $regThisMonth > $regLastMonth ? 'up' : ($regThisMonth < $regLastMonth ? 'down' : 'flat');
 
-// Accounts Registered Today
 $regToday = (int) mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT COUNT(*) AS total FROM tbl_userinfo WHERE DATE(dateRegistered) = CURDATE()
 "))['total'];
 
-// Average Approval Time (Pending -> Approved/Rejected)
-// Reads from a `statusUpdatedAt` column if present, and degrades to "N/A"
-// if the migration hasn't been applied yet. See add_status_updated_at.sql.
 $avgApprovalHours = null;
 $hasStatusUpdatedAtCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_userinfo LIKE 'statusUpdatedAt'");
 if ($hasStatusUpdatedAtCol && mysqli_num_rows($hasStatusUpdatedAtCol) > 0) {
@@ -96,7 +92,6 @@ if ($hasStatusUpdatedAtCol && mysqli_num_rows($hasStatusUpdatedAtCol) > 0) {
     }
 }
 
-// Verification Rate: Approved vs Rejected, among accounts that have been decided
 $verifRow = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT
         SUM(CASE WHEN LOWER(userStatus) IN ('approved','disabled') THEN 1 ELSE 0 END) AS approved_total,
@@ -124,9 +119,6 @@ function buildRow($u, $tab) {
     $chips   = '';
     foreach ($roles as $r) {
         $r = trim($r); if (!$r) continue;
-        // Role strings are stored lowercase (see nonresidentRoleChangeAction.php),
-        // so this match must be case-insensitive or every role silently falls
-        // through to the generic "business" chip.
         $cls = match(true) {
             stripos($r,'Non-Resident') !== false => 'chip-nonresident',
             stripos($r,'Resident')     !== false => 'chip-resident',
@@ -156,7 +148,7 @@ function buildRow($u, $tab) {
           <button class='btn-approve' onclick='handleAction($uid,\"approve\",this.closest(\"tr\"))'>
             <i class='fa-solid fa-rotate-left text-[10px]'></i><span class='btn-label'>Re-enable</span>
           </button>";
-    } else { // rejected
+    } else {
         $actions = "
           <button class='btn-view' onclick='openModal(this.closest(\"tr\"))'>View</button>
           <button class='btn-revert' onclick='handleAction($uid,\"revert\",this.closest(\"tr\"))'>
@@ -189,7 +181,7 @@ function buildRow($u, $tab) {
   <?= site_config_css_vars($siteSettings) ?>
   <style>
     * { box-sizing: border-box; }
-   body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); margin: 0; }
 
     /* ── Sidebar ── */
     .sidebar { width:260px; flex-shrink:0; background: linear-gradient(180deg, var(--site-primary-dark) 0%, var(--site-primary-darker) 55%, var(--site-primary) 100%); display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:300; overflow:hidden; transition:width .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1); }
@@ -412,7 +404,7 @@ function buildRow($u, $tab) {
     .tab-pane { display:none; }
     .tab-pane.active { display:block; }
     :root {
-  --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
+  --site-primary-dark:    color-mix(in srgb, var(--site-primary) 55%, black);
   --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
   --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
   --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
@@ -582,7 +574,6 @@ function buildRow($u, $tab) {
 </div>
 
 <?php
-// ── Reusable PHP renderers ────────────────────────────────────────────────
 function renderTabControls($tab) { ?>
   <div class="flex items-center justify-between gap-4 flex-wrap top-row">
     <div class="flex items-baseline gap-2">
@@ -683,15 +674,10 @@ function renderTable($tab, $users) { ?>
           </td>
           <td class="col-role">
             <?php foreach ($roles as $r): $r=trim($r); if (!$r) continue;
-              // Role strings are stored lowercase, so this match must be
-              // case-insensitive or every role falls through to the
-              // generic "business" chip (this previously hid the
-              // Resident/Non-Resident distinction on combined-role rows,
-              // e.g. after a non-resident requested the Owner role).
               $cls = match(true) {
                   stripos($r,'Non-Resident') !== false => 'chip-nonresident',
                   stripos($r,'Resident')     !== false => 'chip-resident',
-                  default                                => 'chip-business',
+                  default                               => 'chip-business',
               }; ?>
             <span class="role-chip <?= $cls ?>"><?= htmlspecialchars($r) ?></span>
             <?php endforeach; ?>
@@ -716,7 +702,7 @@ function renderTable($tab, $users) { ?>
                 <button class="btn-approve" onclick="handleAction(<?= $uid ?>,'approve',this.closest('tr'))"><i class="fa-solid fa-rotate-left text-[10px]"></i><span class="btn-label">Re-enable</span></button>
               <?php elseif ($tab === 'approved'): ?>
                 <button class="btn-disable" onclick="handleAction(<?= $uid ?>,'disable',this.closest('tr'))"><i class="fa-solid fa-ban text-[10px]"></i><span class="btn-label">Disable</span></button>
-              <?php else: /* rejected */ ?>
+              <?php else: ?>
                 <button class="btn-revert" onclick="handleAction(<?= $uid ?>,'revert',this.closest('tr'))"><i class="fa-solid fa-rotate-left text-[10px]"></i><span class="btn-label">Set Pending</span></button>
               <?php endif; ?>
             </div>
@@ -893,7 +879,7 @@ function showDialog({type='approve',title,desc,nameBadge,confirmLabel,onConfirm}
   const cfg={
     approve: {iconCls:'dialog-icon-approve',icon:'fa-check',btn:'dialog-btn-confirm-approve'},
     reject:  {iconCls:'dialog-icon-reject', icon:'fa-xmark',btn:'dialog-btn-confirm-reject'},
-    disable: {iconCls:'dialog-icon-disable',icon:'fa-ban',  btn:'dialog-btn-confirm-disable'},
+    disable: {iconCls:'dialog-icon-disable',icon:'fa-ban',   btn:'dialog-btn-confirm-disable'},
     revert:  {iconCls:'dialog-icon-revert', icon:'fa-rotate-left',btn:'dialog-btn-confirm-revert'},
     bulk:    {iconCls:'dialog-icon-bulk',   icon:'fa-layer-group',btn:'dialog-btn-confirm-bulk'},
   }[type]||{iconCls:'dialog-icon-approve',icon:'fa-check',btn:'dialog-btn-confirm-approve'};
@@ -992,7 +978,6 @@ function getUserNameFromRow(row){if(!row)return'';const u=JSON.parse(row.dataset
 /* ════════════════════ MODAL ════════════════════ */
 let currentUserID=null,currentUserRow=null,currentFrontID='',currentBackID='',currentUserTab='';
 
-// Action configs per tab/status
 const modalActions={
   pending: {
     left:  {action:'reject', label:'Reject',   icon:'fa-xmark',  leftStyle:'',rightStyle:''},
@@ -1025,8 +1010,13 @@ function openModal(row){
     };
   }
   const u=JSON.parse(row.dataset.user.replace(/&quot;/g,'"'));
-  currentUserID=u.userID;currentUserRow=row;currentFrontID=u.frontID||'';currentBackID=u.backID||'';
-  currentUserTab=row.dataset.tab||activeTab;
+  currentUserID=u.userID;
+  currentUserRow=row;
+  
+  // Resolve paths upfront for preview & lightbox
+  currentFrontID = resolveUserIDSrc(u.frontID);
+  currentBackID  = resolveUserIDSrc(u.backID);
+  currentUserTab = row.dataset.tab||activeTab;
 
   const fn=[u.firstname,u.middlename?u.middlename:'',u.lastname,u.suffix].filter(Boolean).join(' ');
   document.getElementById('mFullName').value=fn;
@@ -1054,12 +1044,12 @@ function openModal(row){
   document.getElementById('mPrecinct').value=u.precinct||'';
   document.getElementById('modalSubtitle').textContent=u.email||'';
 
-  // IDs
+  // IDs Rendering
   const fImg=document.getElementById('frontIDImg'),bImg=document.getElementById('backIDImg');
   const fPh=document.getElementById('frontIDPlaceholder'),bPh=document.getElementById('backIDPlaceholder');
-  if(u.frontID){fImg.src=resolveUserIDSrc(u.frontID);fImg.style.display='block';fPh.style.display='none';}
+  if(u.frontID){fImg.src=currentFrontID;fImg.style.display='block';fPh.style.display='none';}
   else{fImg.style.display='none';fPh.style.display='flex';}
-  if(u.backID){bImg.src=resolveUserIDSrc(u.backID);bImg.style.display='block';bPh.style.display='none';}
+  if(u.backID){bImg.src=currentBackID;bImg.style.display='block';bPh.style.display='none';}
   else{bImg.style.display='none';bPh.style.display='flex';}
 
   // Configure footer buttons
@@ -1123,7 +1113,6 @@ function handleModalAction(side){
   const btnCfg=side==='left'?cfg.left:cfg.right;
   if(!btnCfg)return;
   const userID=currentUserID,userName=getUserNameFromRow(row);
-  // Set loading on modal buttons
   const btnL=document.getElementById('modalActionLeft'),btnR=document.getElementById('modalActionRight');
   [btnL,btnR].forEach(btn=>{
     if(btn&&btn.style.display!=='none'){
@@ -1150,22 +1139,18 @@ function executeAction(userID,action,row){
   .then(r=>r.json())
   .then(data=>{
     if(data.success){
-      // Handle row movement between tabs
       if(row){
         const tab=row.dataset.tab;
         if(action==='approve'&&tab==='pending'){
-          // move to approved tab (re-render on refresh is simplest; for now just remove)
           row.remove();
           updateBadge('pending',-1);updateBadge('approved',1);
         } else if(action==='reject'&&tab==='pending'){
           row.remove();
           updateBadge('pending',-1);updateBadge('rejected',1);
         } else if(action==='disable'&&tab==='approved'){
-          // update status badge in row
           row.dataset.status='disabled';
           const statusTd=row.querySelector('.status-badge');
           if(statusTd){statusTd.className='status-badge status-disabled';statusTd.innerHTML='<i class="fa-solid fa-ban mr-1 text-[9px]"></i>Disabled';}
-          // swap button
           const actionDiv=row.querySelector('.flex.items-center.justify-end');
           if(actionDiv){
             const disBtn=actionDiv.querySelector('.btn-disable');
@@ -1176,7 +1161,6 @@ function executeAction(userID,action,row){
             }
           }
         } else if(action==='approve'&&tab==='approved'){
-          // re-enable disabled user
           row.dataset.status='approved';
           const statusTd=row.querySelector('.status-badge');
           if(statusTd){statusTd.className='status-badge status-approved';statusTd.innerHTML='<i class="fa-solid fa-circle-check mr-1 text-[9px]"></i>Active';}
@@ -1264,24 +1248,35 @@ function bulkAction(tab,action){
   });
 }
 
-/* ════════════════════ LIGHTBOX ════════════════════ */
+/* ════════════════════ LIGHTBOX & PATH RESOLUTION ════════════════════ */
 function resolveUserIDSrc(src){
   if(!src) return '';
   src = src.trim();
+
+  // Strip absolute production domain if injected
+  src = src.replace(/^https?:\/\/sum-este-portal\.digital\//i, '');
   
-  // If it already contains full or relative path prefixes
   if(src.startsWith('../uploads/id_verification/')) return src;
   if(src.startsWith('./uploads/id_verification/')) return src.replace('./', '../');
-  if(src.startsWith('/uploads/id_verification/')) return '../' + src.slice(1);
+  if(src.startsWith('/uploads/id_verification/')) return '..' + src;
   if(src.startsWith('uploads/id_verification/')) return '../' + src;
   if(src.startsWith('signup/id/')) return '../' + src;
   if(src.startsWith('../signup/id/')) return src;
 
-  // Fallback for simple filenames (e.g. "B1.jpg") stored in uploads/id_verification
+  // Local fallback for bare filenames
   return '../uploads/id_verification/' + src;
 }
-function openLightbox(side){const src=side==='front'?currentFrontID:currentBackID;if(!src)return;document.getElementById('lightboxImg').src=resolveUserIDSrc(src);document.getElementById('lightbox').classList.add('open');}
-function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+function openLightbox(side){
+  const src = side === 'front' ? currentFrontID : currentBackID;
+  if(!src) return;
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
 
 /* ════════════════════ PAGINATION ════════════════════ */
 const ROWS=10,pageState={pending:1,approved:1,rejected:1};
@@ -1296,6 +1291,7 @@ function renderPagination(tab){
   for(let p=s;p<=e;p++){const b=document.createElement('button');b.className='page-btn'+(p===pageState[tab]?' active':'');b.textContent=p;b.addEventListener('click',()=>{pageState[tab]=p;renderPagination(tab);});c.appendChild(b);}
   const next=document.createElement('button');next.className='page-btn';next.disabled=pageState[tab]===pages;next.innerHTML='<i class="fa-solid fa-chevron-right text-xs"></i>';next.addEventListener('click',()=>{pageState[tab]++;renderPagination(tab);});c.appendChild(next);
 }
+
 // Initial render
 ['pending','approved','rejected'].forEach(tab=>renderPagination(tab));
 </script>
