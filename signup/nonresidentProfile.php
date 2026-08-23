@@ -10,6 +10,9 @@ session_start();
  * Returns a UTF-8 clean string safe for storage and HTML output.
  */
 
+require_once __DIR__ . '/../config/db_connection.php';
+require_once __DIR__ . '/../includes/site_config.php';
+
 function sanitizeText(string $value): string
 {
     $value = strip_tags($value);           // remove any HTML/PHP tags
@@ -39,13 +42,30 @@ function toProperCase(string $value): string
 {
     if ($value === '') return $value;
     $lower = mb_strtolower($value, 'UTF-8');
+
+    // Connector words that stay lowercase mid-string (but are still
+    // capitalized if they happen to be the very first word) — needed for
+    // real PH place names like "City of San Jose del Monte" or
+    // "Look sa Ilaya", not just personal names.
+    $minorWords = ['of', 'de', 'del', 'la', 'las', 'los', 'y', 'and', 'the', 'sa', 'ng'];
+
     // Capitalize the first letter of every "word" — where a word starts at
     // the beginning of the string or right after a space, hyphen, or
-    // apostrophe (so "o'brien" -> "O'Brien", "y-dle" -> "Y-Dle").
+    // apostrophe (so "o'brien" -> "O'Brien", "y-dle" -> "Y-Dle") — unless
+    // it's a minor connector word preceded by a space and not the first word.
+    $isFirstWord = true;
     return preg_replace_callback(
-        "/(^|[\s'\-])(\p{L})/u",
-        function (array $m): string {
-            return $m[1] . mb_strtoupper($m[2], 'UTF-8');
+        "/(^|[\s'\-])(\p{L}+)/u",
+        function (array $m) use (&$isFirstWord, $minorWords): string {
+            $boundary = $m[1];
+            $word     = $m[2];
+            $isSpaceOrStart = ($boundary === '' || $boundary === ' ');
+            $keepLower = $isSpaceOrStart && !$isFirstWord && in_array($word, $minorWords, true);
+            $isFirstWord = false;
+            if ($keepLower) {
+                return $boundary . $word;
+            }
+            return $boundary . mb_strtoupper(mb_substr($word, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($word, 1, null, 'UTF-8');
         },
         $lower
     );
@@ -78,7 +98,17 @@ function isValidPHPhone(string $phone): bool
 function isValidBirthdate(string $date): bool
 {
     $d = DateTime::createFromFormat('Y-m-d', $date);
-    return $d && $d->format('Y-m-d') === $date && $d < new DateTime();
+    if (!$d || $d->format('Y-m-d') !== $date) {
+        return false;
+    }
+
+    $maxDate   = (new DateTime('today'))->modify('-1 year');
+    $minDate = (new DateTime('today'))->modify('-100 years');
+
+    // Must be a real past date (today itself is rejected — an age of 0
+    // isn't a realistic self-registration), and not more than 100 years
+    // ago (rejects unrealistic ages like a birth year of 1902).
+    return $d < $maxDate && $d >= $minDate;
 }
 
 /**
@@ -218,30 +248,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'family_role'       => allowedValue($_POST['family_role']       ?? '', $allowedFamilyRoles),
         'gender'            => allowedValue($_POST['gender']            ?? '', $allowedGenders),
         'birthday'          => sanitizeText($_POST['birthday']          ?? ''),
-        'birthplace'        => sanitizeText($_POST['birthplace']        ?? ''),
+        'birthplace'        => toProperCase(sanitizeText($_POST['birthplace'] ?? '')),
         'civil_status'      => allowedValue($_POST['civil_status']      ?? '', $allowedCivilStatus),
         // Dropdown value; if "Other" was picked, the free-text fallback is used instead.
-        'citizenship'       => sanitizeText(
+        'citizenship'       => toProperCase(sanitizeText(
                                     ($_POST['citizenship'] ?? '') === 'Other'
                                         ? ($_POST['citizenship_other'] ?? '')
                                         : ($_POST['citizenship'] ?? '')
-                                ),
-        'religion'          => sanitizeText(
+                                )),
+        'religion'          => toProperCase(sanitizeText(
                                     ($_POST['religion'] ?? '') === 'Other'
                                         ? ($_POST['religion_other'] ?? '')
                                         : ($_POST['religion'] ?? '')
-                                ),
-        'ethnicity'         => sanitizeText($_POST['ethnicity']         ?? ''),
+                                )),
+        'ethnicity'         => toProperCase(sanitizeText($_POST['ethnicity'] ?? '')),
         // Non-residents' address genuinely varies — NOT locked like the resident
         // form. Validated against the PH address dataset further down instead.
-        'street'            => sanitizeText($_POST['street']            ?? ''),
+        'street'            => toProperCase(sanitizeText($_POST['street']    ?? '')),
         'barangay'          => sanitizeText($_POST['barangay']          ?? ''),
         'city'              => sanitizeText($_POST['city']              ?? ''),
         'province'          => sanitizeText($_POST['province']          ?? ''),
         'zip'               => sanitizeText($_POST['zip']               ?? ''),
         'phone'             => normalizePHPhone(sanitizeText($_POST['phone'] ?? '')),
         'email'             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
-        'emergency_contact' => sanitizeText($_POST['emergency_contact'] ?? ''),
+        'emergency_contact' => toProperCase(sanitizeText($_POST['emergency_contact'] ?? '')),
         'emergency_phone'   => normalizePHPhone(sanitizeText($_POST['emergency_phone'] ?? '')),
         'health_conditions' => allowedValue($_POST['health_conditions'] ?? '', $allowedBloodTypes),
         'terms'             => ($_POST['terms'] ?? '') === 'agree' ? 'agree' : '',
@@ -302,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['birthday'] === '') {
         $errors['birthday'] = 'Birthday is required.';
     } elseif (!isValidBirthdate($data['birthday'])) {
-        $errors['birthday'] = 'Please enter a valid birthday (must be in the past).';
+        $errors['birthday'] = 'Please enter a valid birthday (must be a real past date, and no more than 100 years ago).';
     }
 
     // ZIP
@@ -347,6 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION[$key] = $value;
     }
 }
+$siteSettings = site_config_load($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -354,24 +385,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../assets/responsive-global.css">
-<title>Personal Information - SumEste Portal</title>
-<link rel="icon" href="../assets/logo2.png" type="image/png">
+<title>Personal Information - <?= e($siteSettings['site_title']) ?></title>
+<link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<?= site_config_css_vars($siteSettings) ?>
 <style>
   #addressMap.leaflet-container { font-family: 'DM Sans', sans-serif; }
   .map-result-list { position:relative; }
   .map-result-list ul { list-style:none; margin:0; padding:0; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d1d5db; border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
   .map-result-list li { padding:9px 14px; font-size:0.85rem; cursor:pointer; border-bottom:1px solid #f1f5f9; }
   .map-result-list li:last-child { border-bottom:none; }
-  .map-result-list li:hover { background:#f0fdf4; }
-  body { font-family: 'DM Sans', sans-serif; background: #f0fdf4; }
+  .map-result-list li:hover { background:var(--site-primary-pale); }
+  body { font-family: 'DM Sans', sans-serif; background: var(--site-primary-pale); }
 
   .nav-link { position: relative; transition: color 0.2s; }
-  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #16a34a; transition: width 0.3s ease; }
+  .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--site-primary); transition: width 0.3s ease; }
   .nav-link:hover::after { width: 100%; }
-  .nav-link:hover { color: #15803d; }
+  .nav-link:hover { color: var(--site-primary-dark); }
+  .step-connector { flex: 1; height: 2px; background: #d1d5db; margin: 0 8px; margin-bottom: 24px; transition: background 0.4s; }
+  .step-connector.active { background: var(--site-primary); }
 
   .field-input {
     width: 100%; border: 1.5px solid #d1d5db; border-radius: 10px;
@@ -379,48 +414,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     transition: border-color 0.2s, box-shadow 0.2s; outline: none;
     color: #1f2937;
   }
-  .field-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
+  .field-input:focus { border-color: var(--site-primary); box-shadow: 0 0 0 3px rgba(var(--site-primary-rgb),0.12); }
   .field-input.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
 
   .field-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
   .required-star { color: #ef4444; margin-left: 2px; }
 
   .section-card {
-    background: #fff; border: 1px solid #dcfce7; border-radius: 16px;
+    background: #fff; border: 1px solid var(--site-primary-pale); border-radius: 16px;
     padding: 24px; margin-bottom: 20px;
-    box-shadow: 0 1px 6px rgba(22,101,52,0.06);
+    box-shadow: 0 1px 6px rgba(var(--site-primary-rgb),0.06);
   }
   .section-title {
-    font-size: 1rem; font-weight: 700; color: #14532d;
+    font-size: 1rem; font-weight: 700; color: var(--site-primary-darker);
     display: flex; align-items: center; gap: 10px;
     padding-bottom: 14px; margin-bottom: 18px;
-    border-bottom: 1.5px solid #dcfce7;
+    border-bottom: 1.5px solid var(--site-primary-pale);
   }
   .section-icon {
     width: 34px; height: 34px; border-radius: 9px;
-    background: #dcfce7; display: flex; align-items: center; justify-content: center;
+    background: var(--site-primary-pale); display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
 
   .submit-btn {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 28px; background: #15803d; color: #fff;
+    padding: 12px 28px; background: var(--site-primary-dark); color: #fff;
     border-radius: 10px; font-weight: 600; font-size: 0.95rem;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(21,128,61,0.25);
+    box-shadow: 0 4px 12px rgba(var(--site-primary-rgb),0.25);
   }
-  .submit-btn:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(21,128,61,0.3); }
+  .submit-btn:hover { background: var(--site-primary-darker); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(var(--site-primary-rgb),0.3); }
   .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
   .terms-box {
-    background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px;
+    background: var(--site-primary-pale); border: 1.5px solid var(--site-primary-light); border-radius: 12px;
     padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px;
     margin-bottom: 24px;
   }
-  .terms-box input[type="checkbox"] { accent-color: #16a34a; width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+  .terms-box input[type="checkbox"] { accent-color: var(--site-primary); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
 
   .role-banner {
-    background: linear-gradient(135deg, #052e16, #166534);
+    background: linear-gradient(135deg, var(--site-primary-darker), var(--site-primary-darker));
     border-radius: 12px; padding: 14px 20px;
     display: flex; align-items: center; gap: 14px;
     margin-bottom: 24px;
@@ -433,11 +468,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .fade-up-1 { animation-delay: 0.05s; }
   .fade-up-2 { animation-delay: 0.15s; }
   .fade-up-3 { animation-delay: 0.22s; }
+
+  :root {
+    --site-primary-dark:   color-mix(in srgb, var(--site-primary) 55%, black);
+    --site-primary-darker: color-mix(in srgb, var(--site-primary) 75%, black);
+    --site-primary-light:  color-mix(in srgb, var(--site-primary) 55%, white);
+    --site-primary-pale:   color-mix(in srgb, var(--site-primary) 12%, white);
+  }
+
+  /* Tailwind-green → theme color overrides */
+  .bg-green-50   { background-color: var(--site-primary-pale) !important; }
+  .bg-green-100  { background-color: color-mix(in srgb, var(--site-primary) 18%, white) !important; }
+  .bg-green-200  { background-color: color-mix(in srgb, var(--site-primary) 28%, white) !important; }
+  .bg-green-600  { background-color: var(--site-primary) !important; }
+  .bg-green-700  { background-color: var(--site-primary) !important; }
+  .bg-green-800  { background-color: var(--site-primary-dark) !important; }
+  .text-green-300 { color: var(--site-primary-light) !important; }
+  .text-green-400 { color: var(--site-primary-light) !important; }
+  .text-green-600 { color: var(--site-primary) !important; }
+  .text-green-700 { color: var(--site-primary) !important; }
+  .text-green-800 { color: var(--site-primary-darker) !important; }
+  .text-green-900 { color: var(--site-primary-darker) !important; }
+  .text-green-950 { color: var(--site-primary-darker) !important; }
+  .border-green-100 { border-color: color-mix(in srgb, var(--site-primary) 20%, white) !important; }
+  .border-green-200 { border-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
+  .border-green-300 { border-color: var(--site-primary-light) !important; }
+  .ring-green-200 { --tw-ring-color: color-mix(in srgb, var(--site-primary) 30%, white) !important; }
+  .from-green-700 { --tw-gradient-from: var(--site-primary) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+  .to-green-600  { --tw-gradient-to: var(--site-primary-dark) var(--tw-gradient-to-position) !important; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="../assets/js/ph-address-picker.js"></script>
-    <link rel="stylesheet" href="dist/output.css">
-    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 </head>
 <body>
 
@@ -446,11 +507,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="flex items-center gap-3">
     <a href="../landing.php" class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-green-700 flex items-center justify-center shadow overflow-hidden">
-        <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+        <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
       </div>
       <div>
-        <h3 class="font-bold text-green-900 text-base leading-tight">SumEste Portal</h3>
-        <p class="text-[10px] text-green-600 tracking-widest uppercase">Sumacab Este</p>
+        <h3 class="font-bold text-green-900 text-base leading-tight"><?= e($siteSettings['site_title']) ?></h3>
+        <p class="text-[10px] text-green-600 tracking-widest uppercase"><?= e($siteSettings['barangay_name']) ?></p>
       </div>
     </a>
   </div>
@@ -461,9 +522,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Header -->
   <div class="text-center mb-8 fade-up fade-up-1">
     <div class="w-16 h-16 mx-auto rounded-2xl bg-green-700 flex items-center justify-center shadow-lg mb-4">
-      <img src="../assets/logo2.png" alt="Logo" class="w-full h-full object-contain" />
+      <img src="<?= e(site_config_logo_url($siteSettings, '../')) ?>" alt="Logo" class="w-full h-full object-contain" />
     </div>
-    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;">SumEste Non-Resident Registration</h1>
+    <h1 class="text-3xl font-bold text-green-950" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?> Non-Resident Registration</h1>
     <p class="text-gray-500 text-sm mt-2">Complete your profile to access barangay services</p>
   </div>
 
@@ -476,12 +537,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Account Creation</p>
       </div>
-      <div style="flex:1;height:2px;background:#22c55e;margin:0 8px;margin-bottom:24px;"></div>
+      <div class="step-connector active"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-md text-sm ring-4 ring-green-200">2</div>
         <p class="mt-2 text-xs font-semibold text-green-700 text-center whitespace-nowrap">Personal Info</p>
       </div>
-      <div style="flex:1;height:2px;background:#e5e7eb;margin:0 8px;margin-bottom:24px;"></div>
+      <div class="step-connector"></div>
       <div class="flex flex-col items-center">
         <div class="w-10 h-10 rounded-full bg-white border-2 border-gray-300 text-gray-400 flex items-center justify-center font-bold text-sm">3</div>
         <p class="mt-2 text-xs font-semibold text-gray-400 text-center whitespace-nowrap">Verification</p>
@@ -536,7 +597,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
           <p class="text-white font-semibold text-sm">Non-Resident Account</p>
-          <p class="text-green-300 text-xs mt-0.5">You are registering as a non-resident of Sumacab Este. Some services may have limited availability.</p>
+          <p class="text-green-300 text-xs mt-0.5">You are registering as a non-resident of <?= e($siteSettings['barangay_name']) ?>. Some services may have limited availability.</p>
         </div>
       </div>
 
@@ -650,7 +711,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div>
             <label class="field-label" for="birthday">Birthday <span class="required-star">*</span></label>
             <input type="date" id="birthday" name="birthday" required
-                   max="<?php echo date('Y-m-d'); ?>"
+                   max="<?php echo date('Y-m-d', strtotime('-1 year')); ?>"
+                   min="<?php echo date('Y-m-d', strtotime('-100 years')); ?>"
                    class="<?php echo inputClass('birthday', $highlightFields) . (isset($errors['birthday']) ? ' error' : ''); ?>"
                    value="<?php echo oldValue('birthday'); ?>">
             <?php if (isset($errors['birthday'])): ?><span class="field-error"><?php echo e($errors['birthday']); ?></span><?php endif; ?>
@@ -816,7 +878,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5 text-sm text-amber-800">
           <i class="fa-solid fa-circle-info text-amber-500 mt-0.5 flex-shrink-0"></i>
-          <span>Please provide your <strong>current residential address</strong>, which may be outside Sumacab Este.</span>
+          <span>Please provide your <strong>current residential address</strong>, which may be outside <?= e($siteSettings['barangay_name']) ?>.</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -876,7 +938,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <div>
             <label class="field-label" for="phone">Phone Number <span class="required-star">*</span></label>
-            <input type="tel" id="phone" name="phone" required maxlength="13" autocomplete="tel"
+            <input type="tel" id="phone" name="phone" required maxlength="20" autocomplete="tel"
                    class="field-input <?php echo isset($errors['phone']) ? 'error' : ''; ?>"
                    value="<?php echo oldValue('phone'); ?>" placeholder="09XX XXX XXXX"
                    pattern="^09\d{9}$">
@@ -900,7 +962,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <div>
             <label class="field-label" for="emergency_phone">Emergency Contact Phone</label>
-            <input type="tel" id="emergency_phone" name="emergency_phone" maxlength="13"
+            <input type="tel" id="emergency_phone" name="emergency_phone" maxlength="20"
                    class="field-input <?php echo isset($errors['emergency_phone']) ? 'error' : ''; ?>"
                    value="<?php echo oldValue('emergency_phone'); ?>" placeholder="Emergency contact number"
                    pattern="^09\d{9}$">
@@ -977,7 +1039,15 @@ function isValidPHPhone(phone) {
 function toProperCase(value) {
     if (!value) return value;
     const lower = value.toLowerCase();
-    return lower.replace(/(^|[\s'\-])(\p{L})/gu, (m, boundary, letter) => boundary + letter.toUpperCase());
+    const minorWords = new Set(['of','de','del','la','las','los','y','and','the','sa','ng']);
+    let isFirstWord = true;
+    return lower.replace(/(^|[\s'\-])(\p{L}+)/gu, (m, boundary, word) => {
+        const isSpaceOrStart = (boundary === '' || boundary === ' ');
+        const keepLower = isSpaceOrStart && !isFirstWord && minorWords.has(word);
+        isFirstWord = false;
+        if (keepLower) return boundary + word;
+        return boundary + word.charAt(0).toUpperCase() + word.slice(1);
+    });
 }
 
 function isValidZip(zip) {
@@ -1036,7 +1106,7 @@ function validateField(el) {
     if (name === 'email'             && val && !isValidEmail(val))    { showError(el, 'Enter a valid email address.'); return false; }
     if ((name === 'phone' || name === 'emergency_phone') && val && !isValidPHPhone(val)) { showError(el, 'Enter a valid PH number in 09XXXXXXXXX format.'); return false; }
     if (name === 'zip'               && val && !isValidZip(val))      { showError(el, 'Enter a valid ZIP code (4-10 alphanumeric).'); return false; }
-    if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a past date.'); return false; }
+    if (name === 'birthday'          && val && !isValidBirthdate(val)){ showError(el, 'Birthday must be a real past date, and no more than 100 years ago.'); return false; }
 
     // Name character check
     if (['firstname','lastname','middlename'].includes(name) && val && !/^[\u00C0-\u024F\u1E00-\u1EFF0-9a-zA-Z\s'\-\.]+$/.test(val)) {
@@ -1055,7 +1125,7 @@ function validateField(el) {
 /* ============================================================
    LIVE AUTO-FORMATTING (runs before validation on blur)
    ============================================================ */
-['firstname', 'lastname', 'middlename'].forEach(name => {
+['firstname', 'lastname', 'middlename', 'birthplace', 'ethnicity', 'street', 'emergency_contact'].forEach(name => {
     const el = document.querySelector(`[name="${name}"]`);
     if (el) el.addEventListener('blur', () => { el.value = toProperCase(el.value.trim()); });
 });
