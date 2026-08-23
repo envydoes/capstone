@@ -1268,10 +1268,16 @@ function bulkAction(tab,action){
 function resolveUserIDSrc(src){
   if(!src) return '';
   src = src.trim();
+  
+  // If it already contains full or relative path prefixes
   if(src.startsWith('../uploads/id_verification/')) return src;
   if(src.startsWith('./uploads/id_verification/')) return src.replace('./', '../');
   if(src.startsWith('/uploads/id_verification/')) return '../' + src.slice(1);
   if(src.startsWith('uploads/id_verification/')) return '../' + src;
+  if(src.startsWith('signup/id/')) return '../' + src;
+  if(src.startsWith('../signup/id/')) return src;
+
+  // Fallback for simple filenames (e.g. "B1.jpg") stored in uploads/id_verification
   return '../uploads/id_verification/' + src;
 }
 function openLightbox(side){const src=side==='front'?currentFrontID:currentBackID;if(!src)return;document.getElementById('lightboxImg').src=resolveUserIDSrc(src);document.getElementById('lightbox').classList.add('open');}
