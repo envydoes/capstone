@@ -22,6 +22,7 @@ class ComposerStaticInit5fd6db4c32baadd9d368db6b8fd6df75
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'SimpleSoftwareIO\\QrCode\\' => 24,
         ),
         'P' =>
         array (
@@ -41,11 +42,16 @@ class ComposerStaticInit5fd6db4c32baadd9d368db6b8fd6df75
         'D' =>
         array (
             'Dotenv\\' => 7,
+            'DASPRiD\\Enum\\' => 13,
         ),
         'C' =>
         array (
             'Composer\\Pcre\\' => 14,
             'Complex\\' => 8,
+        ),
+        'B' =>
+        array (
+            'BaconQrCode\\' => 12,
         ),
     );
 
@@ -65,6 +71,10 @@ class ComposerStaticInit5fd6db4c32baadd9d368db6b8fd6df75
         'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'SimpleSoftwareIO\\QrCode\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/simplesoftwareio/simple-qrcode/src',
         ),
         'Psr\\SimpleCache\\' =>
         array (
@@ -94,6 +104,10 @@ class ComposerStaticInit5fd6db4c32baadd9d368db6b8fd6df75
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
+        'DASPRiD\\Enum\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
         'Composer\\Pcre\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/pcre/src',
@@ -101,6 +115,10 @@ class ComposerStaticInit5fd6db4c32baadd9d368db6b8fd6df75
         'Complex\\' =>
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'BaconQrCode\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 
