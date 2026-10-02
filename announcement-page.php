@@ -346,7 +346,7 @@ $roleBadgeClass = match($role) {
     <div class="text-center py-24">
       <i class="fa-solid fa-circle-exclamation text-5xl text-gray-300 mb-4"></i>
       <p class="text-gray-500 text-lg font-medium">Announcement not found.</p>
-      <a href="<?= htmlspecialchars($backUrl) ?>" class="mt-4 inline-block text-green-700 font-semibold hover:underline">? Back to Announcements</a>
+      <a href="<?= htmlspecialchars($backUrl) ?>" class="mt-4 inline-block text-green-700 font-semibold hover:underline"><i class="fa-solid fa-arrow-left text-xs"></i> Back to Announcements</a>
     </div>
   <?php else:
     $tag      = $ann['announcementTag'] ?? '';

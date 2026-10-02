@@ -1009,7 +1009,7 @@ $sidebarSections = [
     .gf-range input { width: 100%; min-width: 0; }
     .gf-range span { font-size: 0.72rem; color: #9ca3af; flex-shrink: 0; }
     .gf-modal-footer {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
       padding: 14px 22px; border-top: 1px solid #e5e7eb; flex-shrink: 0; background: #f9fafb; border-radius: 0 0 16px 16px;
     }
     .gf-btn-reset {
@@ -2649,7 +2649,6 @@ $arGroupModuleMap = [
     </div>
 
     <div class="gf-modal-footer">
-      <button type="button" class="gf-btn-reset" onclick="closeAnalyticsModal()">Cancel</button>
       <button type="button" class="gf-btn-apply" onclick="generateAnalyticsReport()"><i class="fa-solid fa-print"></i> Generate Report</button>
     </div>
   </div>

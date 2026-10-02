@@ -665,7 +665,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             <div class="info-row"><span class="info-label">Status</span><span class="info-value"><?= esc(labelMap($status, $BIZ_STAT)) ?></span></div>
             <div class="info-row"><span class="info-label">Opens</span><span class="info-value <?= $bussOpen?'':'empty' ?>"><?= $bussOpen ? esc(fmt12($bussOpen)) : '-' ?></span></div>
             <div class="info-row"><span class="info-label">Closes</span><span class="info-value <?= $bussClose?'':'empty' ?>"><?= $bussClose ? esc(fmt12($bussClose)) : '-' ?></span></div>
-            <div class="info-row"><span class="info-label">Starting Price</span><span class="info-value <?= ($l['bussPrice']??'')?'':'empty' ?>"><?= ($l['bussPrice']??'') ? '?'.esc($l['bussPrice']) : '-' ?></span></div>
+            <div class="info-row"><span class="info-label">Starting Price</span><span class="info-value <?= ($l['bussPrice']??'')?'':'empty' ?>"><?= ($l['bussPrice']??'') ? '₱'.esc($l['bussPrice']) : '-' ?></span></div>
             <div class="info-row"><span class="info-label">Years Operating</span><span class="info-value <?= $bussYears?'':'empty' ?>"><?= $bussYears ? esc(labelMap($bussYears, $YEARS_LBL)) : '-' ?></span></div>
           </div>
           <?php endif; ?>
