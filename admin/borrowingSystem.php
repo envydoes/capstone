@@ -77,7 +77,7 @@ $borrowThisMonth = (int) mysqli_fetch_assoc(mysqli_query($conn, "
 // status becomes 'Returned'. So for already-returned items this reads as
 // actual hold time.
 $avgDurRow = mysqli_fetch_assoc(mysqli_query($conn, "
-    SELECT AVG(TIMESTAMPDIFF(HOUR, requestDate, returnDate)) AS avg_hours
+    SELECT AVG(TIMESTAMPDIFF(HOUR, requestDate, updatedAt)) AS avg_hours
     FROM tbl_equipmentrequest
     WHERE LOWER(status) = 'returned'
 "));
@@ -94,11 +94,15 @@ $onTimeRate = null;
 $hasDueDateCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_equipmentrequest LIKE 'dueDate'");
 if ($hasDueDateCol && mysqli_num_rows($hasDueDateCol) > 0) {
     $rateRow = mysqli_fetch_assoc(mysqli_query($conn, "
-        SELECT
-            SUM(CASE WHEN returnDate <= dueDate THEN 1 ELSE 0 END) AS on_time,
-            COUNT(*) AS total
-        FROM tbl_equipmentrequest
-        WHERE LOWER(status) = 'returned' AND dueDate IS NOT NULL
+    SELECT
+        SUM(CASE
+            WHEN LOWER(status) = 'returned' AND updatedAt <= dueDate THEN 1
+            WHEN LOWER(status) = 'borrowed' AND dueDate >= NOW() THEN 1
+            ELSE 0
+        END) AS on_time,
+        COUNT(*) AS total
+    FROM tbl_equipmentrequest
+    WHERE LOWER(status) IN ('returned', 'borrowed') AND dueDate IS NOT NULL
     "));
     if ($rateRow && (int) $rateRow['total'] > 0) {
         $onTimeRate = round(((int) $rateRow['on_time'] / (int) $rateRow['total']) * 100);
