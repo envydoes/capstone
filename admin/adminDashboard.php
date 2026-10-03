@@ -823,6 +823,7 @@ $sidebarSections = [
     .mini-table tbody td { padding: 9px 12px; font-size: 0.8rem; color: #374151; border-bottom: 1px solid #f3f4f6; }
     .mini-table tbody tr:last-child td { border-bottom: none; }
     .mini-table tbody tr:hover { background: #f0fdf4; }
+    .mini-table tbody tr.doc-type-detail:hover { background: #f9fafb; }
     .mini-badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 999px; font-size: 0.66rem; font-weight: 700; }
     .mini-badge-overdue  { background: #fee2e2; color: #dc2626; }
     .mini-badge-ontime   { background: #dcfce7; color: #15803d; }
@@ -1469,7 +1470,7 @@ $sidebarSections = [
               <p class="subpanel-title">Requests by Type &amp; Status</p>
               <div class="mini-table-wrap">
                 <table class="mini-table">
-                  <thead><tr><th>Document Type</th><th>Status</th><th>Total</th></tr></thead>
+                  <thead><tr><th>Document Type</th><th>Total</th></tr></thead>
                   <tbody id="docTypeStatusBody"></tbody>
                 </table>
               </div>
@@ -2251,13 +2252,42 @@ $sidebarSections = [
   /* ?? DOCUMENT REQUESTS ?? */
   function renderDocTypeStatus() {
     const tbody = document.getElementById('docTypeStatusBody');
-    if (!DOC_TYPE_STATUS.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="mini-empty">No document requests yet</div></td></tr>`; return; }
-    tbody.innerHTML = DOC_TYPE_STATUS.map(r => {
-      const st = (r.status||'').toLowerCase();
-      const badgeCls = st === 'approved' ? 'mini-badge-approved' : st === 'rejected' ? 'mini-badge-rejected' : 'mini-badge-pending';
-      const label = r.document_type.replace(/[_-]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-      return `<tr><td>${escHtml2(label)}</td><td><span class="mini-badge ${badgeCls}">${escHtml2(r.status)}</span></td><td>${escHtml2(r.total)}</td></tr>`;
-    }).join('');
+    if (!DOC_TYPE_STATUS.length) { tbody.innerHTML = `<tr><td colspan="2"><div class="mini-empty">No document requests yet</div></td></tr>`; return; }
+
+    const grouped = {};
+    DOC_TYPE_STATUS.forEach(r => {
+      if (!grouped[r.document_type]) grouped[r.document_type] = { statuses: [], total: 0 };
+      grouped[r.document_type].statuses.push({ status: r.status, total: Number(r.total) || 0 });
+      grouped[r.document_type].total += Number(r.total) || 0;
+    });
+
+    const badgeCls = st => st === 'approved' ? 'mini-badge-approved' : st === 'rejected' ? 'mini-badge-rejected' : 'mini-badge-pending';
+    const prettyLabel = t => t.replace(/[_-]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    let html = '', i = 0;
+    Object.keys(grouped).forEach(type => {
+      const g = grouped[type];
+      const rowId = `docTypeRow${i++}`;
+      html += `<tr class="doc-type-row" style="cursor:pointer;" onclick="toggleDocTypeRow('${rowId}', this)">
+        <td><i class="fa-solid fa-chevron-right doc-type-chevron" style="width:12px;display:inline-block;transition:transform .15s;margin-right:6px;color:#9ca3af;"></i>${escHtml2(prettyLabel(type))}</td>
+        <td>${g.total}</td>
+      </tr>`;
+      html += `<tr id="${rowId}" class="doc-type-detail" style="display:none;">
+        <td colspan="2" style="background:#f9fafb;padding:10px 14px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            ${g.statuses.map(s => `<span class="mini-badge ${badgeCls((s.status||'').toLowerCase())}">${escHtml2(s.status)}: ${s.total}</span>`).join('')}
+          </div>
+        </td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+  function toggleDocTypeRow(rowId, triggerRow) {
+    const detail = document.getElementById(rowId);
+    const chevron = triggerRow.querySelector('.doc-type-chevron');
+    const isOpen = detail.style.display !== 'none';
+    detail.style.display = isOpen ? 'none' : 'table-row';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
   }
   function drawDocMonthlyChart() {
     if (!DOC_MONTHLY.length) { document.getElementById('chartDocMonthly').innerHTML = '<div class="mini-empty">No data available</div>'; return; }
