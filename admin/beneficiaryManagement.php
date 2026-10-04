@@ -488,6 +488,7 @@ mysqli_close($conn);
   </style>
     <link rel="stylesheet" href="dist/output.css">
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -1275,16 +1276,26 @@ function bulkAction(action, triggerBtn = null) {
 /* ═══ EXPORT ═══ */
 function exportList() {
   const rows = Array.from(document.querySelectorAll('#beneficiaryTable tbody tr[data-id]')).filter(r=>r.style.display!=='none');
-  let csv = 'Rank,Name,Email,Programs,Score\n';
-  rows.forEach((r,i) => {
+
+  const data = [['Rank', 'Name', 'Email', 'Programs', 'Score']];
+  rows.forEach((r, i) => {
     const app = JSON.parse(r.getAttribute('data-app'));
-    const scores = app._scores || {};
-    const eligible = Object.entries(scores).filter(([p,sc])=>sc>=(PROG_THRESH[p]||0)).map(([p])=>({'4ps':"4P's",senior:'Senior Citizen',scholarship:'Scholarship',pwd:'PWD',kabataan:'Kabataan (SK)',voters:'Registered Voters'}[p]||p));
-    csv += `"${i+1}","${app._name}","${app.email||''}","${eligible.join('; ')}","${Math.max(...Object.values(scores))}"\n`;
+    const eligible = getEligible(app).map(p => PROG_LABELS[p] || p);
+    data.push([i + 1, app._name || '', app.email || '', eligible.join('; '), parseInt(app.prio_score) || 0]);
   });
-  const blob = new Blob([csv],{type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a'); a.href=url; a.download='beneficiaries.csv'; a.click();
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [
+    { wch: 8 },  // Rank
+    { wch: 28 }, // Name
+    { wch: 30 }, // Email
+    { wch: 42 }, // Programs
+    { wch: 10 }, // Score
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Beneficiaries');
+  XLSX.writeFile(wb, 'beneficiaries.xlsx');
 }
 
 /* ═══ REFRESH ═══ */
