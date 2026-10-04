@@ -179,9 +179,54 @@ $statusPillClass = match($status) {
 };
 
 $heroImage = !empty($photos) ? $photos[0] : (isset($_GET['image']) ? htmlspecialchars(urldecode($_GET['image'])) : 'assets/bghero2.jpg');
-$fixedLocation = '075 Purok 3, Sumacab Este';
-$location = $fixedLocation;
-$openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' . urlencode($fixedLocation));
+$openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' . urlencode($location));
+
+function extract_maps_coords(string $url): ?string
+{
+    if ($url === '') return null;
+
+    if (preg_match('/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/', $url, $m)) {
+        return $m[1] . ',' . $m[2];
+    }
+    if (preg_match('/[?&](?:q|ll|query)=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/', $url, $m)) {
+        return $m[1] . ',' . $m[2];
+    }
+
+    if (preg_match('#^https?://(maps\.app\.goo\.gl|goo\.gl/maps)/#i', $url)) {
+        $resolved = resolve_maps_short_link($url);
+        if ($resolved && $resolved !== $url) {
+            return extract_maps_coords($resolved);
+        }
+    }
+
+    return null;
+}
+
+function resolve_maps_short_link(string $url): ?string
+{
+    if (!function_exists('curl_init')) return null;
+
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_NOBODY         => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS      => 5,
+        CURLOPT_TIMEOUT        => 4,
+        CURLOPT_CONNECTTIMEOUT => 3,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; MapsLinkResolver/1.0)',
+    ]);
+    curl_exec($ch);
+    $finalUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    $hadError = curl_errno($ch) !== 0;
+    curl_close($ch);
+
+    return (!$hadError && $finalUrl) ? $finalUrl : null;
+}
+
+$mapCoords     = extract_maps_coords($mapsLink);
+$mapEmbedQuery = $mapCoords ?: $location;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -568,7 +613,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
             Location
           </div>
           <div class="rounded-xl overflow-hidden border border-gray-200 mb-3" style="height:220px;">
-            <iframe src="https://www.google.com/maps?q=<?= urlencode($fixedLocation) ?>&output=embed"
+            <iframe src="https://www.google.com/maps?q=<?= urlencode($mapEmbedQuery) ?>&output=embed"
               width="100%" height="100%" style="border:0;display:block;" allowfullscreen loading="lazy"></iframe>
           </div>
           <a href="<?= esc($openMapsUrl) ?>" target="_blank" rel="noopener"
@@ -601,7 +646,7 @@ $openMapsUrl = $mapsLink ?: ('https://www.google.com/maps/search/?api=1&query=' 
           </div>
           <p class="mt-3 text-sm text-gray-600 flex items-start gap-2">
             <i class="fa-solid fa-location-dot text-green-600 mt-0.5 flex-shrink-0"></i>
-            <span><?= esc($fixedLocation) ?></span>
+            <span><?= esc($location) ?></span>
           </p>
         </div>
 
