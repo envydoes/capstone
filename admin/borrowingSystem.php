@@ -53,7 +53,7 @@ $borrowSQL = "
     FROM tbl_equipmentrequest br
     JOIN tbl_equipmentlist e ON br.equipmentId = e.equipmentId
     JOIN tbl_userinfo u ON br.userId = u.userID
-    ORDER BY br.requestDate ASC
+    ORDER BY br.requestDate DESC
 ";
 $borrowResult = mysqli_query($conn, $borrowSQL);
 $borrowList = [];
