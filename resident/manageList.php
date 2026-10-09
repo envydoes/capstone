@@ -106,7 +106,7 @@ if ($listStmt) {
         $lr['listingSubtype'] = $isApartment ? $lr['aptStatus'] : $lr['bussStatus'];
         $displayName = $isApartment ? ($lr['aptTitle'] ?: 'Apartment Listing') : ($lr['bussName'] ?: 'Business Listing');
         $lr['display_name'] = $displayName;
-        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : ' – ';
+        $lr['date'] = !empty($lr['createdAt']) ? date('m/d/Y', strtotime($lr['createdAt'])) : ' â€“ ';
         if ($isApartment) {
             $apartmentListings[] = $lr;
         } else {
@@ -134,7 +134,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/responsive-global.css">
-  <title>Manage Listings  –  <?= e($siteSettings['site_title']) ?></title>
+  <title>Manage Listings  â€”  <?= e($siteSettings['site_title']) ?></title>
   <link rel="icon" href="<?= e(site_config_logo_url($siteSettings, '../')) ?>" type="image/png">
   <?= site_config_css_vars($siteSettings) ?>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -603,7 +603,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
 
     <div class="form-card f3">
       <div class="form-header">
-        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?>  –  Listing Form</p>
+        <p class="text-white font-bold text-lg" style="font-family:'Playfair Display',serif;"><?= e($siteSettings['site_title']) ?>  â€”  Listing Form</p>
         <p class="text-green-200 text-xs mt-1">Fill in your listing details below</p>
       </div>
 
@@ -616,7 +616,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
           <input type="hidden" name="slots_available" id="fld_key"     value="">
 
           <!-- STEP 1: TYPE -->
-          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1  –  What are you listing?</span></div>
+          <div class="sdiv"><span><i class="fa-solid fa-list-check" style="margin-right:5px;"></i>Step 1  â€”  What are you listing?</span></div>
           <div style="display:flex;gap:12px;">
             <div class="type-card" id="tc-apt" onclick="chooseType('apt')">
               <span class="tc-icon"><i class="fa-solid fa-building"></i></span>
@@ -714,7 +714,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
             </div></div>
             <div class="fg">
               <label class="fl">Description: <span class="hint">(optional)</span></label>
-              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit  –  surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
+              <textarea name="apt_desc" id="apt_desc" class="fta" placeholder="Describe the unit  â€“  surroundings, vibe, what's nearby..." maxlength="500" oninput="charCount(this,'cc-apt-d',500)"></textarea>
               <div class="cc" id="cc-apt-d">0 / 500</div>
             </div>
           </div><!-- /panel-apt -->
@@ -732,7 +732,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
                 <label class="po"><input type="radio" name="buss_cat" value="laundry"   onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-shirt"></i> Laundry Shop</label>
                 <label class="po"><input type="radio" name="buss_cat" value="pharmacy"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-pills"></i> Pharmacy</label>
                 <label class="po"><input type="radio" name="buss_cat" value="printing"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-print"></i> Printing / Computer Shop</label>
-                <label class="po"><input type="radio" name="buss_cat" value="bakery"    onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-bread-slice"></i> Bakery / Café</label>
+                <label class="po"><input type="radio" name="buss_cat" value="bakery"    onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-bread-slice"></i> Bakery / CafÃ©</label>
                 <label class="po"><input type="radio" name="buss_cat" value="hardware"  onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-screwdriver-wrench"></i> Hardware</label>
                 <label class="po"><input type="radio" name="buss_cat" value="other"     onchange="pickRadio(this,'err-buss-cat')"><i class="fa-solid fa-ellipsis"></i> Other</label>
               </div>
@@ -758,8 +758,8 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
                   <option value="">-- Select --</option>
                   <option value="new">Just opened</option>
                   <option value="1">1 year</option>
-                  <option value="2-5">2 – 5 years</option>
-                  <option value="5-10">5 – 10 years</option>
+                  <option value="2-5">2 â€“ 5 years</option>
+                  <option value="5-10">5 â€“ 10 years</option>
                   <option value="10+">10+ years</option>
                 </select>
               </div>
@@ -834,13 +834,13 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
               <div class="uzone" id="uzone" onclick="document.getElementById('photoInput').click()" ondrop="dropPh(event)" ondragover="dovPh(event)" ondragleave="dlvPh(event)">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.6rem;color:#d1d5db;display:block;margin-bottom:6px;"></i>
                 <p style="font-size:0.875rem;font-weight:700;color:#6b7280;margin:0 0 3px;">Click to upload or drag &amp; drop</p>
-                <p style="font-size:0.72rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP · max 5 MB each · up to <strong>4 photos</strong></p>
+                <p style="font-size:0.72rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP Â· max 5 MB each Â· up to <strong>4 photos</strong></p>
               </div>
               <!-- ==== KEY FIX: name must be photos[] for $_FILES['photos'] to work ==== -->
               <input type="file" id="photoInput" name="photos[]" multiple accept="image/*" class="hidden" onchange="addPh(this)">
               <div class="pgrid4" id="pgrid" style="display:none;"></div>
               <p style="font-size:0.72rem;color:#9ca3af;margin-top:6px;display:none;" id="phlabel"></p>
-              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos  –  extra files were skipped.</p>
+              <p class="emsg" id="err-ph-limit" style="color:#f59e0b;">Maximum 4 photos  â€“  extra files were skipped.</p>
             </div>
             <div style="display:flex;justify-content:flex-end;margin-top:28px;">
               <button type="submit" class="submit-btn" onclick="return validateForm()">
@@ -975,7 +975,7 @@ if (isset($_GET['updated'])) { $toastType = 'success'; $toastMsg = 'Listing upda
         </div>
       </div>
       <div class="text-center mt-6 text-green-500 text-sm">
-        © 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.
+        Â© 2026 <?= e($siteSettings['site_title']) ?>. All Rights Reserved. <?= e($siteSettings['barangay_name']) ?>.
       </div>
     </div>
   </footer>
@@ -1134,12 +1134,12 @@ function renderGrid() {
 }
 
 /* ====
-   FORM SUBMIT  –  sync JS files[] into the
+   FORM SUBMIT  â€“  sync JS files[] into the
    real <input type="file"> via DataTransfer
    so PHP receives them in $_FILES['photos']
 ==== */
 document.getElementById('listingForm').addEventListener('submit', function(e) {
-  // Run validation first  –  validateForm() returns false to cancel
+  // Run validation first  â€“  validateForm() returns false to cancel
   // (the onclick on the button already calls validateForm; this is a
   //  belt-and-suspenders sync of the file list)
   if (!files.length) return; // nothing to sync, let the form go
@@ -1174,7 +1174,7 @@ function validateForm() {
       files.forEach(f => dt.items.add(f));
       document.getElementById('photoInput').files = dt.files;
     } catch(e) {
-      // DataTransfer not supported in some older browsers  –  files still in input from addPh()
+      // DataTransfer not supported in some older browsers  â€“  files still in input from addPh()
     }
   }
 
@@ -1182,7 +1182,7 @@ function validateForm() {
 }
 
 /* ............................................
-   HELPERS  –  parse stored JSON arrays
+   HELPERS  â€“  parse stored JSON arrays
 ............................................ */
 function parseArr(val) {
   if (!val) return [];
@@ -1200,14 +1200,14 @@ const STATUS_LABELS_BIZ = { 'open': 'Open / Operating', 'new': 'Newly Opened', '
 const BUSS_CAT_LABELS = {
   'food': 'Food & Dining', 'water': 'Water Station', 'sari-sari': 'Sari-Sari Store',
   'salon': 'Salon / Barber', 'laundry': 'Laundry Shop', 'pharmacy': 'Pharmacy',
-  'printing': 'Printing / Computer Shop', 'bakery': 'Bakery / Café', 'hardware': 'Hardware', 'other': 'Other'
+  'printing': 'Printing / Computer Shop', 'bakery': 'Bakery / CafÃ©', 'hardware': 'Hardware', 'other': 'Other'
 };
 const INC_LABELS   = { 'electric': 'Electricity', 'water': 'Water', 'wifi': 'WiFi', 'cable': 'Cable TV' };
 const AMN_LABELS   = { 'aircon': 'Aircon', 'fan': 'Electric Fan', 'parking': 'Parking', 'laundry': 'Laundry Area', 'cctv': 'CCTV', 'security': 'Security', 'kitchen': 'Shared Kitchen', 'gate': 'Gated Compound' };
 const RULES_LABELS = { 'no-smoking': 'No Smoking', 'no-pets': 'No Pets', 'no-visitors': 'No Overnight Visitors', 'curfew': 'Curfew Policy', 'no-cooking': 'No Cooking Inside' };
 const FEAT_LABELS  = { 'delivery': 'Delivery', 'pickup': 'Pick-up', 'dine-in': 'Dine-in', 'parking': 'Parking', 'gcash': 'GCash', 'maya': 'Maya', 'wifi': 'Free WiFi', 'aircon': 'Aircon' };
 const DAYS_LABELS  = { 'mon': 'Mon', 'tue': 'Tue', 'wed': 'Wed', 'thu': 'Thu', 'fri': 'Fri', 'sat': 'Sat', 'sun': 'Sun', 'holiday': 'Holidays' };
-const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2 – 5 years', '5-10': '5 – 10 years', '10+': '10+ years' };
+const YEARS_LABELS = { 'new': 'Just opened', '1': '1 year', '2-5': '2 â€“ 5 years', '5-10': '5 â€“ 10 years', '10+': '10+ years' };
 
 function tagList(arr, labelObj) {
   if (!arr || !arr.length) return '<span style="color:#9ca3af;font-style:italic;font-size:0.82rem;">None specified</span>';
@@ -1216,7 +1216,7 @@ function tagList(arr, labelObj) {
 
 function vrow(label, val) {
   const v = (val && String(val).trim()) ? String(val) : null;
-  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : ' – '}</span></div>`;
+  return `<div class="view-row"><span class="view-label">${escHtml(label)}</span><span class="view-value${!v ? ' empty' : ''}">${v ? escHtml(v) : ' â€“ '}</span></div>`;
 }
 
 function fmt12(t) {
@@ -1247,7 +1247,7 @@ function openViewModal(row) {
   const photos = l.photos_arr || [];
 
   const title = isApt
-    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + '  –  ' : '') + (l.aptAddress || 'Apartment Listing'))
+    ? ((l.aptType ? (APT_TYPE_LABELS[l.aptType] || l.aptType) + '  â€“  ' : '') + (l.aptAddress || 'Apartment Listing'))
     : (l.bussName || 'Business Listing');
 
   document.getElementById('viewModalTitle').textContent = title;
@@ -1515,7 +1515,7 @@ function buildBizEditFields(l) {
       </div>
       <div>
         <label class="field-label">Category</label>
-        ${buildSelect('edit_bussCat', [['','-- Select --'],['food','Food & Dining'],['water','Water Station'],['sari-sari','Sari-Sari Store'],['salon','Salon / Barber'],['laundry','Laundry Shop'],['pharmacy','Pharmacy'],['printing','Printing / Computer Shop'],['bakery','Bakery / Café'],['hardware','Hardware'],['other','Other']], l.bussCat || '')}
+        ${buildSelect('edit_bussCat', [['','-- Select --'],['food','Food & Dining'],['water','Water Station'],['sari-sari','Sari-Sari Store'],['salon','Salon / Barber'],['laundry','Laundry Shop'],['pharmacy','Pharmacy'],['printing','Printing / Computer Shop'],['bakery','Bakery / CafÃ©'],['hardware','Hardware'],['other','Other']], l.bussCat || '')}
       </div>
       <div>
         <label class="field-label">Status</label>
@@ -1527,7 +1527,7 @@ function buildBizEditFields(l) {
       </div>
       <div>
         <label class="field-label">Years in Business</label>
-        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2 – 5 years'],['5-10','5 – 10 years'],['10+','10+ years']], l.bussYears || '')}
+        ${buildSelect('edit_bussYears', [['','-- Select --'],['new','Just opened'],['1','1 year'],['2-5','2 â€“ 5 years'],['5-10','5 â€“ 10 years'],['10+','10+ years']], l.bussYears || '')}
       </div>
     </div>
   </div>
@@ -1623,11 +1623,11 @@ function buildEditSharedFields(l) {
     <div class="uzone" id="edit_uzone" onclick="document.getElementById('editPhotoInput').click()" ondrop="editDropPh(event)" ondragover="editDovPh(event)" ondragleave="editDlvPh(event)">
       <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.4rem;color:#d1d5db;display:block;margin-bottom:5px;"></i>
       <p style="font-size:0.82rem;font-weight:700;color:#6b7280;margin:0 0 2px;">Add new photos</p>
-      <p style="font-size:0.7rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP · max 5 MB · up to <strong>4 total</strong></p>
+      <p style="font-size:0.7rem;color:#9ca3af;margin:0;">JPG, PNG, WEBP Â· max 5 MB Â· up to <strong>4 total</strong></p>
     </div>
     <input type="file" id="editPhotoInput" multiple accept="image/*" class="hidden" onchange="editAddPh(this)">
     <div class="edit-pgrid" id="edit_new_pgrid" style="display:none;margin-top:8px;"></div>
-    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total  –  extra files skipped.</p>
+    <p style="font-size:0.72rem;color:#f59e0b;margin-top:5px;display:none;" id="edit_ph_warn">Maximum 4 photos total  â€“  extra files skipped.</p>
     <input type="hidden" id="edit_removed_photos" value="[]">
   </div>`;
 }
